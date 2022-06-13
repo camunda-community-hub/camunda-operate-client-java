@@ -71,6 +71,20 @@ CamundaOperateClient client = new CamundaOperateClient.Builder().authentication(
 
 ```
 
+# Use the Beta client
+If you're using an older version of Camunda SaaS or you're having a local setup without Keycloak, you could also query the same APIs as Operate UI. In such a case, you might want to use the Beta client :
+
+```java
+SimpleAuthentication sa = new SimpleAuthentication("demo", "demo", "http://localhost:8081");
+CamundaOperateClient client = new CamundaOperateClient.Builder().beta().operateUrl("http://localhost:8081").authentication(sa).build();
+
+JsonNode json = ((CamundaOperateBetaClient) client).getFlowNodeStates(2L);
+        
+AuditTrail auditTrail = ((CamundaOperateBetaClient) client).getAuditTrail(2L);
+```
+
+Obviously, as soon as the exposed APIs will be sufficient, we should get rid of this Beta client.
+
 # use it in your project
 You can import it to your maven or gradle project as a dependency
 

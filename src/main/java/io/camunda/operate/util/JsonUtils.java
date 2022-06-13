@@ -33,6 +33,10 @@ public class JsonUtils {
         return getObjectMapper().readTree(is);
     }
 
+    public static JsonNode toJsonNode(String json) throws IOException {
+        return getObjectMapper().readTree(json);
+    }
+
     public static String toJson(Object object) throws IOException {
         return getObjectMapper().writeValueAsString(object);
     }

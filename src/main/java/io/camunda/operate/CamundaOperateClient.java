@@ -16,6 +16,7 @@ import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
 import io.camunda.operate.auth.AuthInterface;
+import io.camunda.operate.beta.CamundaOperateBetaClient;
 import io.camunda.operate.dto.FlownodeInstance;
 import io.camunda.operate.dto.Incident;
 import io.camunda.operate.dto.ProcessDefinition;
@@ -158,7 +159,7 @@ public class CamundaOperateClient {
         }
     }
 
-    private String executeQuery(ClassicHttpRequest httpRequest) throws OperateException {
+    protected String executeQuery(ClassicHttpRequest httpRequest) throws OperateException {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpClient.execute(httpRequest)) {
                 return new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
@@ -166,6 +167,18 @@ public class CamundaOperateClient {
         } catch (IOException e) {
             throw new OperateException(e);
         }
+    }
+
+    public String getOperateUrl() {
+        return operateUrl;
+    }
+
+    public void setOperateUrl(String operateUrl) {
+        this.operateUrl = operateUrl;
+    }
+
+    public Header getAuthHeader() {
+        return authHeader;
     }
 
     public void setAuthHeader(Header authHeader) {
@@ -177,11 +190,18 @@ public class CamundaOperateClient {
         private AuthInterface authentication;
 
         private String operateUrl;
+        
+        private boolean beta;
 
         public Builder() {
 
         }
 
+        public Builder beta() {
+            beta = true;
+            return this;
+        }
+        
         public Builder authentication(AuthInterface authentication) {
             this.authentication = authentication;
             return this;
@@ -193,7 +213,12 @@ public class CamundaOperateClient {
         }
 
         public CamundaOperateClient build() throws OperateException {
-            CamundaOperateClient client = new CamundaOperateClient();
+            CamundaOperateClient client;
+            if (beta) {
+                client = new CamundaOperateBetaClient();
+            } else {
+                client = new CamundaOperateClient();
+            }
             client.operateUrl = operateUrl;
             authentication.authenticate(client);
             return client;
