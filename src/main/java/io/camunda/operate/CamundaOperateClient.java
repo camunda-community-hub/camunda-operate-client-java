@@ -1,6 +1,8 @@
 package io.camunda.operate;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -28,25 +30,58 @@ import io.camunda.operate.search.ProcessInstanceFilter;
 import io.camunda.operate.search.SearchQuery;
 import io.camunda.operate.search.VariableFilter;
 import io.camunda.operate.util.JsonUtils;
+import io.camunda.zeebe.model.bpmn.Bpmn;
+import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 
 public class CamundaOperateClient {
 
     private String operateUrl;
 
     private Header authHeader;
-    
+
     public ProcessDefinition getProcessDefinition(Long key) throws OperateException {
         return get(key, ProcessDefinition.class);
     }
 
     public List<ProcessDefinition> searchProcessDefinitions(SearchQuery query) throws OperateException {
         if (query.getFilter() != null && !(query.getFilter() instanceof ProcessDefinitionFilter)) {
-            throw new OperateException("You should rely on ProcessDefinitionFilter for searching on processDefinitions");
+            throw new OperateException(
+                    "You should rely on ProcessDefinitionFilter for searching on processDefinitions");
         }
 
         return search(query, ProcessDefinition.class);
     }
-    
+
+    public String getProcessDefinitionXml(Long key) throws OperateException {
+        String url = operateUrl + CamundaOperateConstants.OBJECT_APIS.get(ProcessDefinition.class) + "/" + key + "/xml";
+
+        HttpGet httpGet = new HttpGet(url);
+        httpGet.addHeader(authHeader);
+
+        try {
+            return executeQuery(httpGet);
+        } catch (OperateException e) {
+            throw new OperateException("Error get Process Definition XML for " + key, e);
+        }
+    }
+
+    public BpmnModelInstance getProcessDefinitionModel(Long key) throws OperateException {
+        String url = operateUrl + CamundaOperateConstants.OBJECT_APIS.get(ProcessDefinition.class) + "/" + key + "/xml";
+
+        HttpGet httpGet = new HttpGet(url);
+        httpGet.addHeader(authHeader);
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+                InputStream processInputStream = new ByteArrayInputStream(
+                        response.getEntity().getContent().readAllBytes());
+                return Bpmn.readModelFromStream(processInputStream);
+            }
+        } catch (IOException e) {
+            throw new OperateException(e);
+        }
+    }
+
     public ProcessInstance getProcessInstance(Long key) throws OperateException {
         return get(key, ProcessInstance.class);
     }
@@ -58,7 +93,7 @@ public class CamundaOperateClient {
 
         return search(query, ProcessInstance.class);
     }
-    
+
     public FlownodeInstance getFlownodeInstance(Long key) throws OperateException {
         return get(key, FlownodeInstance.class);
     }
@@ -70,11 +105,11 @@ public class CamundaOperateClient {
 
         return search(query, FlownodeInstance.class);
     }
-    
+
     public Incident getIncident(Long key) throws OperateException {
         return get(key, Incident.class);
     }
-    
+
     public List<Incident> searchIncidents(SearchQuery query) throws OperateException {
         if (query.getFilter() != null && !(query.getFilter() instanceof IncidentFilter)) {
             throw new OperateException("You should rely on IncidentFilter for searching on incidents");
@@ -83,11 +118,10 @@ public class CamundaOperateClient {
         return search(query, Incident.class);
     }
 
-    
     public Variable getVariable(Long key) throws OperateException {
         return get(key, Variable.class);
     }
-    
+
     public List<Variable> searchVariables(SearchQuery query) throws OperateException {
         if (query.getFilter() != null && !(query.getFilter() instanceof VariableFilter)) {
             throw new OperateException("You should rely on VariableFilter for searching on variables");
@@ -97,7 +131,7 @@ public class CamundaOperateClient {
     }
 
     private <T> List<T> search(SearchQuery query, Class<T> resultType) throws OperateException {
-        HttpPost httpPost = new HttpPost(operateUrl + CamundaOperateConstants.OBJECT_APIS.get(resultType)+"/search");
+        HttpPost httpPost = new HttpPost(operateUrl + CamundaOperateConstants.OBJECT_APIS.get(resultType) + "/search");
         httpPost.addHeader("Content-Type", "application/json");
         httpPost.addHeader(authHeader);
 
@@ -110,16 +144,17 @@ public class CamundaOperateClient {
             throw new OperateException("Error executing the SearchQuery", e);
         }
     }
-    
+
     private <T> T get(Long key, Class<T> resultType) throws OperateException {
-        HttpGet httpGet = new HttpGet(operateUrl + CamundaOperateConstants.OBJECT_APIS.get(resultType)+"/"+key);
+        HttpGet httpGet = new HttpGet(operateUrl + CamundaOperateConstants.OBJECT_APIS.get(resultType) + "/" + key);
         httpGet.addHeader("Content-Type", "application/json");
         httpGet.addHeader(authHeader);
 
         try {
             return JsonUtils.toResult(executeQuery(httpGet), resultType);
         } catch (IOException e) {
-            throw new OperateException("Error executing get for (key : "+key+")"+resultType.descriptorString(), e);
+            throw new OperateException("Error executing get for (key : " + key + ")" + resultType.descriptorString(),
+                    e);
         }
     }
 
