@@ -1,0 +1,56 @@
+package io.camunda.operate.util;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.camunda.operate.dto.SearchResult;
+
+public class JsonUtils {
+
+    private JsonUtils() {
+    }
+
+    private static ObjectMapper mapper;
+
+    private static Map<Class<?>, JavaType> searchResultTypeMap = new HashMap<>();
+
+    private static ObjectMapper getObjectMapper() {
+        if (mapper == null) {
+            mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        }
+        return mapper;
+    }
+
+    public static JsonNode toJsonNode(InputStream is) throws IOException {
+        return getObjectMapper().readTree(is);
+    }
+
+    public static String toJson(Object object) throws IOException {
+        return getObjectMapper().writeValueAsString(object);
+    }
+    
+    public static <T> T toResult(String json, Class<T> resultType) throws IOException {
+        return getObjectMapper().readValue(json, resultType);
+    }
+    
+    public static <T> SearchResult<T> toSearchResult(String json, Class<T> resultType) throws IOException {
+        return getObjectMapper().readValue(json, getSearchResultType(resultType));
+    }
+
+    private static JavaType getSearchResultType(Class<?> resultType) {
+        if (!searchResultTypeMap.containsKey(resultType)) {
+            searchResultTypeMap.put(resultType,
+                    getObjectMapper().getTypeFactory().constructParametricType(SearchResult.class, resultType));
+        }
+        return searchResultTypeMap.get(resultType);
+    }
+
+}
