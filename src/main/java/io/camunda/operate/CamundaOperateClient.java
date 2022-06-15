@@ -154,7 +154,7 @@ public class CamundaOperateClient {
         try {
             return JsonUtils.toResult(executeQuery(httpGet), resultType);
         } catch (IOException e) {
-            throw new OperateException("Error executing get for (key : " + key + ")" + resultType.descriptorString(),
+            throw new OperateException("Error executing get for (key : " + key + ")" + resultType.getName(),
                     e);
         }
     }
