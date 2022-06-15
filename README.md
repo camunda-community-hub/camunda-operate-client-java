@@ -92,6 +92,10 @@ You can import it to your maven or gradle project as a dependency
 <dependency>
 	<groupId>io.camunda</groupId>
 	<artifactId>camunda-operate-client-java</artifactId>
-	<version>NOT_YET_RELEASED</version>
+	<version>1.0.0</version>
 </dependency>
 ```
+
+# Note
+A similar library is available for tasklist there:
+[camunda-tasklist-client-java](https://github.com/camunda-community-hub/camunda-tasklist-client-java)
