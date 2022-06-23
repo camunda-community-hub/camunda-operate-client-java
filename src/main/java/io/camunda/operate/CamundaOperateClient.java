@@ -30,6 +30,7 @@ import io.camunda.operate.search.ProcessDefinitionFilter;
 import io.camunda.operate.search.ProcessInstanceFilter;
 import io.camunda.operate.search.SearchQuery;
 import io.camunda.operate.search.VariableFilter;
+import io.camunda.operate.util.Java8Utils;
 import io.camunda.operate.util.JsonUtils;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
@@ -75,7 +76,7 @@ public class CamundaOperateClient {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 InputStream processInputStream = new ByteArrayInputStream(
-                        response.getEntity().getContent().readAllBytes());
+                        Java8Utils.readAllBytes(response.getEntity().getContent()));
                 return Bpmn.readModelFromStream(processInputStream);
             }
         } catch (IOException e) {
@@ -162,7 +163,7 @@ public class CamundaOperateClient {
     protected String executeQuery(ClassicHttpRequest httpRequest) throws OperateException {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpClient.execute(httpRequest)) {
-                return new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
+                return new String(Java8Utils.readAllBytes(response.getEntity().getContent()), StandardCharsets.UTF_8);
             }
         } catch (IOException e) {
             throw new OperateException(e);
