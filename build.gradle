@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'io.camunda'
-version = '1.0.1'
+version = '1.0.2'
 sourceCompatibility = '8'
 
 repositories {
