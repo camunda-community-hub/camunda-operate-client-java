@@ -60,6 +60,8 @@ List<Incident> incidents = client.searchIncidents(incidentQuery);
 Incident incident = client.getIncident(incidents.get(0).getKey());
 
 ```
+# Authentication
+You can use the ***SimpleAuthentication*** to connect to a local Camunda TaskList if your setup is "simple": ***without identity and keycloak***.
 
 To connect to the **SaaS** Operate, you need to use the **SaasAuthentication** rather than the SimpleAuthentication. The SaaSAuthentication requires the ClientId and SecretId
 
@@ -67,8 +69,14 @@ To connect to the **SaaS** Operate, you need to use the **SaasAuthentication** r
 SaasAuthentication sa = new SaasAuthentication("2~nB1MwkUU45FuXXX", "aBRKtreXQF3uD2MYYY");
 CamundaOperateClient client = new CamundaOperateClient.Builder().authentication(sa)
     .taskListUrl("https://bru-2.tasklist.camunda.io/757dbc30-5127-4bed-XXXX-XXXXXXXXXXXX").build();
+```
 
+To connect to the **Local** TaskList with **Identity & Keycloak**, you need to use the **LocalIdentityAuthentication**. The SaaSAuthentication requires the clientId and clientSecret. You can also change the Keycloak realm and the baseUrl depending on your installation.
 
+```java
+LocalIdentityAuthentication la = new LocalIdentityAuthentication().clientId("java").clientSecret("foTPogjlI0hidwbDZcYFWzmU8FOQwLx0").baseUrl("http://localhost:18080").keycloakRealm("camunda-platform");
+CamundaOperateClient client = new CamundaOperateClient.Builder().authentication(la)
+    .operateUrl("http://localhost:8081/").build();
 ```
 
 # Use the Beta client
@@ -92,7 +100,7 @@ You can import it to your maven or gradle project as a dependency
 <dependency>
 	<groupId>io.camunda</groupId>
 	<artifactId>camunda-operate-client-java</artifactId>
-	<version>1.0.3</version>
+	<version>1.1.0</version>
 </dependency>
 ```
 

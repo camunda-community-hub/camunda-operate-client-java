@@ -209,7 +209,7 @@ public class CamundaOperateClient {
         }
 
         public Builder operateUrl(String operateUrl) {
-            this.operateUrl = operateUrl;
+            this.operateUrl = formatUrl(operateUrl);
             return this;
         }
 
@@ -224,5 +224,14 @@ public class CamundaOperateClient {
             authentication.authenticate(client);
             return client;
         }
+
+        private String formatUrl(String url) {
+            if (url.endsWith("/")) {
+                return url.substring(0, url.length()-1);
+            }
+            return url;
+        }
     }
+    
+
 }
