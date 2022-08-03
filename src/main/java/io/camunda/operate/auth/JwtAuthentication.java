@@ -19,21 +19,19 @@ public abstract class JwtAuthentication implements AuthInterface {
     public int getExpiration(String token) throws OperateException {
         try {
             String[] chunks = token.split("\\.");
-      
-        
-        String payload = new String(DECODER.decode(chunks[1]));
-        JsonNode jsonPayload = MAPPER.readValue(payload, JsonNode.class);
-        JsonNode exp = jsonPayload.get("exp");
-        if (exp==null) {
-            return 0;
-        } else {
-            return exp.asInt();
-        }
+            String payload = new String(DECODER.decode(chunks[1]));
+            JsonNode jsonPayload = MAPPER.readValue(payload, JsonNode.class);
+            JsonNode exp = jsonPayload.get("exp");
+            if (exp==null) {
+                return 0;
+            } else {
+                return exp.asInt();
+            }
         } catch (JsonProcessingException e) {
             throw new OperateException("Token is not readable", e);
         }
     }
-    
+
     public void setToken(CamundaOperateClient client, String token) throws OperateException {
         client.setAuthHeader(new BasicHeader("Authorization", "Bearer " + token));
         client.setTokenExpiration(getExpiration(token));
