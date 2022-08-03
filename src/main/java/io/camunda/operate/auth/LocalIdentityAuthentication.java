@@ -9,15 +9,13 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.hc.core5.http.message.BasicHeader;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.camunda.operate.CamundaOperateClient;
 import io.camunda.operate.exception.OperateException;
 import io.camunda.operate.util.JsonUtils;
 
-public class LocalIdentityAuthentication implements AuthInterface {
+public class LocalIdentityAuthentication extends JwtAuthentication {
 
     private String clientId;
     private String clientSecret;
@@ -83,7 +81,7 @@ public class LocalIdentityAuthentication implements AuthInterface {
                     }
                     JsonNode responseBody = JsonUtils.toJsonNode(response.toString());
                     String token = responseBody.get("access_token").asText();
-                    client.setAuthHeader(new BasicHeader("Authorization", "Bearer " + token));
+                    setToken(client, token);
                 }
             } else {
                 throw new OperateException("Error "+conn.getResponseCode()+" obtaining access token : "+conn.getResponseMessage());

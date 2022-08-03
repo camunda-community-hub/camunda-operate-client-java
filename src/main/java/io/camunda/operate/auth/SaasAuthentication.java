@@ -7,7 +7,6 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-import org.apache.hc.core5.http.message.BasicHeader;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -15,7 +14,7 @@ import io.camunda.operate.CamundaOperateClient;
 import io.camunda.operate.exception.OperateException;
 import io.camunda.operate.util.JsonUtils;
 
-public class SaasAuthentication implements AuthInterface {
+public class SaasAuthentication extends JwtAuthentication {
 
     private String clientId;
     private String clientSecret;
@@ -40,7 +39,7 @@ public class SaasAuthentication implements AuthInterface {
                 JsonNode responseBody = JsonUtils.toJsonNode(response.getEntity().getContent());
                 String token = responseBody.get("access_token").asText();
 
-                client.setAuthHeader(new BasicHeader("Authorization", "Bearer " + token));
+                setToken(client, token);
             }
         } catch (IOException e) {
             throw new OperateException(e);

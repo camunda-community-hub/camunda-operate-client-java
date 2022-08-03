@@ -37,9 +37,13 @@ import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 
 public class CamundaOperateClient {
 
+    private AuthInterface authentication;
+
     private String operateUrl;
 
     private Header authHeader;
+    
+    private int tokenExpiration;
 
     public ProcessDefinition getProcessDefinition(Long key) throws OperateException {
         return get(key, ProcessDefinition.class);
@@ -161,6 +165,7 @@ public class CamundaOperateClient {
     }
 
     protected String executeQuery(ClassicHttpRequest httpRequest) throws OperateException {
+        reconnectEventually();
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpClient.execute(httpRequest)) {
                 return new String(Java8Utils.readAllBytes(response.getEntity().getContent()), StandardCharsets.UTF_8);
@@ -184,6 +189,16 @@ public class CamundaOperateClient {
 
     public void setAuthHeader(Header authHeader) {
         this.authHeader = authHeader;
+    }
+
+    public void setTokenExpiration(int tokenExpiration) {
+        this.tokenExpiration = tokenExpiration;
+    }
+
+    private void reconnectEventually() throws OperateException {
+        if (this.tokenExpiration>0 && this.tokenExpiration<(System.currentTimeMillis()/1000-30)) {
+            authentication.authenticate(this);
+        }
     }
 
     public static class Builder {
@@ -220,6 +235,7 @@ public class CamundaOperateClient {
             } else {
                 client = new CamundaOperateClient();
             }
+            client.authentication = authentication;
             client.operateUrl = operateUrl;
             authentication.authenticate(client);
             return client;
