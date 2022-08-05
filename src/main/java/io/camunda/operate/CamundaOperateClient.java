@@ -196,7 +196,7 @@ public class CamundaOperateClient {
     }
 
     private void reconnectEventually() throws OperateException {
-        if (this.tokenExpiration>0 && this.tokenExpiration<(System.currentTimeMillis()/1000+3)) {
+        if (this.tokenExpiration>0 && this.tokenExpiration<(System.currentTimeMillis()/1000-3)) {
             authentication.authenticate(this);
         }
     }
