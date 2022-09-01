@@ -71,11 +71,11 @@ CamundaOperateClient client = new CamundaOperateClient.Builder().authentication(
     .operateUrl("https://bru-2.operate.camunda.io/757dbc30-5127-4bed-XXXX-XXXXXXXXXXXX").build();
 ```
 
-To connect to the **Local** Operate with **Identity & Keycloak**, you need to use the **LocalIdentityAuthentication**. The SaaSAuthentication requires the clientId and clientSecret. You can also change the Keycloak realm and the baseUrl depending on your installation.
+To connect to the **Local** Operate with **Identity & Keycloak**, you need to use the **SelfManagedAuthentication**. The SelfManagedAuthentication requires the clientId and clientSecret. You can also change the Keycloak realm and the keycloakUrl depending on your installation.
 
 ```java
-LocalIdentityAuthentication la = new LocalIdentityAuthentication().clientId("java").clientSecret("foTPogjlI0hidwbDZcYFWzmU8FOQwLx0").baseUrl("http://localhost:18080").keycloakRealm("camunda-platform");
-CamundaOperateClient client = new CamundaOperateClient.Builder().authentication(la)
+SelfManagedAuthentication sma = new SelfManagedAuthentication().clientId("java").clientSecret("foTPogjlI0hidwbDZcYFWzmU8FOQwLx0").baseUrl("http://localhost:18080").keycloakRealm("camunda-platform");
+CamundaOperateClient client = new CamundaOperateClient.Builder().authentication(sma)
     .operateUrl("http://localhost:8081/").build();
 ```
 
@@ -100,7 +100,7 @@ You can import it to your maven or gradle project as a dependency
 <dependency>
 	<groupId>io.camunda</groupId>
 	<artifactId>camunda-operate-client-java</artifactId>
-	<version>1.2.2</version>
+	<version>1.3.0</version>
 </dependency>
 ```
 
