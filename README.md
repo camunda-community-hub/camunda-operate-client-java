@@ -4,11 +4,11 @@
 
 # Camunda Operate Client
 
-This project is designed to simplify communication between a java backend and the Camunda 8 operate. This project is still a draft.
+This project is designed to simplify communication between a Java backend and the [Operate API of Camunda Platform 8](https://docs.camunda.io/docs/apis-clients/operate-api/). This project is still a draft.
 
 # How to use the client
 
-Simply build a CamundaOperateClient that takes an authentication and the operate url as parameters.
+Simply build a CamundaOperateClient that takes an authentication and the Operate URL as parameters.
 
 ```java
 SimpleAuthentication sa = new SimpleAuthentication("demo", "demo", "http://localhost:8081");
@@ -105,5 +105,5 @@ You can import it to your maven or gradle project as a dependency
 ```
 
 # Note
-A similar library is available for tasklist there:
+A similar library is available for the Tasklist API of Camunda Platform 8 here:
 [camunda-tasklist-client-java](https://github.com/camunda-community-hub/camunda-tasklist-client-java)
