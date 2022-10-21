@@ -100,7 +100,7 @@ You can import it to your maven or gradle project as a dependency
 <dependency>
 	<groupId>io.camunda</groupId>
 	<artifactId>camunda-operate-client-java</artifactId>
-	<version>1.3.0</version>
+	<version>1.3.1</version>
 </dependency>
 ```
 
