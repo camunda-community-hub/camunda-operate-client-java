@@ -5,10 +5,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.*;
 
 import io.camunda.operate.dto.SearchResult;
 
@@ -25,6 +23,7 @@ public class JsonUtils {
         if (mapper == null) {
             mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         }
         return mapper;
     }
