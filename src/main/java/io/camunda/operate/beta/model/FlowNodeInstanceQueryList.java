@@ -1,5 +1,6 @@
 package io.camunda.operate.beta.model;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class FlowNodeInstanceQueryList {
@@ -28,7 +29,7 @@ public class FlowNodeInstanceQueryList {
             flowNodeInstanceQuery.setProcessInstanceId(processInstanceId);
             flowNodeInstanceQuery.setTreePath(processInstanceId);
             flowNodeInstanceQuery.setPageSize(100);
-            flowNodeInstanceQueryList.queries=List.of(flowNodeInstanceQuery);
+            flowNodeInstanceQueryList.queries=Arrays.asList(flowNodeInstanceQuery);
             return flowNodeInstanceQueryList;
         }
     }
