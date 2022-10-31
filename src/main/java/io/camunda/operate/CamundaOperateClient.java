@@ -152,14 +152,15 @@ public class CamundaOperateClient {
     }
 
     private <T> T get(Long key, Class<T> resultType) throws OperateException {
-        HttpGet httpGet = new HttpGet(operateUrl + CamundaOperateConstants.OBJECT_APIS.get(resultType) + "/" + key);
+      String url = operateUrl + CamundaOperateConstants.OBJECT_APIS.get(resultType) + "/" + key;
+        HttpGet httpGet = new HttpGet(url);
         httpGet.addHeader("Content-Type", "application/json");
         httpGet.addHeader(authHeader);
 
         try {
             return JsonUtils.toResult(executeQuery(httpGet), resultType);
         } catch (IOException e) {
-            throw new OperateException("Error executing get for (key : " + key + ")" + resultType.getName(),
+            throw new OperateException("Error executing get for (key : " + key + ")" + resultType.getName() + " on "+url,
                     e);
         }
     }
