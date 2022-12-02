@@ -71,6 +71,12 @@ CamundaOperateClient client = new CamundaOperateClient.Builder().authentication(
     .operateUrl("https://bru-2.operate.camunda.io/757dbc30-5127-4bed-XXXX-XXXXXXXXXXXX").build();
 ```
 
+You can also specify the OAuth-URL and audience, for example if you connect to a Camunda TEST system:
+
+```
+SaasAuthentication sa = new SaasAuthentication("https://login.cloud.camunda.io/oauth/token", "operate.camunda.io", 2~nB1MwkUU45FuXXX", "aBRKtreXQF3uD2MYYY");
+```
+
 To connect to the **Local** Operate with **Identity & Keycloak**, you need to use the **SelfManagedAuthentication**. The SelfManagedAuthentication requires the clientId and clientSecret. You can also change the Keycloak realm and the keycloakUrl depending on your installation.
 
 ```java
