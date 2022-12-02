@@ -19,18 +19,31 @@ public class SaasAuthentication extends JwtAuthentication {
     private String clientId;
     private String clientSecret;
 
+    private String baseUrl;
+    private String authUrl;
+
     public SaasAuthentication(String clientId, String clientSecret) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+
+        this.authUrl = "https://login.cloud.camunda.io/oauth/token";
+        this.baseUrl = "operate.camunda.io";
+    }
+
+    public SaasAuthentication(String authUrl, String baseUrl, String clientId, String clientSecret) {
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        this.baseUrl = baseUrl;
+        this.authUrl = authUrl;
     }
 
     @Override
     public void authenticate(CamundaOperateClient client) throws OperateException {
 
-        HttpPost httpPost = new HttpPost("https://login.cloud.camunda.io/oauth/token");
+        HttpPost httpPost = new HttpPost(authUrl);
         httpPost.addHeader("Content-Type", "application/json");
 
-        String data = "{\"grant_type\":\"client_credentials\", \"audience\":\"operate.camunda.io\", \"client_id\": \""
+        String data = "{\"grant_type\":\"client_credentials\", \"audience\":\"" + baseUrl + "\", \"client_id\": \""
                 + clientId + "\", \"client_secret\":\"" + clientSecret + "\"}";
         httpPost.setEntity(new StringEntity(data));
 
