@@ -50,7 +50,7 @@ public class SaasAuthentication extends JwtAuthentication {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
                 if (response.getCode()>399) {
-                  throw new OperateException("Can't connect to Operate : "+response.getCode()+" "+response.getReasonPhrase());
+                  throw new OperateException("Authentication error : "+response.getCode()+" "+response.getReasonPhrase());
                 }
                 JsonNode responseBody = JsonUtils.toJsonNode(response.getEntity().getContent());
                 String token = responseBody.get("access_token").asText();
