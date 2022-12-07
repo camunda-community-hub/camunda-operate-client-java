@@ -7,6 +7,8 @@ public class SearchResult<T> {
     private List<T> items;
 
     private Integer total;
+    
+    private List<Object> sortValues;
 
     public List<T> getItems() {
         return items;
@@ -22,6 +24,14 @@ public class SearchResult<T> {
 
     public void setTotal(Integer total) {
         this.total = total;
+    }
+
+    public List<Object> getSortValues() {
+      return sortValues;
+    }
+
+    public void setSortValues(List<Object> sortValues) {
+      this.sortValues = sortValues;
     }
 
 }
