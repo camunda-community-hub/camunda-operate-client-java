@@ -1,8 +1,9 @@
 package io.camunda.operate.dto;
 
+import java.util.Iterator;
 import java.util.List;
 
-public class SearchResult<T> {
+public class SearchResult<T> implements Iterable<T>{
 
     private List<T> items;
 
@@ -34,4 +35,7 @@ public class SearchResult<T> {
       this.sortValues = sortValues;
     }
 
+    public Iterator<T> iterator() {
+      return this.items.iterator();
+    }
 }
