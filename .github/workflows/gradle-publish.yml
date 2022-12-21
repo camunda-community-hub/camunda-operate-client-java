@@ -35,7 +35,7 @@ jobs:
       with:
         arguments: build
     - name: Publish with Gradle
-      run: ./gradlew -Prelease publishToSonatype # Removed for now as it had wired issues for me:  closeAndReleaseSonatypeStagingRepository
+      run: ./gradlew -Prelease publishToSonatype closeAndReleaseSonatypeStagingRepository
       env:
         ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.MAVEN_CENTRAL_DEPLOYMENT_USR }}
         ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.MAVEN_CENTRAL_DEPLOYMENT_PSW }}
