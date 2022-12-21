@@ -78,7 +78,7 @@ public class CamundaOperateClient {
     httpGet.addHeader(authHeader);
 
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-      try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
+      try (CloseableHttpResponse response = execute(httpClient, httpGet)) {
         InputStream processInputStream = new ByteArrayInputStream(
             Java8Utils.readAllBytes(response.getEntity().getContent()));
         return Bpmn.readModelFromStream(processInputStream);
@@ -86,6 +86,14 @@ public class CamundaOperateClient {
     } catch (IOException e) {
       throw new OperateException(e);
     }
+  }
+
+  public static CloseableHttpResponse execute(CloseableHttpClient httpClient, ClassicHttpRequest request) throws IOException, OperateException {
+    CloseableHttpResponse response = httpClient.execute(request);
+    if (response.getCode()>399) {
+      throw new OperateException("Authentication error : "+response.getCode()+" "+response.getReasonPhrase());
+    }
+    return response;
   }
 
   public ProcessInstance getProcessInstance(Long key) throws OperateException {
@@ -174,7 +182,7 @@ public class CamundaOperateClient {
   protected String executeQuery(ClassicHttpRequest httpRequest) throws OperateException {
     reconnectEventually();
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-      try (CloseableHttpResponse response = httpClient.execute(httpRequest)) {
+      try (CloseableHttpResponse response = execute(httpClient, httpRequest)) {
         return new String(Java8Utils.readAllBytes(response.getEntity().getContent()), StandardCharsets.UTF_8);
       }
     } catch (IOException e) {
