@@ -24,14 +24,10 @@ import io.camunda.operate.dto.ProcessInstance;
 import io.camunda.operate.dto.SearchResult;
 import io.camunda.operate.dto.Variable;
 import io.camunda.operate.exception.OperateException;
-import io.camunda.operate.search.FlownodeInstanceFilter;
-import io.camunda.operate.search.IncidentFilter;
-import io.camunda.operate.search.ProcessDefinitionFilter;
-import io.camunda.operate.search.ProcessInstanceFilter;
 import io.camunda.operate.search.SearchQuery;
-import io.camunda.operate.search.VariableFilter;
 import io.camunda.operate.util.Java8Utils;
 import io.camunda.operate.util.JsonUtils;
+import io.camunda.operate.util.QueryValidatorUtils;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 
@@ -48,13 +44,14 @@ public class CamundaOperateClient {
   public ProcessDefinition getProcessDefinition(Long key) throws OperateException {
     return get(key, ProcessDefinition.class);
   }
-
+  
   public List<ProcessDefinition> searchProcessDefinitions(SearchQuery query) throws OperateException {
-    if (query.getFilter() != null && !(query.getFilter() instanceof ProcessDefinitionFilter)) {
-      throw new OperateException(
-          "You should rely on ProcessDefinitionFilter for searching on processDefinitions");
-    }
+    QueryValidatorUtils.verifyQuery(query, ProcessDefinition.class);
+    return search(query, ProcessDefinition.class).getItems();
+  }
 
+  public SearchResult<ProcessDefinition> searchProcessDefinitionResults(SearchQuery query) throws OperateException {
+    QueryValidatorUtils.verifyQuery(query, ProcessDefinition.class);
     return search(query, ProcessDefinition.class);
   }
 
@@ -101,10 +98,12 @@ public class CamundaOperateClient {
   }
 
   public List<ProcessInstance> searchProcessInstances(SearchQuery query) throws OperateException {
-    if (query.getFilter() != null && !(query.getFilter() instanceof ProcessInstanceFilter)) {
-      throw new OperateException("You should rely on ProcessInstanceFilter for searching on processInstances");
-    }
+    QueryValidatorUtils.verifyQuery(query, ProcessInstance.class);
+    return search(query, ProcessInstance.class).getItems();
+  }
 
+  public SearchResult<ProcessInstance> searchProcessInstanceResults(SearchQuery query) throws OperateException {
+    QueryValidatorUtils.verifyQuery(query, ProcessInstance.class);
     return search(query, ProcessInstance.class);
   }
 
@@ -113,10 +112,12 @@ public class CamundaOperateClient {
   }
 
   public List<FlownodeInstance> searchFlownodeInstances(SearchQuery query) throws OperateException {
-    if (query.getFilter() != null && !(query.getFilter() instanceof FlownodeInstanceFilter)) {
-      throw new OperateException("You should rely on FlownodeInstanceFilter for searching on flownodeInstances");
-    }
+    QueryValidatorUtils.verifyQuery(query, FlownodeInstance.class);
+    return search(query, FlownodeInstance.class).getItems();
+  }
 
+  public SearchResult<FlownodeInstance> searchFlownodeInstanceResults(SearchQuery query) throws OperateException {
+    QueryValidatorUtils.verifyQuery(query, FlownodeInstance.class);
     return search(query, FlownodeInstance.class);
   }
 
@@ -125,10 +126,12 @@ public class CamundaOperateClient {
   }
 
   public List<Incident> searchIncidents(SearchQuery query) throws OperateException {
-    if (query.getFilter() != null && !(query.getFilter() instanceof IncidentFilter)) {
-      throw new OperateException("You should rely on IncidentFilter for searching on incidents");
-    }
+    QueryValidatorUtils.verifyQuery(query, Incident.class);
+    return search(query, Incident.class).getItems();
+  }
 
+  public SearchResult<Incident> searchIncidentResults(SearchQuery query) throws OperateException {
+    QueryValidatorUtils.verifyQuery(query, Incident.class);
     return search(query, Incident.class);
   }
 
@@ -137,14 +140,16 @@ public class CamundaOperateClient {
   }
 
   public List<Variable> searchVariables(SearchQuery query) throws OperateException {
-    if (query.getFilter() != null && !(query.getFilter() instanceof VariableFilter)) {
-      throw new OperateException("You should rely on VariableFilter for searching on variables");
-    }
-
-    return search(query, Variable.class);
+    QueryValidatorUtils.verifyQuery(query, Variable.class);
+    return search(query, Variable.class).getItems();
   }
 
-  private <T> List<T> search(SearchQuery query, Class<T> resultType) throws OperateException {
+  public SearchResult<Variable> searchVariableResults(SearchQuery query) throws OperateException {
+    QueryValidatorUtils.verifyQuery(query, Variable.class);
+    return search(query, Variable.class);
+  }
+  
+  public <T> SearchResult<T> search(SearchQuery query, Class<T> resultType) throws OperateException {
     if (query==null || resultType==null) {
       throw new OperateException("Query and resultType shouldn't be null");
     }
@@ -155,8 +160,7 @@ public class CamundaOperateClient {
     try {
       String data = JsonUtils.toJson(query);
       httpPost.setEntity(new StringEntity(data));
-      SearchResult<T> result = JsonUtils.toSearchResult(executeQuery(httpPost), resultType);
-      return result.getItems();
+      return JsonUtils.toSearchResult(executeQuery(httpPost), resultType);
     } catch (IOException e) {
       throw new OperateException("Error executing the SearchQuery", e);
     }

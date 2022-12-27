@@ -6,61 +6,16 @@
 
 This project is designed to simplify communication between a Java backend and the [Operate API of Camunda Platform 8](https://docs.camunda.io/docs/apis-clients/operate-api/). This project is still a draft.
 
-# How to use the client
+## How to use the client
 
 Simply build a CamundaOperateClient that takes an authentication and the Operate URL as parameters.
 
 ```java
 SimpleAuthentication sa = new SimpleAuthentication("demo", "demo", "http://localhost:8081");
 CamundaOperateClient client = new CamundaOperateClient.Builder().operateUrl("http://localhost:8081").authentication(sa).build();
+````
 
-//search process definitions based on filters
-ProcessDefinitionFilter processDefinitionFilter = new ProcessDefinitionFilter.Builder().name("Customer Onboarding").build();
-SearchQuery procDefQuery = new SearchQuery.Builder().withFilter(processDefinitionFilter).withSize(20).withSort(new Sort("version", SortOrder.ASC)).build();
-
-List<ProcessDefinition> processDefinitions = client.searchProcessDefinitions(procDefQuery);
-
-//get a process definition by its key
-ProcessDefinition def = client.getProcessDefinition(1L);
-
-//search process instances based on filters
-ProcessInstanceFilter instanceFilter = new ProcessInstanceFilter.Builder().bpmnProcessId("customer_onboarding_en").startDate(new DateFilter(new Date(), DateFilterRange.MONTH)).build();
-SearchQuery instanceQuery = new SearchQuery.Builder().withFilter(instanceFilter).withSize(20).withSort(new Sort("state", SortOrder.ASC)).build();
-
-List<ProcessInstance> instances = client.searchProcessInstances(instanceQuery);
-       
-//get a process instance by its key
-ProcessInstance instance = client.getProcessInstance(instances.get(0).getKey());
-
-//search flownode instances based on filters
-FlownodeInstanceFilter flownodeFilter = new FlownodeInstanceFilter.Builder()
-.processInstanceKey(4L).startDate(new DateFilter(new Date(), DateFilterRange.YEAR)).build();
-SearchQuery flownodeQuery = new SearchQuery.Builder().withFilter(flownodeFilter).withSize(20).withSort(new Sort("state", SortOrder.ASC)).build();
-
-List<FlownodeInstance> flownodes = client.searchFlownodeInstances(flownodeQuery);
-        
-//get a flownode instance by its key
-FlownodeInstance flownodes = client.getFlownodeInstance(flownodes.get(0).getKey());
-
-//search variables based on filters
-VariableFilter variableFilter = new VariableFilter.Builder().processInstanceKey(4L).build();
- SearchQuery varQuery = new SearchQuery.Builder().withFilter(variableFilter).withSize(5).withSort(new Sort("name", SortOrder.ASC)).build();
-
-List<Variable> variables = client.searchVariables(varQuery);
-        
-//get a variable by its key
-Variable var = client.getVariable(variables.get(0).getKey());
-            
-//search incidents based on filters
-IncidentFilter incidentFilter = new IncidentFilter.Builder().creationTime(new DateFilter(new Date(), DateFilterRange.YEAR)).build();
-SearchQuery incidentQuery = new SearchQuery.Builder().withFilter(incidentFilter).withSize(20).withSort(new Sort("state", SortOrder.ASC)).build();
-List<Incident> incidents = client.searchIncidents(incidentQuery);
-        
-//get a incident by its key
-Incident incident = client.getIncident(incidents.get(0).getKey());
-
-```
-# Authentication
+## Authentication
 You can use the ***SimpleAuthentication*** to connect to a local Camunda Operate if your setup is "simple": ***without identity and keycloak***.
 
 To connect to the **SaaS** Operate, you need to use the **SaasAuthentication** rather than the SimpleAuthentication. The SaaSAuthentication requires the ClientId and SecretId
@@ -85,7 +40,86 @@ CamundaOperateClient client = new CamundaOperateClient.Builder().authentication(
     .operateUrl("http://localhost:8081/").build();
 ```
 
-# Use the Beta client
+## Getting and Searching
+
+When you search objects, you can get results as List or as SearchResult. The SearchResult gives you a sortValues that you can use to paginate your results : 
+
+```java
+SearchQuery query = new SearchQuery.Builder().filter(someFilter).sort(new Sort("name", SortOrder.ASC)).size(20).searchAfter(previousResult.getSortValues()).build();
+```
+
+### Process definitions
+
+```java
+//Get a process definition by its key
+ProcessDefinition def = client.getProcessDefinition(1L);
+
+//Search process definitions
+ProcessDefinitionFilter processDefinitionFilter = new ProcessDefinitionFilter.Builder().name("Customer Onboarding").build();
+SearchQuery procDefQuery = new SearchQuery.Builder().withFilter(processDefinitionFilter).withSize(20).withSort(new Sort("version", SortOrder.ASC)).build();
+
+List<ProcessDefinition> list = client.searchProcessDefinitions(procDefQuery);
+
+SearchResult<ProcessDefinition> result = client.searchProcessDefinitionResults(procDefQuery);
+```
+
+### Process Instances
+
+```java
+//search process instances based on filters
+ProcessInstanceFilter instanceFilter = new ProcessInstanceFilter.Builder().bpmnProcessId("customer_onboarding_en").startDate(new DateFilter(new Date(), DateFilterRange.MONTH)).build();
+SearchQuery instanceQuery = new SearchQuery.Builder().withFilter(instanceFilter).withSize(20).withSort(new Sort("state", SortOrder.ASC)).build();
+
+List<ProcessInstance> list = client.searchProcessInstances(instanceQuery);
+
+SearchResult<ProcessInstance> result = client.searchProcessInstanceResults(instanceQuery);
+       
+//get a process instance by its key
+ProcessInstance instance = client.getProcessInstance(instances.get(0).getKey());
+```
+
+### Flow Node Instances
+
+```java
+//search flow node instances based on filters
+FlownodeInstanceFilter flownodeFilter = new FlownodeInstanceFilter.Builder()
+.processInstanceKey(4L).startDate(new DateFilter(new Date(), DateFilterRange.YEAR)).build();
+SearchQuery flownodeQuery = new SearchQuery.Builder().withFilter(flownodeFilter).withSize(20).withSort(new Sort("state", SortOrder.ASC)).build();
+
+List<FlownodeInstance> flownodes = client.searchFlownodeInstances(flownodeQuery);
+        
+//get a flownode instance by its key
+FlownodeInstance flownodes = client.getFlownodeInstance(flownodes.get(0).getKey());
+```
+
+### Variables
+
+```java
+//search variables based on filters
+VariableFilter variableFilter = new VariableFilter.Builder().processInstanceKey(4L).build();
+ SearchQuery varQuery = new SearchQuery.Builder().withFilter(variableFilter).withSize(5).withSort(new Sort("name", SortOrder.ASC)).build();
+
+List<Variable> variables = client.searchVariables(varQuery);
+        
+//get a variable by its key
+Variable var = client.getVariable(variables.get(0).getKey());
+```
+
+### Incidents
+
+```java            
+//search incidents based on filters
+IncidentFilter incidentFilter = new IncidentFilter.Builder().creationTime(new DateFilter(new Date(), DateFilterRange.YEAR)).build();
+SearchQuery incidentQuery = new SearchQuery.Builder().withFilter(incidentFilter).withSize(20).withSort(new Sort("state", SortOrder.ASC)).build();
+List<Incident> incidents = client.searchIncidents(incidentQuery);
+        
+//get a incident by its key
+Incident incident = client.getIncident(incidents.get(0).getKey());
+```
+
+
+
+## Use the Beta client
 If you're using an older version of Camunda SaaS or you're having a local setup without Keycloak, you could also query the same APIs as Operate UI. In such a case, you might want to use the Beta client :
 
 ```java
@@ -106,7 +140,7 @@ You can import it to your maven or gradle project as a dependency
 <dependency>
 	<groupId>io.camunda</groupId>
 	<artifactId>camunda-operate-client-java</artifactId>
-	<version>1.3.7</version>
+	<version>1.3.8</version>
 </dependency>
 ```
 

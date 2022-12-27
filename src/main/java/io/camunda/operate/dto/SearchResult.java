@@ -1,12 +1,15 @@
 package io.camunda.operate.dto;
 
+import java.util.Iterator;
 import java.util.List;
 
-public class SearchResult<T> {
+public class SearchResult<T> implements Iterable<T>{
 
     private List<T> items;
 
     private Integer total;
+    
+    private List<Object> sortValues;
 
     public List<T> getItems() {
         return items;
@@ -24,4 +27,15 @@ public class SearchResult<T> {
         this.total = total;
     }
 
+    public List<Object> getSortValues() {
+      return sortValues;
+    }
+
+    public void setSortValues(List<Object> sortValues) {
+      this.sortValues = sortValues;
+    }
+
+    public Iterator<T> iterator() {
+      return this.items.iterator();
+    }
 }
