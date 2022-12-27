@@ -47,12 +47,12 @@ public class CamundaOperateClient {
   
   public List<ProcessDefinition> searchProcessDefinitions(SearchQuery query) throws OperateException {
     QueryValidatorUtils.verifyQuery(query, ProcessDefinition.class);
-    return search(query, ProcessDefinition.class);
+    return search(query, ProcessDefinition.class).getItems();
   }
 
   public SearchResult<ProcessDefinition> searchProcessDefinitionResults(SearchQuery query) throws OperateException {
     QueryValidatorUtils.verifyQuery(query, ProcessDefinition.class);
-    return searchResult(query, ProcessDefinition.class);
+    return search(query, ProcessDefinition.class);
   }
 
   public String getProcessDefinitionXml(Long key) throws OperateException {
@@ -99,12 +99,12 @@ public class CamundaOperateClient {
 
   public List<ProcessInstance> searchProcessInstances(SearchQuery query) throws OperateException {
     QueryValidatorUtils.verifyQuery(query, ProcessInstance.class);
-    return search(query, ProcessInstance.class);
+    return search(query, ProcessInstance.class).getItems();
   }
 
   public SearchResult<ProcessInstance> searchProcessInstanceResults(SearchQuery query) throws OperateException {
     QueryValidatorUtils.verifyQuery(query, ProcessInstance.class);
-    return searchResult(query, ProcessInstance.class);
+    return search(query, ProcessInstance.class);
   }
 
   public FlownodeInstance getFlownodeInstance(Long key) throws OperateException {
@@ -113,12 +113,12 @@ public class CamundaOperateClient {
 
   public List<FlownodeInstance> searchFlownodeInstances(SearchQuery query) throws OperateException {
     QueryValidatorUtils.verifyQuery(query, FlownodeInstance.class);
-    return search(query, FlownodeInstance.class);
+    return search(query, FlownodeInstance.class).getItems();
   }
 
   public SearchResult<FlownodeInstance> searchFlownodeInstanceResults(SearchQuery query) throws OperateException {
     QueryValidatorUtils.verifyQuery(query, FlownodeInstance.class);
-    return searchResult(query, FlownodeInstance.class);
+    return search(query, FlownodeInstance.class);
   }
 
   public Incident getIncident(Long key) throws OperateException {
@@ -127,12 +127,12 @@ public class CamundaOperateClient {
 
   public List<Incident> searchIncidents(SearchQuery query) throws OperateException {
     QueryValidatorUtils.verifyQuery(query, Incident.class);
-    return search(query, Incident.class);
+    return search(query, Incident.class).getItems();
   }
 
   public SearchResult<Incident> searchIncidentResults(SearchQuery query) throws OperateException {
     QueryValidatorUtils.verifyQuery(query, Incident.class);
-    return searchResult(query, Incident.class);
+    return search(query, Incident.class);
   }
 
   public Variable getVariable(Long key) throws OperateException {
@@ -141,15 +141,15 @@ public class CamundaOperateClient {
 
   public List<Variable> searchVariables(SearchQuery query) throws OperateException {
     QueryValidatorUtils.verifyQuery(query, Variable.class);
-    return search(query, Variable.class);
+    return search(query, Variable.class).getItems();
   }
 
   public SearchResult<Variable> searchVariableResults(SearchQuery query) throws OperateException {
     QueryValidatorUtils.verifyQuery(query, Variable.class);
-    return searchResult(query, Variable.class);
+    return search(query, Variable.class);
   }
   
-  public <T> SearchResult<T> searchResult(SearchQuery query, Class<T> resultType) throws OperateException {
+  public <T> SearchResult<T> search(SearchQuery query, Class<T> resultType) throws OperateException {
     if (query==null || resultType==null) {
       throw new OperateException("Query and resultType shouldn't be null");
     }
@@ -164,11 +164,6 @@ public class CamundaOperateClient {
     } catch (IOException e) {
       throw new OperateException("Error executing the SearchQuery", e);
     }
-  }
-
-  private <T> List<T> search(SearchQuery query, Class<T> resultType) throws OperateException {
-    SearchResult<T> result = searchResult(query, resultType);
-    return result.getItems();
   }
 
   private <T> T get(Long key, Class<T> resultType) throws OperateException {
