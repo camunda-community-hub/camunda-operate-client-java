@@ -7,6 +7,7 @@ public class FlownodeInstance {
     private Long processInstanceKey;
     private Date startDate;
     private Date endDate;
+    private String flowNodeId;
     private Long incidentKey;
     private String type;
     private FlownodeInstanceState state;
@@ -34,6 +35,12 @@ public class FlownodeInstance {
     }
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+    public String getFlowNodeId() {
+      return flowNodeId;
+    }
+    public void setFlowNodeId(String flowNodeId) {
+      this.flowNodeId = flowNodeId;
     }
     public Long getIncidentKey() {
         return incidentKey;
