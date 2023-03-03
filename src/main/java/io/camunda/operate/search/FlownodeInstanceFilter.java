@@ -11,6 +11,7 @@ public class FlownodeInstanceFilter implements Filter {
     private Long processInstanceKey;
     private Long incidentKey;
     private String type;
+    private String flowNodeId;
     private DateFilter startDate;
     private DateFilter endDate;
     private FlownodeInstanceState state;
@@ -56,6 +57,14 @@ public class FlownodeInstanceFilter implements Filter {
         this.endDate = endDate;
     }
 
+    public String getFlowNodeId() {
+      return flowNodeId;
+    }
+
+    public void setFlowNodeId(String flowNodeId) {
+      this.flowNodeId = flowNodeId;
+    }
+
     public FlownodeInstanceState getState() {
         return state;
     }
@@ -78,6 +87,7 @@ public class FlownodeInstanceFilter implements Filter {
         private String type;
         private DateFilter startDate;
         private DateFilter endDate;
+        private String flowNodeId;
         private FlownodeInstanceState state;
         private Boolean incident;
 
@@ -109,6 +119,11 @@ public class FlownodeInstanceFilter implements Filter {
             this.endDate = endDate;
             return this;
         }
+        
+        public Builder flowNodeId(String flowNodeId) {
+          this.flowNodeId = flowNodeId;
+          return this;
+      }
 
         public Builder state(FlownodeInstanceState state) {
             this.state = state;
@@ -127,6 +142,7 @@ public class FlownodeInstanceFilter implements Filter {
             processInstanceFilter.type = type;
             processInstanceFilter.startDate = startDate;
             processInstanceFilter.endDate = endDate;
+            processInstanceFilter.flowNodeId = flowNodeId;
             processInstanceFilter.state = state;
             processInstanceFilter.incident = incident;
             return processInstanceFilter;
