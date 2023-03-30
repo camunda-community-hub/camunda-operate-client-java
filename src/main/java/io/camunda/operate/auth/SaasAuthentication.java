@@ -48,7 +48,7 @@ public class SaasAuthentication extends JwtAuthentication {
         httpPost.setEntity(new StringEntity(data));
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            try (CloseableHttpResponse response = CamundaOperateClient.execute(httpClient, httpPost)) {
+            try (CloseableHttpResponse response = client.execute(httpClient, httpPost)) {
                 JsonNode responseBody = JsonUtils.toJsonNode(response.getEntity().getContent());
                 String token = responseBody.get("access_token").asText();
 

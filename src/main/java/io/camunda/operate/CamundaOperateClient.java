@@ -84,13 +84,27 @@ public class CamundaOperateClient {
       throw new OperateException(e);
     }
   }
-
-  public static CloseableHttpResponse execute(CloseableHttpClient httpClient, ClassicHttpRequest request) throws IOException, OperateException {
+  public CloseableHttpResponse execute(CloseableHttpClient httpClient, ClassicHttpRequest request) throws IOException, OperateException {
+	return execute(httpClient, request, 0);
+  }
+  private CloseableHttpResponse execute(CloseableHttpClient httpClient, ClassicHttpRequest request, int count) throws IOException, OperateException {
     CloseableHttpResponse response = httpClient.execute(request);
+    if (response.getCode()==401 && count<=2) {
+    	authentication.authenticate(this);
+    	return execute(httpClient, request, ++count);
+    }
     if (response.getCode()>399) {
-      throw new OperateException("Authentication error : "+response.getCode()+" "+response.getReasonPhrase());
+    	throw createDetailedException(response, request);
     }
     return response;
+  }
+  
+  private OperateException createDetailedException(CloseableHttpResponse response, ClassicHttpRequest request) throws IOException {
+	  String details = "";
+  	if (request instanceof HttpPost) {
+  		details+= "; Body : " + new String(((HttpPost) request).getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
+  	}
+     return new OperateException(request.getPath()+" : "+response.getCode()+" "+response.getReasonPhrase()+details);
   }
 
   public ProcessInstance getProcessInstance(Long key) throws OperateException {
