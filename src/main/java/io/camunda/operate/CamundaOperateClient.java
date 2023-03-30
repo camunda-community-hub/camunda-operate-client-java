@@ -1,10 +1,13 @@
 package io.camunda.operate;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -102,7 +105,12 @@ public class CamundaOperateClient {
   private OperateException createDetailedException(CloseableHttpResponse response, ClassicHttpRequest request) throws IOException {
 	  String details = "";
   	if (request instanceof HttpPost) {
-  		details+= "; Body : " + new String(((HttpPost) request).getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
+  		InputStream content = ((HttpPost) request).getEntity().getContent();
+  		String body = new BufferedReader(
+  		      new InputStreamReader(content, StandardCharsets.UTF_8))
+  		        .lines()
+  		        .collect(Collectors.joining("\n"));
+  		details+= "; Body : " + body;
   	}
      return new OperateException(request.getPath()+" : "+response.getCode()+" "+response.getReasonPhrase()+details);
   }
