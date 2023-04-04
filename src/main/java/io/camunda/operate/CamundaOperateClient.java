@@ -103,16 +103,7 @@ public class CamundaOperateClient {
   }
   
   private OperateException createDetailedException(CloseableHttpResponse response, ClassicHttpRequest request) throws IOException {
-	  String details = "";
-  	if (request instanceof HttpPost) {
-  		InputStream content = ((HttpPost) request).getEntity().getContent();
-  		String body = new BufferedReader(
-  		      new InputStreamReader(content, StandardCharsets.UTF_8))
-  		        .lines()
-  		        .collect(Collectors.joining("\n"));
-  		details+= "; Body : " + body;
-  	}
-     return new OperateException(request.getPath()+" : "+response.getCode()+" "+response.getReasonPhrase()+details);
+	  return new OperateException(request.getPath()+" : "+response.getCode()+" "+response.getReasonPhrase());
   }
 
   public ProcessInstance getProcessInstance(Long key) throws OperateException {
