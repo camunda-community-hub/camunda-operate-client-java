@@ -56,7 +56,7 @@ ProcessDefinition def = client.getProcessDefinition(1L);
 
 //Search process definitions
 ProcessDefinitionFilter processDefinitionFilter = new ProcessDefinitionFilter.Builder().name("Customer Onboarding").build();
-SearchQuery procDefQuery = new SearchQuery.Builder().withFilter(processDefinitionFilter).withSize(20).withSort(new Sort("version", SortOrder.ASC)).build();
+SearchQuery procDefQuery = new SearchQuery.Builder().filter(processDefinitionFilter).size(20).sort(new Sort("version", SortOrder.ASC)).build();
 
 List<ProcessDefinition> list = client.searchProcessDefinitions(procDefQuery);
 
@@ -68,7 +68,7 @@ SearchResult<ProcessDefinition> result = client.searchProcessDefinitionResults(p
 ```java
 //search process instances based on filters
 ProcessInstanceFilter instanceFilter = new ProcessInstanceFilter.Builder().bpmnProcessId("customer_onboarding_en").startDate(new DateFilter(new Date(), DateFilterRange.MONTH)).build();
-SearchQuery instanceQuery = new SearchQuery.Builder().withFilter(instanceFilter).withSize(20).withSort(new Sort("state", SortOrder.ASC)).build();
+SearchQuery instanceQuery = new SearchQuery.Builder().filter(instanceFilter).size(20).sort(new Sort("state", SortOrder.ASC)).build();
 
 List<ProcessInstance> list = client.searchProcessInstances(instanceQuery);
 
@@ -84,7 +84,7 @@ ProcessInstance instance = client.getProcessInstance(instances.get(0).getKey());
 //search flow node instances based on filters
 FlownodeInstanceFilter flownodeFilter = new FlownodeInstanceFilter.Builder()
 .processInstanceKey(4L).startDate(new DateFilter(new Date(), DateFilterRange.YEAR)).build();
-SearchQuery flownodeQuery = new SearchQuery.Builder().withFilter(flownodeFilter).withSize(20).withSort(new Sort("state", SortOrder.ASC)).build();
+SearchQuery flownodeQuery = new SearchQuery.Builder().filter(flownodeFilter).size(20).sort(new Sort("state", SortOrder.ASC)).build();
 
 List<FlownodeInstance> flownodes = client.searchFlownodeInstances(flownodeQuery);
         
@@ -97,7 +97,7 @@ FlownodeInstance flownodes = client.getFlownodeInstance(flownodes.get(0).getKey(
 ```java
 //search variables based on filters
 VariableFilter variableFilter = new VariableFilter.Builder().processInstanceKey(4L).build();
- SearchQuery varQuery = new SearchQuery.Builder().withFilter(variableFilter).withSize(5).withSort(new Sort("name", SortOrder.ASC)).build();
+ SearchQuery varQuery = new SearchQuery.Builder().filter(variableFilter).size(5).sort(new Sort("name", SortOrder.ASC)).build();
 
 List<Variable> variables = client.searchVariables(varQuery);
         
@@ -110,7 +110,7 @@ Variable var = client.getVariable(variables.get(0).getKey());
 ```java            
 //search incidents based on filters
 IncidentFilter incidentFilter = new IncidentFilter.Builder().creationTime(new DateFilter(new Date(), DateFilterRange.YEAR)).build();
-SearchQuery incidentQuery = new SearchQuery.Builder().withFilter(incidentFilter).withSize(20).withSort(new Sort("state", SortOrder.ASC)).build();
+SearchQuery incidentQuery = new SearchQuery.Builder().filter(incidentFilter).size(20).sort(new Sort("state", SortOrder.ASC)).build();
 List<Incident> incidents = client.searchIncidents(incidentQuery);
         
 //get a incident by its key
