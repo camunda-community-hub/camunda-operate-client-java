@@ -5,6 +5,7 @@ import java.util.Date;
 public class FlownodeInstance { 
     private Long key;
     private Long processInstanceKey;
+    private Long processDefinitionKey;
     private Date startDate;
     private Date endDate;
     private String flowNodeId;
@@ -23,6 +24,12 @@ public class FlownodeInstance {
     }
     public void setProcessInstanceKey(Long processInstanceKey) {
         this.processInstanceKey = processInstanceKey;
+    }
+    public Long getProcessDefinitionKey() {
+        return processDefinitionKey;
+    }
+    public void setProcessDefinitionKey(Long processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
     }
     public Date getStartDate() {
         return startDate;

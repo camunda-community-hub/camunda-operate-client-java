@@ -10,6 +10,7 @@ import io.camunda.operate.exception.OperateException;
 public class FlownodeInstanceFilter implements Filter {
     private Long processInstanceKey;
     private Long incidentKey;
+    private Long processDefinitionKey;
     private String type;
     private String flowNodeId;
     private DateFilter startDate;
@@ -31,6 +32,12 @@ public class FlownodeInstanceFilter implements Filter {
 
     public void setIncidentKey(Long incidentKey) {
         this.incidentKey = incidentKey;
+    }
+    public Long getProcessDefinitionKey() {
+        return processDefinitionKey;
+    }
+    public void setProcessDefinitionKey(Long processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
     }
 
     public String getType() {
@@ -84,6 +91,7 @@ public class FlownodeInstanceFilter implements Filter {
     public static class Builder {
         private Long processInstanceKey;
         private Long incidentKey;
+        private Long processDefinitionKey;
         private String type;
         private DateFilter startDate;
         private DateFilter endDate;
@@ -104,7 +112,10 @@ public class FlownodeInstanceFilter implements Filter {
             this.incidentKey = incidentKey;
             return this;
         }
-
+        public Builder processDefinitionKey(Long processDefinitionKey) {
+            this.processDefinitionKey = processDefinitionKey;
+            return this;
+        }
         public Builder type(String type) {
             this.type = type;
             return this;
@@ -139,6 +150,7 @@ public class FlownodeInstanceFilter implements Filter {
             FlownodeInstanceFilter processInstanceFilter = new FlownodeInstanceFilter();
             processInstanceFilter.processInstanceKey = processInstanceKey;
             processInstanceFilter.incidentKey = incidentKey;
+            processInstanceFilter.processDefinitionKey = processDefinitionKey;
             processInstanceFilter.type = type;
             processInstanceFilter.startDate = startDate;
             processInstanceFilter.endDate = endDate;
