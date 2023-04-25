@@ -9,6 +9,7 @@ import io.camunda.operate.exception.OperateException;
 @JsonInclude(Include.NON_NULL)
 public class FlownodeInstanceFilter implements Filter {
     private Long processInstanceKey;
+    private Long processDefinitionKey;
     private Long incidentKey;
     private String type;
     private String flowNodeId;
@@ -25,7 +26,15 @@ public class FlownodeInstanceFilter implements Filter {
         this.processInstanceKey = processInstanceKey;
     }
 
-    public Long getIncidentKey() {
+    public Long getProcessDefinitionKey() {
+		return processDefinitionKey;
+	}
+
+	public void setProcessDefinitionKey(Long processDefinitionKey) {
+		this.processDefinitionKey = processDefinitionKey;
+	}
+
+	public Long getIncidentKey() {
         return incidentKey;
     }
 
@@ -65,7 +74,7 @@ public class FlownodeInstanceFilter implements Filter {
       this.flowNodeId = flowNodeId;
     }
 
-    public FlownodeInstanceState getState() {
+	public FlownodeInstanceState getState() {
         return state;
     }
 
@@ -83,6 +92,7 @@ public class FlownodeInstanceFilter implements Filter {
 
     public static class Builder {
         private Long processInstanceKey;
+        private Long processDefinitionKey;
         private Long incidentKey;
         private String type;
         private DateFilter startDate;
@@ -97,6 +107,11 @@ public class FlownodeInstanceFilter implements Filter {
 
         public Builder processInstanceKey(Long processInstanceKey) {
             this.processInstanceKey = processInstanceKey;
+            return this;
+        }
+
+        public Builder processDefinitionKey(Long processDefinitionKey) {
+            this.processDefinitionKey = processDefinitionKey;
             return this;
         }
 
@@ -123,7 +138,7 @@ public class FlownodeInstanceFilter implements Filter {
         public Builder flowNodeId(String flowNodeId) {
           this.flowNodeId = flowNodeId;
           return this;
-      }
+        }
 
         public Builder state(FlownodeInstanceState state) {
             this.state = state;
@@ -138,6 +153,7 @@ public class FlownodeInstanceFilter implements Filter {
         public FlownodeInstanceFilter build() throws OperateException {
             FlownodeInstanceFilter processInstanceFilter = new FlownodeInstanceFilter();
             processInstanceFilter.processInstanceKey = processInstanceKey;
+            processInstanceFilter.processDefinitionKey = processDefinitionKey;
             processInstanceFilter.incidentKey = incidentKey;
             processInstanceFilter.type = type;
             processInstanceFilter.startDate = startDate;

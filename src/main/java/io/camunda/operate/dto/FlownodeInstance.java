@@ -5,9 +5,11 @@ import java.util.Date;
 public class FlownodeInstance { 
     private Long key;
     private Long processInstanceKey;
+    private Long processDefinitionKey;
     private Date startDate;
     private Date endDate;
     private String flowNodeId;
+    private String flowNodeName;
     private Long incidentKey;
     private String type;
     private FlownodeInstanceState state;
@@ -24,7 +26,13 @@ public class FlownodeInstance {
     public void setProcessInstanceKey(Long processInstanceKey) {
         this.processInstanceKey = processInstanceKey;
     }
-    public Date getStartDate() {
+    public Long getProcessDefinitionKey() {
+		return processDefinitionKey;
+	}
+	public void setProcessDefinitionKey(Long processDefinitionKey) {
+		this.processDefinitionKey = processDefinitionKey;
+	}
+	public Date getStartDate() {
         return startDate;
     }
     public void setStartDate(Date startDate) {
@@ -42,7 +50,13 @@ public class FlownodeInstance {
     public void setFlowNodeId(String flowNodeId) {
       this.flowNodeId = flowNodeId;
     }
-    public Long getIncidentKey() {
+    public String getFlowNodeName() {
+		return flowNodeName;
+	}
+	public void setFlowNodeName(String flowNodeName) {
+		this.flowNodeName = flowNodeName;
+	}
+	public Long getIncidentKey() {
         return incidentKey;
     }
     public void setIncidentKey(Long incidentKey) {
