@@ -94,6 +94,7 @@ public class CamundaOperateClient {
     CloseableHttpResponse response = httpClient.execute(request);
     if (response.getCode()==401 && count<=2) {
     	authentication.authenticate(this);
+        request.setHeader(authHeader);
     	return execute(httpClient, request, ++count);
     }
     if (response.getCode()>399) {
