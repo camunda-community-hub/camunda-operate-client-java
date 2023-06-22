@@ -88,17 +88,17 @@ public class CamundaOperateClient {
     }
   }
   public CloseableHttpResponse execute(CloseableHttpClient httpClient, ClassicHttpRequest request) throws IOException, OperateException {
-	return execute(httpClient, request, 0);
+    return execute(httpClient, request, 0);
   }
   private CloseableHttpResponse execute(CloseableHttpClient httpClient, ClassicHttpRequest request, int count) throws IOException, OperateException {
     CloseableHttpResponse response = httpClient.execute(request);
     if (response.getCode()==401 && count<=2) {
-    	authentication.authenticate(this);
-        request.setHeader(authHeader);
-    	return execute(httpClient, request, ++count);
+      authentication.authenticate(this);
+      request.setHeader(authHeader);
+      return execute(httpClient, request, ++count);
     }
     if (response.getCode()>399) {
-    	throw createDetailedException(response, request);
+      throw createDetailedException(response, request);
     }
     return response;
   }
