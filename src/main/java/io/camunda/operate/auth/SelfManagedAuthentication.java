@@ -24,6 +24,7 @@ public class SelfManagedAuthentication extends JwtAuthentication {
     private String clientSecret;
     private String keycloakUrl = "http://localhost:18080";
     private String keycloakRealm = "camunda-platform";
+    private String keycloakTokenUrl = null;
 
     public SelfManagedAuthentication() {
     }
@@ -49,6 +50,10 @@ public class SelfManagedAuthentication extends JwtAuthentication {
         this.keycloakRealm = keycloakRealm;
         return this;
     }
+    public SelfManagedAuthentication keycloakTokenUrl(String keycloakTokenUrl) {
+      this.keycloakTokenUrl = keycloakTokenUrl;
+      return this;
+    }
     
     private String encode(String value) throws UnsupportedEncodingException {
         return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
@@ -61,7 +66,11 @@ public class SelfManagedAuthentication extends JwtAuthentication {
     @Override
     public void authenticate(CamundaOperateClient client) throws OperateException {
         try {
-            URL url = new URL(this.keycloakUrl+"/auth/realms/"+keycloakRealm+"/protocol/openid-connect/token");
+            String tokenUrl = keycloakTokenUrl;
+            if (tokenUrl==null || tokenUrl.equals("")) {
+              tokenUrl=this.keycloakUrl+"/auth/realms/"+keycloakRealm+"/protocol/openid-connect/token";
+            }
+            URL url = new URL(tokenUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setUseCaches(false);
             conn.setConnectTimeout(1000 * 5);
