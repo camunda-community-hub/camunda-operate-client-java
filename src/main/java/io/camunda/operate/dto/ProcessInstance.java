@@ -11,6 +11,7 @@ public class ProcessInstance {
     private Date endDate;
     private ProcessInstanceState state;
     private Long processDefinitionKey;
+    private String tenantId;
 
     public Long getKey() {
         return key;
@@ -74,5 +75,13 @@ public class ProcessInstance {
 
     public void setProcessDefinitionKey(Long processDefinitionKey) {
         this.processDefinitionKey = processDefinitionKey;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

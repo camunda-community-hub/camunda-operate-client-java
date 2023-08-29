@@ -5,6 +5,7 @@ public class ProcessDefinition {
     private String name;
     private Long version;
     private String bpmnProcessId;
+    private String tenantId;
     public Long getKey() {
         return key;
     }
@@ -28,5 +29,11 @@ public class ProcessDefinition {
     }
     public void setBpmnProcessId(String bpmnProcessId) {
         this.bpmnProcessId = bpmnProcessId;
+    }
+    public String getTenantId() {
+        return tenantId;
+    }
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }
