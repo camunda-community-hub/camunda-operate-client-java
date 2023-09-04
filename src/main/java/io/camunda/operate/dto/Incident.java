@@ -10,6 +10,7 @@ public class Incident {
     private String message;
     private Date creationTime;
     private String state;
+    private String tenantId;
     public Long getKey() {
         return key;
     }
@@ -51,5 +52,11 @@ public class Incident {
     }
     public void setState(String state) {
         this.state = state;
+    }
+    public String getTenantId() {
+        return tenantId;
+    }
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }

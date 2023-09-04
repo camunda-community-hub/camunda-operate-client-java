@@ -14,6 +14,7 @@ public class FlownodeInstance {
     private String type;
     private FlownodeInstanceState state;
     private Boolean incident;
+    private String tenantId;
     public Long getKey() {
         return key;
     }
@@ -80,5 +81,10 @@ public class FlownodeInstance {
     public void setIncident(Boolean incident) {
         this.incident = incident;
     }
-
+    public String getTenantId() {
+        return tenantId;
+    }
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
 }

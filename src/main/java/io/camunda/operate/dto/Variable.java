@@ -13,6 +13,8 @@ public class Variable {
 
     private Boolean truncated;
 
+    private String tenantId;
+
     public Long getKey() {
         return key;
     }
@@ -59,5 +61,13 @@ public class Variable {
 
     public void setTruncated(Boolean truncated) {
         this.truncated = truncated;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 }
