@@ -11,6 +11,7 @@ public class ProcessInstanceFilter implements Filter {
     private Long processVersion;
     private String bpmnProcessId;
     private Long parentKey;
+    private Long parentProcessInstanceKey;
     private DateFilter startDate;
     private DateFilter endDate;
     private ProcessInstanceState state;
@@ -38,6 +39,14 @@ public class ProcessInstanceFilter implements Filter {
 
     public void setParentKey(Long parentKey) {
         this.parentKey = parentKey;
+    }
+
+    public Long getParentProcessInstanceKey() {
+        return parentProcessInstanceKey;
+    }
+
+    public void setParentProcessInstanceKey(Long parentProcessInstanceKey) {
+        this.parentProcessInstanceKey = parentProcessInstanceKey;
     }
 
     public DateFilter getStartDate() {
@@ -76,6 +85,7 @@ public class ProcessInstanceFilter implements Filter {
         private Long processVersion;
         private String bpmnProcessId;
         private Long parentKey;
+        private Long parentProcessInstanceKey;
         private DateFilter startDate;
         private DateFilter endDate;
         private ProcessInstanceState state;
@@ -97,6 +107,11 @@ public class ProcessInstanceFilter implements Filter {
 
         public Builder parentKey(Long parentKey) {
             this.parentKey = parentKey;
+            return this;
+        }
+
+        public Builder parentProcessInstanceKey(Long parentProcessInstanceKey) {
+            this.parentProcessInstanceKey = parentProcessInstanceKey;
             return this;
         }
 
@@ -129,6 +144,7 @@ public class ProcessInstanceFilter implements Filter {
             processInstanceFilter.endDate = endDate;
             processInstanceFilter.state = state;
             processInstanceFilter.processDefinitionKey = processDefinitionKey;
+            processInstanceFilter.parentProcessInstanceKey = parentProcessInstanceKey;
             return processInstanceFilter;
         }
     }
