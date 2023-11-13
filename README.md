@@ -140,7 +140,7 @@ You can import it to your maven or gradle project as a dependency
 <dependency>
 	<groupId>io.camunda</groupId>
 	<artifactId>camunda-operate-client-java</artifactId>
-	<version>8.2.0</version>
+	<version>8.3.0.1</version>
 </dependency>
 ```
 
