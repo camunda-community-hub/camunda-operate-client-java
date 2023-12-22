@@ -2,9 +2,11 @@
 ![Compatible with: Camunda Platform 8](https://img.shields.io/badge/Compatible%20with-Camunda%20Platform%208-0072Ce)
 [![](https://img.shields.io/badge/Lifecycle-Incubating-blue)](https://github.com/Camunda-Community-Hub/community/blob/main/extension-lifecycle.md#incubating-)
 
-# Camunda Operate Client
+# DEPRECATED
 
-This project is designed to simplify communication between a Java backend and the [Operate API of Camunda Platform 8](https://docs.camunda.io/docs/apis-clients/operate-api/). This project is still a draft.
+:information_source: **This project is no more maintained** and you should start using the project provided as part of the [Spring Zeebe project](https://github.com/camunda-community-hub/spring-zeebe). If you want to use it outside of the Spring Zeebe client, you can directly use the [java-operate-client](https://github.com/camunda-community-hub/spring-zeebe/tree/main/camunda-sdk-java/java-client-operate).
+
+This project is designed to simplify communication between a Java backend and the [Operate API of Camunda Platform 8](https://docs.camunda.io/docs/apis-clients/operate-api/).
 
 ## How to use the client
 
