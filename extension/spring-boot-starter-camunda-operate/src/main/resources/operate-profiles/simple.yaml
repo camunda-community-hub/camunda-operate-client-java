@@ -1,0 +1,8 @@
+operate:
+  client:
+    profile: simple
+    enabled: true
+    base-url: http://localhost:8081
+    session-timeout: PT10M
+    username: demo
+    password: demo

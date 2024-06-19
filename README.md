@@ -2,9 +2,7 @@
 ![Compatible with: Camunda Platform 8](https://img.shields.io/badge/Compatible%20with-Camunda%20Platform%208-0072Ce)
 [![](https://img.shields.io/badge/Lifecycle-Incubating-blue)](https://github.com/Camunda-Community-Hub/community/blob/main/extension-lifecycle.md#incubating-)
 
-# DEPRECATED
-
-:information_source: **This project is no more maintained** and you should start using the project provided as part of the [Spring Zeebe project](https://github.com/camunda-community-hub/spring-zeebe). If you want to use it outside of the Spring Zeebe client, you can directly use the [java-operate-client](https://github.com/camunda-community-hub/spring-zeebe/tree/main/camunda-sdk-java/java-client-operate).
+# Camunda Operate Client
 
 This project is designed to simplify communication between a Java backend and the [Operate API of Camunda Platform 8](https://docs.camunda.io/docs/apis-clients/operate-api/).
 
@@ -44,7 +42,7 @@ CamundaOperateClient client = new CamundaOperateClient.Builder().authentication(
 
 ## Getting and Searching
 
-When you search objects, you can get results as List or as SearchResult. The SearchResult gives you a sortValues that you can use to paginate your results : 
+When you search objects, you can get results as List or as SearchResult. The SearchResult gives you a sortValues that you can use to paginate your results :
 
 ```java
 SearchQuery query = new SearchQuery.Builder().filter(someFilter).sort(new Sort("name", SortOrder.ASC)).size(20).searchAfter(previousResult.getSortValues()).build();
@@ -75,7 +73,7 @@ SearchQuery instanceQuery = new SearchQuery.Builder().filter(instanceFilter).siz
 List<ProcessInstance> list = client.searchProcessInstances(instanceQuery);
 
 SearchResult<ProcessInstance> result = client.searchProcessInstanceResults(instanceQuery);
-       
+
 //get a process instance by its key
 ProcessInstance instance = client.getProcessInstance(instances.get(0).getKey());
 ```
@@ -89,7 +87,7 @@ FlownodeInstanceFilter flownodeFilter = new FlownodeInstanceFilter.Builder()
 SearchQuery flownodeQuery = new SearchQuery.Builder().filter(flownodeFilter).size(20).sort(new Sort("state", SortOrder.ASC)).build();
 
 List<FlownodeInstance> flownodes = client.searchFlownodeInstances(flownodeQuery);
-        
+
 //get a flownode instance by its key
 FlownodeInstance flownodes = client.getFlownodeInstance(flownodes.get(0).getKey());
 ```
@@ -102,19 +100,19 @@ VariableFilter variableFilter = new VariableFilter.Builder().processInstanceKey(
  SearchQuery varQuery = new SearchQuery.Builder().filter(variableFilter).size(5).sort(new Sort("name", SortOrder.ASC)).build();
 
 List<Variable> variables = client.searchVariables(varQuery);
-        
+
 //get a variable by its key
 Variable var = client.getVariable(variables.get(0).getKey());
 ```
 
 ### Incidents
 
-```java            
+```java
 //search incidents based on filters
 IncidentFilter incidentFilter = new IncidentFilter.Builder().creationTime(new DateFilter(new Date(), DateFilterRange.YEAR)).build();
 SearchQuery incidentQuery = new SearchQuery.Builder().filter(incidentFilter).size(20).sort(new Sort("state", SortOrder.ASC)).build();
 List<Incident> incidents = client.searchIncidents(incidentQuery);
-        
+
 //get a incident by its key
 Incident incident = client.getIncident(incidents.get(0).getKey());
 ```
@@ -129,7 +127,7 @@ SimpleAuthentication sa = new SimpleAuthentication("demo", "demo", "http://local
 CamundaOperateClient client = new CamundaOperateClient.Builder().beta().operateUrl("http://localhost:8081").authentication(sa).build();
 
 JsonNode json = ((CamundaOperateBetaClient) client).getFlowNodeStates(2L);
-        
+
 AuditTrail auditTrail = ((CamundaOperateBetaClient) client).getAuditTrail(2L);
 ```
 
@@ -140,9 +138,9 @@ You can import it to your maven or gradle project as a dependency
 
 ```xml
 <dependency>
-	<groupId>io.camunda</groupId>
-	<artifactId>camunda-operate-client-java</artifactId>
-	<version>8.3.0.1</version>
+  <groupId>io.camunda</groupId>
+  <artifactId>camunda-operate-client-java</artifactId>
+  <version>8.3.0.1</version>
 </dependency>
 ```
 
