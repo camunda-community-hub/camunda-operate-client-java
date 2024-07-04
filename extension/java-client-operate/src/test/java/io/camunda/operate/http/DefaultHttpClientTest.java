@@ -5,20 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import com.google.common.reflect.TypeToken;
-import io.camunda.common.json.JsonMapper;
-import io.camunda.common.json.SdkObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.operate.auth.Authentication;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.*;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,54 +27,52 @@ public class DefaultHttpClientTest {
 
   @Mock Authentication authentication;
   @Mock CloseableHttpClient chClient;
-  JsonMapper jsonMapper = new SdkObjectMapper();
+  ObjectMapper jsonMapper = new ObjectMapper();
 
   @Test
   public void shouldReturnGetType() throws IOException {
     // given
-    Map<Class<?>, String> productMap = new HashMap<>();
+    TypeReference<MyResponseClass> typeReference = new TypeReference<>() {};
+    TypeReference<MyResponseClass> typeReferenceWithSameType = new TypeReference<>() {};
+
+    Map<TypeReference<?>, String> productMap = new HashMap<>();
+    productMap.put(typeReference, "/request/{some}");
+    productMap.put(typeReferenceWithSameType, "/no");
     DefaultHttpClient defaultHttpClient =
         new DefaultHttpClient(authentication, chClient, jsonMapper, productMap);
-    CloseableHttpResponse response = mock(CloseableHttpResponse.class, RETURNS_DEEP_STUBS);
     MyResponseClass expectedOutput = new MyResponseClass();
     expectedOutput.setName("test-name");
-
+    ArgumentCaptor<HttpGet> captor = ArgumentCaptor.forClass(HttpGet.class);
     // when
-    when(chClient.execute(any(HttpGet.class))).thenReturn(response);
+    when(chClient.execute(captor.capture(), any(HttpClientResponseHandler.class)))
+        .thenReturn(expectedOutput);
+    when(authentication.getTokenHeader()).thenReturn(Map.of("key", "value"));
 
-    when(response.getCode()).thenReturn(200);
-
-    when(authentication.getTokenHeader()).thenReturn(new AbstractMap.SimpleEntry<>("key", "value"));
-
-    when(response.getEntity().getContent())
-        .thenReturn(new ByteArrayInputStream("{\"name\" : \"test-name\"}".getBytes()));
-    MyResponseClass parsedResponse = defaultHttpClient.get(MyResponseClass.class, "123");
+    MyResponseClass parsedResponse =
+        defaultHttpClient.get(typeReference, Map.of("some", "test-name"));
 
     // then
     assertTrue(new ReflectionEquals(expectedOutput).matches(parsedResponse));
+    assertEquals("/request/test-name", captor.getValue().getRequestUri());
   }
 
   @Test
   public void shouldReturnPostType() throws IOException {
     // given
-    Map<Class<?>, String> productMap = new HashMap<>();
+    Map<TypeReference<?>, String> productMap = new HashMap<>();
     DefaultHttpClient defaultHttpClient =
         new DefaultHttpClient(authentication, chClient, jsonMapper, productMap);
-    CloseableHttpResponse response = mock(CloseableHttpResponse.class, RETURNS_DEEP_STUBS);
     MyResponseClass insideClass = new MyResponseClass();
     insideClass.setName("test-name");
     List<MyResponseClass> expectedOutput = new ArrayList<>();
     expectedOutput.add(insideClass);
 
     // when
-    when(chClient.execute(any(HttpPost.class))).thenReturn(response);
-    when(response.getCode()).thenReturn(200);
-    when(authentication.getTokenHeader()).thenReturn(new AbstractMap.SimpleEntry<>("key", "value"));
-    when(response.getEntity().getContent())
-        .thenReturn(new ByteArrayInputStream("[{\"name\" : \"test-name\"}]".getBytes()));
-    List parsedResponse =
-        defaultHttpClient.post(
-            List.class, MyResponseClass.class, TypeToken.of(MyResponseClass.class), "dummy");
+    when(chClient.execute(any(HttpPost.class), any(HttpClientResponseHandler.class)))
+        .thenReturn(expectedOutput);
+    when(authentication.getTokenHeader()).thenReturn(Map.of("key", "value"));
+    List<MyResponseClass> parsedResponse =
+        defaultHttpClient.post(new TypeReference<>() {}, Map.of());
 
     // then
     assertEquals(expectedOutput.size(), parsedResponse.size());
@@ -85,24 +82,17 @@ public class DefaultHttpClientTest {
   @Test
   public void shouldReturnDeleteType() throws IOException {
     // given
-    Map<Class<?>, String> productMap = new HashMap<>();
+    Map<TypeReference<?>, String> productMap = new HashMap<>();
     DefaultHttpClient defaultHttpClient =
         new DefaultHttpClient(authentication, chClient, jsonMapper, productMap);
-    CloseableHttpResponse response = mock(CloseableHttpResponse.class, RETURNS_DEEP_STUBS);
     MyResponseClass expectedOutput = new MyResponseClass();
     expectedOutput.setName("test-name");
 
     // when
-    when(chClient.execute(any(HttpDelete.class))).thenReturn(response);
-
-    when(response.getCode()).thenReturn(200);
-
-    when(authentication.getTokenHeader()).thenReturn(new AbstractMap.SimpleEntry<>("key", "value"));
-
-    when(response.getEntity().getContent())
-        .thenReturn(new ByteArrayInputStream("{\"name\" : \"test-name\"}".getBytes()));
-    MyResponseClass parsedResponse =
-        defaultHttpClient.delete(MyResponseClass.class, MySelectorClass.class, 123L);
+    when(chClient.execute(any(HttpDelete.class), any(HttpClientResponseHandler.class)))
+        .thenReturn(expectedOutput);
+    when(authentication.getTokenHeader()).thenReturn(Map.of("key", "value"));
+    MyResponseClass parsedResponse = defaultHttpClient.delete(new TypeReference<>() {}, Map.of());
 
     // then
     assertTrue(new ReflectionEquals(expectedOutput).matches(parsedResponse));

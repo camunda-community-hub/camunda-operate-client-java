@@ -1,5 +1,8 @@
 package io.camunda.operate;
 
+import static io.camunda.operate.model.TypeReferences.*;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.camunda.operate.exception.OperateException;
 import io.camunda.operate.http.DefaultHttpClient;
 import io.camunda.operate.http.HttpClient;
@@ -30,34 +33,37 @@ public class CamundaOperateClient {
     HttpClient httpClient = new DefaultHttpClient(configuration.authentication());
     httpClient.init(formatUrl(configuration.baseUrl().toString()), "/v1");
     // load the config map
-    Map<Class<?>, String> map = new HashMap<>();
-    map.put(ProcessInstance.class, "/process-instances");
-    map.put(ListTypeToken.listFlowNodeStatistics.getClass(), "/process-instances/{key}/statistics");
-    map.put(ListTypeToken.listSequenceFlows.getClass(), "/process-instances/{key}/sequence-flows");
-    map.put(ProcessDefinition.class, "/process-definitions");
-    map.put(FlowNodeInstance.class, "/flownode-instances");
-    map.put(Incident.class, "/incidents");
-    map.put(Variable.class, "/variables");
-    map.put(DecisionDefinition.class, "/decision-definitions");
-    map.put(DecisionRequirements.class, "/drd");
-    map.put(DecisionInstance.class, "/decision-instances");
-    map.put(
-        SearchResultTypeToken.searchResultProcessDefinition.getClass(),
-        "/process-definitions/search");
-    map.put(
-        SearchResultTypeToken.searchResultDecisionDefinition.getClass(),
-        "/decision-definitions/search");
-    map.put(
-        SearchResultTypeToken.searchResultDecisionInstance.getClass(),
-        "/decision-instances/search");
-    map.put(
-        SearchResultTypeToken.searchResultFlowNodeInstance.getClass(),
-        "/flownode-instances/search");
-    map.put(SearchResultTypeToken.searchResultVariable.getClass(), "/variables/search");
-    map.put(
-        SearchResultTypeToken.searchResultProcessInstance.getClass(), "/process-instances/search");
-    map.put(SearchResultTypeToken.searchResultDecisionRequirements.getClass(), "/drd/search");
-    map.put(SearchResultTypeToken.searchResultIncident.getClass(), "/incidents/search");
+    Map<TypeReference<?>, String> map = new HashMap<>();
+    // process definitions
+    map.put(searchProcessDefinition, "/process-definitions/search");
+    map.put(processDefinition, "/process-definitions/{key}");
+    map.put(processDefinitionXml, "/process-definitions/{key}/xml");
+    // decision definition
+    map.put(searchDecisionDefinition, "/decision-definitions/search");
+    map.put(decisionDefinition, "/decision-definitions/{key}");
+    // decision instance
+    map.put(searchDecisionInstance, "/decision-instances/search");
+    map.put(decisionInstance, "/decision-instances/{id}");
+    // flownode instance
+    map.put(searchFlowNodeInstance, "/flownode-instances/search");
+    map.put(flowNodeInstance, "/flownode-instances/{key}");
+    // variable
+    map.put(searchVariable, "/variables/search");
+    map.put(variable, "/variables/{key}");
+    // process instances
+    map.put(searchProcessInstance, "/process-instances/search");
+    map.put(processInstance, "/process-instances/{key}");
+    map.put(deleteProcessInstance, "/process-instances/{key}");
+    map.put(flownodeStatistics, "/process-instances/{key}/statistics");
+    map.put(sequenceFlows, "/process-instances/{key}/sequence-flows");
+    // decision requirements
+    map.put(searchDecisionRequirements, "/drd/search");
+    map.put(decisionRequirements, "/drd/{key}");
+    map.put(decisionRequirementsXml, "/drd/{key}/xml");
+    // incident
+    map.put(searchIncident, "/incidents/search");
+    map.put(incident, "/incidents/{key}");
+
     httpClient.loadMap(map);
     return httpClient;
   }
@@ -70,7 +76,7 @@ public class CamundaOperateClient {
   }
 
   public ProcessDefinition getProcessDefinition(Long key) throws OperateException {
-    return httpClient.get(ProcessDefinition.class, key);
+    return httpClient.get(processDefinition, key(key));
   }
 
   public BpmnModelInstance getProcessDefinitionModel(Long key) throws OperateException {
@@ -84,7 +90,7 @@ public class CamundaOperateClient {
   }
 
   public String getProcessDefinitionXml(Long key) throws OperateException {
-    return httpClient.getXml(ProcessDefinition.class, key);
+    return httpClient.get(processDefinitionXml, key(key));
   }
 
   public List<ProcessDefinition> searchProcessDefinitions(SearchQuery query)
@@ -94,11 +100,7 @@ public class CamundaOperateClient {
 
   public SearchResult<ProcessDefinition> searchProcessDefinitionResults(SearchQuery query)
       throws OperateException {
-    return httpClient.post(
-        SearchResult.class,
-        ProcessDefinition.class,
-        SearchResultTypeToken.searchResultProcessDefinition,
-        query);
+    return httpClient.post(searchProcessDefinition, query);
   }
 
   public List<DecisionDefinition> searchDecisionDefinitions(SearchQuery query)
@@ -108,11 +110,7 @@ public class CamundaOperateClient {
 
   public SearchResult<DecisionDefinition> searchDecisionDefinitionResults(SearchQuery query)
       throws OperateException {
-    return httpClient.post(
-        SearchResult.class,
-        DecisionDefinition.class,
-        SearchResultTypeToken.searchResultDecisionDefinition,
-        query);
+    return httpClient.post(searchDecisionDefinition, query);
   }
 
   public List<DecisionInstance> searchDecisionInstances(SearchQuery query) throws OperateException {
@@ -121,11 +119,7 @@ public class CamundaOperateClient {
 
   public SearchResult<DecisionInstance> searchDecisionInstanceResults(SearchQuery query)
       throws OperateException {
-    return httpClient.post(
-        SearchResult.class,
-        DecisionInstance.class,
-        SearchResultTypeToken.searchResultDecisionInstance,
-        query);
+    return httpClient.post(searchDecisionInstance, query);
   }
 
   public List<FlowNodeInstance> searchFlowNodeInstances(SearchQuery query) throws OperateException {
@@ -134,11 +128,7 @@ public class CamundaOperateClient {
 
   public SearchResult<FlowNodeInstance> searchFlowNodeInstanceResults(SearchQuery query)
       throws OperateException {
-    return httpClient.post(
-        SearchResult.class,
-        FlowNodeInstance.class,
-        SearchResultTypeToken.searchResultFlowNodeInstance,
-        query);
+    return httpClient.post(searchFlowNodeInstance, query);
   }
 
   public List<Variable> searchVariables(SearchQuery query) throws OperateException {
@@ -146,8 +136,7 @@ public class CamundaOperateClient {
   }
 
   public SearchResult<Variable> searchVariableResults(SearchQuery query) throws OperateException {
-    return httpClient.post(
-        SearchResult.class, Variable.class, SearchResultTypeToken.searchResultVariable, query);
+    return httpClient.post(searchVariable, query);
   }
 
   public List<ProcessInstance> searchProcessInstances(SearchQuery query) throws OperateException {
@@ -156,11 +145,7 @@ public class CamundaOperateClient {
 
   public SearchResult<ProcessInstance> searchProcessInstanceResults(SearchQuery query)
       throws OperateException {
-    return httpClient.post(
-        SearchResult.class,
-        ProcessInstance.class,
-        SearchResultTypeToken.searchResultProcessInstance,
-        query);
+    return httpClient.post(searchProcessInstance, query);
   }
 
   public List<DecisionRequirements> searchDecisionRequirements(SearchQuery query)
@@ -170,11 +155,7 @@ public class CamundaOperateClient {
 
   public SearchResult<DecisionRequirements> searchDecisionRequirementsResults(SearchQuery query)
       throws OperateException {
-    return httpClient.post(
-        SearchResult.class,
-        DecisionRequirements.class,
-        SearchResultTypeToken.searchResultDecisionRequirements,
-        query);
+    return httpClient.post(searchDecisionRequirements, query);
   }
 
   public List<Incident> searchIncidents(SearchQuery query) throws OperateException {
@@ -182,52 +163,54 @@ public class CamundaOperateClient {
   }
 
   public SearchResult<Incident> searchIncidentResults(SearchQuery query) throws OperateException {
-    return httpClient.post(
-        SearchResult.class, Incident.class, SearchResultTypeToken.searchResultIncident, query);
+    return httpClient.post(searchIncident, query);
   }
 
   public ProcessInstance getProcessInstance(Long key) throws OperateException {
-    return httpClient.get(ProcessInstance.class, key);
+    return httpClient.get(processInstance, Map.of("key", String.valueOf(key)));
   }
 
   public ChangeStatus deleteProcessInstance(Long key) throws OperateException {
-    return httpClient.delete(ChangeStatus.class, ProcessInstance.class, key);
+    return httpClient.delete(deleteProcessInstance, key(key));
   }
 
   public List<FlowNodeStatistics> getFlowNodeStatistics(Long key) throws OperateException {
-    return httpClient.get(
-        List.class, FlowNodeStatistics.class, ListTypeToken.listFlowNodeStatistics, key);
+    return httpClient.get(flownodeStatistics, key(key));
   }
 
   public List<String> getSequenceFlows(Long key) throws OperateException {
-    return httpClient.get(List.class, String.class, ListTypeToken.listSequenceFlows, key);
+    return httpClient.get(sequenceFlows, key(key));
   }
 
   public FlowNodeInstance getFlowNodeInstance(Long key) throws OperateException {
-    return httpClient.get(FlowNodeInstance.class, key);
+    return httpClient.get(flowNodeInstance, key(key));
   }
 
   public Incident getIncident(Long key) throws OperateException {
-    return httpClient.get(Incident.class, key);
+    return httpClient.get(incident, key(key));
   }
 
   public DecisionDefinition getDecisionDefinition(Long key) throws OperateException {
-    return httpClient.get(DecisionDefinition.class, key);
+    return httpClient.get(decisionDefinition, key(key));
   }
 
   public DecisionRequirements getDecisionRequirements(Long key) throws OperateException {
-    return httpClient.get(DecisionRequirements.class, key);
+    return httpClient.get(decisionRequirements, key(key));
   }
 
   public String getDecisionRequirementsXml(Long key) throws OperateException {
-    return httpClient.getXml(DecisionRequirements.class, key);
+    return httpClient.get(decisionRequirementsXml, key(key));
   }
 
   public DecisionInstance getDecisionInstance(String id) throws OperateException {
-    return httpClient.get(DecisionInstance.class, id);
+    return httpClient.get(decisionInstance, Map.of("id", id));
   }
 
   public Variable getVariable(Long key) throws OperateException {
-    return httpClient.get(Variable.class, key);
+    return httpClient.get(variable, key(key));
+  }
+
+  private Map<String, String> key(Long key) {
+    return Map.of("key", String.valueOf(key));
   }
 }

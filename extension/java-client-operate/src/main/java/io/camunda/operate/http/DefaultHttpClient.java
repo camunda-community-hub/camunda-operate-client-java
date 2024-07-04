@@ -1,26 +1,26 @@
 package io.camunda.operate.http;
 
-import com.google.common.reflect.TypeToken;
-import io.camunda.common.exception.SdkException;
-import io.camunda.common.json.JsonMapper;
-import io.camunda.common.json.SdkObjectMapper;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.camunda.operate.auth.Authentication;
-import java.io.IOException;
+import io.camunda.operate.exception.SdkException;
 import java.lang.invoke.MethodHandles;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpStatus;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicHeader;
 import org.slf4j.Logger;
@@ -30,29 +30,30 @@ import org.slf4j.LoggerFactory;
 public class DefaultHttpClient implements HttpClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final Map<Class<?>, String> endpointMap;
+  private final Map<TypeReference<?>, String> endpointMap;
   private final CloseableHttpClient httpClient;
   private final Authentication authentication;
-  private final JsonMapper jsonMapper;
+  private final ObjectMapper objectMapper;
   private String host = "";
   private String basePath = "";
 
   public DefaultHttpClient(Authentication authentication) {
-    this.authentication = authentication;
-    this.httpClient = HttpClients.createDefault();
-    this.jsonMapper = new SdkObjectMapper();
-    this.endpointMap = new HashMap<>();
+    this(authentication, HttpClients.createDefault(), new ObjectMapper(), new HashMap<>());
   }
 
   public DefaultHttpClient(
       Authentication authentication,
       CloseableHttpClient httpClient,
-      JsonMapper jsonMapper,
-      Map<Class<?>, String> endpointMap) {
+      ObjectMapper objectMapper,
+      Map<TypeReference<?>, String> endpointMap) {
     this.authentication = authentication;
     this.httpClient = httpClient;
-    this.jsonMapper = jsonMapper;
+    this.objectMapper = objectMapper.copy();
     this.endpointMap = endpointMap;
+    this.objectMapper
+        .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .setSerializationInclusion(JsonInclude.Include.NON_NULL);
   }
 
   @Override
@@ -62,214 +63,86 @@ public class DefaultHttpClient implements HttpClient {
   }
 
   @Override
-  public void loadMap(Map<Class<?>, String> map) {
+  public void loadMap(Map<TypeReference<?>, String> map) {
     this.endpointMap.putAll(map);
   }
 
   @Override
-  public <T> T get(Class<T> responseType, Long key) {
-    return get(responseType, String.valueOf(key));
-  }
-
-  @Override
-  public <T> T get(Class<T> responseType, String id) {
-    String url = host + basePath + retrievePath(responseType) + "/" + id;
+  public <T> T get(TypeReference<T> responseType, Map<String, String> pathParams) {
+    String url = host + basePath + retrievePath(responseType, pathParams);
     HttpGet httpGet = new HttpGet(url);
-    httpGet.addHeader(retrieveToken(responseType));
-    T resp;
-    try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-      resp = parseAndRetry(response, responseType);
+    retrieveToken().forEach(httpGet::addHeader);
+    try {
+      return httpClient.execute(httpGet, handleResponse(responseType));
     } catch (Exception e) {
-      LOG.error(
-          "Failed GET with responseType {}, id {} due to {}", responseType, id, e.getMessage());
-      throw new SdkException(e);
+      throw new SdkException(String.format("Failed GET to %s, due to %s", url, e.getMessage()), e);
     }
-
-    return resp;
   }
 
   @Override
-  public <T, V, W> T get(
-      Class<T> responseType, Class<V> parameterType, TypeToken<W> selector, Long key) {
-    return get(responseType, parameterType, selector, String.valueOf(key));
-  }
+  public <T, U> T post(TypeReference<T> responseType, U body) {
 
-  private <T, V, W> T get(
-      Class<T> responseType, Class<V> parameterType, TypeToken<W> selector, String id) {
-    String resourcePath = retrievePath(selector.getClass());
-    if (resourcePath.contains("{key}")) {
-      resourcePath = resourcePath.replace("{key}", String.valueOf(id));
-    } else {
-      resourcePath = resourcePath + "/" + id;
-    }
-    String url = host + basePath + resourcePath;
-    HttpGet httpGet = new HttpGet(url);
-    httpGet.addHeader(retrieveToken(selector.getClass()));
-    T resp;
-    try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-      resp = parseAndRetry(response, responseType, parameterType, selector);
-    } catch (Exception e) {
-      LOG.error(
-          "Failed GET with responseType {}, parameterType {}, selector {}, id {} due to {}",
-          responseType,
-          parameterType,
-          selector,
-          id,
-          e.getMessage());
-      throw new SdkException(e);
-    }
-    return resp;
-  }
-
-  @Override
-  public <T> String getXml(Class<T> selector, Long key) {
-    String url = host + basePath + retrievePath(selector) + "/" + key + "/xml";
-    HttpGet httpGet = new HttpGet(url);
-    httpGet.addHeader(retrieveToken(selector));
-    String xml;
-    try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
-      xml = parseXMLAndRetry(response, selector);
-    } catch (Exception e) {
-      LOG.error("Failed GET with selector {}, key {} due to {}", selector, key, e.getMessage());
-      throw new SdkException(e);
-    }
-    return xml;
-  }
-
-  @Override
-  public <T, V, W, U> T post(
-      Class<T> responseType, Class<V> parameterType, TypeToken<W> selector, U body) {
-    String url = host + basePath + retrievePath(selector.getClass());
+    String url = host + basePath + retrievePath(responseType, Map.of());
     HttpPost httpPost = new HttpPost(url);
     httpPost.addHeader("Content-Type", "application/json");
-    httpPost.addHeader(retrieveToken(selector.getClass()));
-    T resp;
-    String data = jsonMapper.toJson(body);
-    httpPost.setEntity(new StringEntity(data));
-    try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-      resp = parseAndRetry(response, responseType, parameterType, selector);
-    } catch (Exception e) {
-      LOG.error(
-          "Failed POST with responseType {}, parameterType {}, selector {}, body {} due to {}",
-          responseType,
-          parameterType,
-          selector,
-          body,
-          e.getMessage());
-      throw new SdkException(e);
+    retrieveToken().forEach(httpPost::addHeader);
+    String data;
+    try {
+      data = objectMapper.writeValueAsString(body);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException("Error while parsing " + body + "of type " + body.getClass(), e);
     }
-    return resp;
+    httpPost.setEntity(new StringEntity(data));
+    try {
+      return httpClient.execute(httpPost, handleResponse(responseType));
+    } catch (Exception e) {
+      throw new SdkException(
+          String.format("Failed POST to %s with body %s, due to %s", url, data, e.getMessage()), e);
+    }
   }
 
   @Override
-  public <T, V> T delete(Class<T> responseType, Class<V> selector, Long key) {
-    String resourcePath = retrievePath(selector) + "/" + key;
+  public <T> T delete(TypeReference<T> responseType, Map<String, String> pathParams) {
+    String resourcePath = retrievePath(responseType, pathParams);
     String url = host + basePath + resourcePath;
     HttpDelete httpDelete = new HttpDelete(url);
-    httpDelete.addHeader(retrieveToken(selector));
-    T resp = null;
-    try (CloseableHttpResponse response = httpClient.execute(httpDelete)) {
-      resp = parseAndRetry(response, responseType, selector);
+    retrieveToken().forEach(httpDelete::addHeader);
+    try {
+      return httpClient.execute(httpDelete, handleResponse(responseType));
     } catch (Exception e) {
-      LOG.error(
-          "Failed DELETE with responseType {}, selector {}, key {}, due to {}",
-          responseType,
-          selector,
-          key,
-          e.getMessage());
-      throw new SdkException(e);
+      throw new SdkException(
+          String.format("Failed DELETE to %s, due to %s", url, e.getMessage()), e);
     }
-    return resp;
   }
 
-  private <T> String retrievePath(Class<T> clazz) {
+  private <T> String retrievePath(TypeReference<T> clazz, Map<String, String> pathParams) {
     AtomicReference<String> path = new AtomicReference<>();
     if (endpointMap.containsKey(clazz)) {
       path.set(endpointMap.get(clazz));
     }
+    for (String pathParam : pathParams.keySet()) {
+      String pathParamMarker = "{" + pathParam + "}";
+      if (path.get().contains(pathParamMarker)) {
+        path.set(path.get().replace(pathParamMarker, pathParams.get(pathParam)));
+      }
+    }
     return path.get();
   }
 
-  private <T> Header retrieveToken(Class<T> clazz) {
-    Map.Entry<String, String> header = authentication.getTokenHeader();
-    return new BasicHeader(header.getKey(), header.getValue());
+  private List<? extends Header> retrieveToken() {
+    Map<String, String> header = authentication.getTokenHeader();
+    return header.entrySet().stream().map(e -> new BasicHeader(e.getKey(), e.getValue())).toList();
   }
 
-  // TODO: Refactor duplicate code parseAndRetry()
-
-  private <T> String parseXMLAndRetry(CloseableHttpResponse response, Class<T> selector)
-      throws IOException {
-    String resp;
-    if (200 <= response.getCode() && response.getCode() <= 299) {
-      resp =
-          new String(
-              Java8Utils.readAllBytes(response.getEntity().getContent()), StandardCharsets.UTF_8);
-    } else {
-      if (response.getCode() == HttpStatus.SC_UNAUTHORIZED
-          || response.getCode() == HttpStatus.SC_FORBIDDEN) {
-        authentication.resetToken();
-      }
-      throw new SdkException("Response not successful: " + response.getCode());
-    }
-    return resp;
+  private <T> HttpClientResponseHandler<T> handleResponse(TypeReference<T> responseType) {
+    return new TypeReferenceHttpClientResponseHandler<>(
+        responseType, objectMapper, this::handleErrorResponse);
   }
 
-  private <T> T parseAndRetry(CloseableHttpResponse response, Class<T> responseType)
-      throws IOException {
-    T resp;
-    if (200 <= response.getCode() && response.getCode() <= 299) {
-      HttpEntity entity = response.getEntity();
-      String tmp = new String(Java8Utils.readAllBytes(entity.getContent()), StandardCharsets.UTF_8);
-      resp = jsonMapper.fromJson(tmp, responseType);
-      EntityUtils.consume(entity);
-    } else {
-      if (response.getCode() == HttpStatus.SC_UNAUTHORIZED
-          || response.getCode() == HttpStatus.SC_FORBIDDEN) {
-        authentication.resetToken();
-        // TODO: Add capability to auto retry the existing request
-      }
-      throw new SdkException("Response not successful: " + response.getCode());
+  private SdkException handleErrorResponse(Integer code) {
+    if (code == HttpStatus.SC_UNAUTHORIZED || code == HttpStatus.SC_FORBIDDEN) {
+      authentication.resetToken();
     }
-    return resp;
-  }
-
-  private <T, V> T parseAndRetry(
-      CloseableHttpResponse response, Class<T> responseType, Class<V> selector) throws IOException {
-    T resp;
-    if (200 <= response.getCode() && response.getCode() <= 299) {
-      HttpEntity entity = response.getEntity();
-      String tmp = new String(Java8Utils.readAllBytes(entity.getContent()), StandardCharsets.UTF_8);
-      resp = jsonMapper.fromJson(tmp, responseType);
-      EntityUtils.consume(entity);
-    } else {
-      if (response.getCode() == HttpStatus.SC_UNAUTHORIZED
-          || response.getCode() == HttpStatus.SC_FORBIDDEN) {
-        authentication.resetToken();
-      }
-      throw new SdkException("Response not successful: " + response.getCode());
-    }
-    return resp;
-  }
-
-  private <T, V, W> T parseAndRetry(
-      CloseableHttpResponse response,
-      Class<T> responseType,
-      Class<V> parameterType,
-      TypeToken<W> selector)
-      throws IOException {
-    T resp;
-    if (200 <= response.getCode() && response.getCode() <= 299) {
-      HttpEntity entity = response.getEntity();
-      String tmp = new String(Java8Utils.readAllBytes(entity.getContent()), StandardCharsets.UTF_8);
-      resp = jsonMapper.fromJson(tmp, responseType, parameterType);
-      EntityUtils.consume(entity);
-    } else {
-      if (response.getCode() == HttpStatus.SC_UNAUTHORIZED
-          || response.getCode() == HttpStatus.SC_FORBIDDEN) {
-        authentication.resetToken();
-      }
-      throw new SdkException("Response not successful: " + response.getCode());
-    }
-    return resp;
+    return new SdkException("Response not successful: " + code);
   }
 }

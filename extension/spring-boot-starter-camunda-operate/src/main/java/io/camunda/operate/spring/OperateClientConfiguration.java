@@ -1,6 +1,6 @@
 package io.camunda.operate.spring;
 
-import io.camunda.common.json.JsonMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.operate.CamundaOperateClient;
 import io.camunda.operate.CamundaOperateClientConfiguration;
 import io.camunda.operate.auth.Authentication;
@@ -8,25 +8,29 @@ import io.camunda.operate.auth.JwtAuthentication;
 import io.camunda.operate.auth.JwtCredential;
 import io.camunda.operate.auth.SimpleAuthentication;
 import io.camunda.operate.auth.SimpleCredential;
+import io.camunda.operate.auth.TokenResponseParser;
+import io.camunda.operate.auth.TokenResponseParser.JacksonTokenResponseParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 @EnableConfigurationProperties({
   OperateClientConfigurationProperties.class,
 })
 @ConditionalOnProperty(value = "operate.client.enabled", matchIfMissing = true)
+@Import(ObjectMapperConfiguration.class)
 public class OperateClientConfiguration {
   private final OperateClientConfigurationProperties properties;
-  private final JsonMapper jsonMapper;
+  private final ObjectMapper objectMapper;
 
   @Autowired
   public OperateClientConfiguration(
-      OperateClientConfigurationProperties properties, JsonMapper jsonMapper) {
+      OperateClientConfigurationProperties properties, ObjectMapper objectMapper) {
     this.properties = properties;
-    this.jsonMapper = jsonMapper;
+    this.objectMapper = objectMapper;
   }
 
   @Bean
@@ -45,7 +49,7 @@ public class OperateClientConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public Authentication authentication() {
+  public Authentication authentication(TokenResponseParser tokenResponseParser) {
     if (properties.profile() == null) {
       throw new IllegalStateException("'operate.client.profile' is required");
     }
@@ -65,9 +69,15 @@ public class OperateClientConfiguration {
                 properties.clientSecret(),
                 properties.audience(),
                 properties.authUrl().toString()),
-            jsonMapper);
+            tokenResponseParser);
       }
       default -> throw new IllegalStateException("Unsupported profile: " + properties.profile());
     }
+  }
+
+  @Bean
+  @ConditionalOnMissingBean
+  public TokenResponseParser tokenResponseParser() {
+    return new JacksonTokenResponseParser(objectMapper);
   }
 }

@@ -42,6 +42,7 @@
   <modules>
     <!--Plain Java dependent modules -->
     <module>extension</module>
+    <module>examples</module>
   </modules>
 
   <dependencyManagement>
@@ -77,47 +78,12 @@
       </dependency>
       <dependency>
         <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-client-annotations</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-client-common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-client-zeebe</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda.spring</groupId>
         <artifactId>java-client-operate</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-client-console</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-boot-starter-camunda</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-boot-starter-camunda-test-common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-boot-starter-camunda-test</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda.spring</groupId>
-        <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
+        <artifactId>spring-boot-starter-camunda-operate</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -169,6 +135,11 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${commons-lang.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>33.2.1-jre</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

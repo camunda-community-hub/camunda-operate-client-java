@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface Authentication {
 
-  Map.Entry<String, String> getTokenHeader();
+  Map<String, String> getTokenHeader();
 
   void resetToken();
 }

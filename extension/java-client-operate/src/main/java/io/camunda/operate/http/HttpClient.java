@@ -1,6 +1,6 @@
 package io.camunda.operate.http;
 
-import com.google.common.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.Map;
 
 /** Interface to enable swappable http client implementations */
@@ -8,17 +8,11 @@ public interface HttpClient {
 
   void init(String host, String basePath);
 
-  void loadMap(Map<Class<?>, String> map);
+  void loadMap(Map<TypeReference<?>, String> map);
 
-  <T> T get(Class<T> responseType, Long key);
+  <T> T get(TypeReference<T> responseType, Map<String, String> pathParams);
 
-  <T> T get(Class<T> responseType, String id);
+  <T, U> T post(TypeReference<T> responseType, U body);
 
-  <T, V, W> T get(Class<T> responseType, Class<V> parameterType, TypeToken<W> selector, Long key);
-
-  <T> String getXml(Class<T> selector, Long key);
-
-  <T, V, W, U> T post(Class<T> responseType, Class<V> parameterType, TypeToken<W> selector, U body);
-
-  <T, V> T delete(Class<T> responseType, Class<V> selector, Long key);
+  <T> T delete(TypeReference<T> responseType, Map<String, String> pathParams);
 }

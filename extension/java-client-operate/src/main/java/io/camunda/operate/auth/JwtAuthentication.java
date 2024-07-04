@@ -1,11 +1,9 @@
 package io.camunda.operate.auth;
 
-import io.camunda.common.json.JsonMapper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -16,23 +14,23 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 public class JwtAuthentication implements Authentication {
   private final JwtCredential jwtCredential;
-  private final JsonMapper jsonMapper;
+  private final TokenResponseParser tokenResponseParser;
   private String token;
   private LocalDateTime timeout;
 
-  public JwtAuthentication(JwtCredential jwtCredential, JsonMapper jsonMapper) {
+  public JwtAuthentication(JwtCredential jwtCredential, TokenResponseParser tokenResponseParser) {
     this.jwtCredential = jwtCredential;
-    this.jsonMapper = jsonMapper;
+    this.tokenResponseParser = tokenResponseParser;
   }
 
   @Override
-  public Entry<String, String> getTokenHeader() {
+  public Map<String, String> getTokenHeader() {
     if (token == null || timeout == null || timeout.isBefore(LocalDateTime.now())) {
       TokenResponse response = retrieveToken();
       token = response.getAccessToken();
       timeout = LocalDateTime.now().plusSeconds(response.getExpiresIn()).minusSeconds(30);
     }
-    return Map.entry("Authorization", "Bearer " + token);
+    return Map.of("Authorization", "Bearer " + token);
   }
 
   @Override
@@ -48,8 +46,7 @@ public class JwtAuthentication implements Authentication {
           request,
           response -> {
             try {
-              return jsonMapper.fromJson(
-                  EntityUtils.toString(response.getEntity()), TokenResponse.class);
+              return tokenResponseParser.parse(EntityUtils.toString(response.getEntity()));
             } catch (Exception e) {
               var errorMessage =
                   String.format(
