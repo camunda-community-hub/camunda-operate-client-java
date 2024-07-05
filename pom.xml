@@ -30,13 +30,24 @@
 
     <plugin.version.maven-enforcer-plugin>3.5.0</plugin.version.maven-enforcer-plugin>
 
-    <plugin.version.javadoc>3.1.1</plugin.version.javadoc>
-    <!-- disable jdk8 javadoc checks on release build -->
-    <additionalparam>-Xdoclint:none</additionalparam>
-
     <!-- release parent settings -->
     <nexus.snapshot.repository>https://artifacts.camunda.com/artifactory/zeebe-io-snapshots/</nexus.snapshot.repository>
     <nexus.release.repository>https://artifacts.camunda.com/artifactory/zeebe-io/</nexus.release.repository>
+
+    <plugin.version.function-maven-plugin>0.11.0</plugin.version.function-maven-plugin>
+    <plugin.version.maven-install-plugin>3.1.2</plugin.version.maven-install-plugin>
+    <plugin.version.maven-resources-plugin>3.3.1</plugin.version.maven-resources-plugin>
+    <plugin.version.maven-shade-plugin>3.6.0</plugin.version.maven-shade-plugin>
+    <plugin.version.maven-surefire-plugin>3.3.0</plugin.version.maven-surefire-plugin>
+    <plugin.version.spotless-maven-plugin>2.43.0</plugin.version.spotless-maven-plugin>
+    <plugin.version.maven-compiler-plugin>3.13.0</plugin.version.maven-compiler-plugin>
+    <plugin.version.native-maven-plugin>0.10.2</plugin.version.native-maven-plugin>
+    <plugin.version.maven-depdendency-plugin>3.7.1</plugin.version.maven-depdendency-plugin>
+    <plugin.version.maven-site-plugin>3.12.1</plugin.version.maven-site-plugin>
+    <plugin.version.maven-assembly-plugin>3.7.1</plugin.version.maven-assembly-plugin>
+    <plugin.version.maven-release-plugin>3.1.0</plugin.version.maven-release-plugin>
+    <plugin.version.frontend-maven-plugin>1.15.0</plugin.version.frontend-maven-plugin>
+    <plugin.version.maven-source-plugin>3.3.1</plugin.version.maven-source-plugin>
   </properties>
 
   <modules>
@@ -147,39 +158,92 @@
   <!-- no dependencies allowed here, specify in submodules! -->
 
   <build>
-    <defaultGoal>clean install</defaultGoal>
     <pluginManagement>
       <plugins>
-        <!-- Disable adding license header -->
         <plugin>
-          <groupId>com.mycila</groupId>
-          <artifactId>license-maven-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>1.7.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${plugin.version.maven-source-plugin}</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${plugin.version.maven-assembly-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${plugin.version.maven-resources-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${plugin.version.maven-site-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${plugin.version.maven-depdendency-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.graalvm.buildtools</groupId>
+          <artifactId>native-maven-plugin</artifactId>
+          <version>${plugin.version.native-maven-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.13.0</version>
+          <version>${plugin.version.maven-compiler-plugin}</version>
           <configuration>
-            <source>${java.version}</source>
-            <target>${java.version}</target>
-            <compilerVersion>${java.version}</compilerVersion>
-            <fork>true</fork>
+            <compilerArgs>
+              <arg>-parameters</arg>
+            </compilerArgs>
           </configuration>
         </plugin>
         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-                <source>8</source>
-            </configuration>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${version.spring-boot}</version>
+          <configuration>
+            <image>
+              <env>
+                <BP_JVM_VERSION>17</BP_JVM_VERSION>
+                <BPE_LANG>en_US.utf8</BPE_LANG>
+              </env>
+              <createdDate>${maven.build.timestamp}</createdDate>
+            </image>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${plugin.version.maven-install-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>${plugin.version.maven-shade-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>${plugin.version.maven-surefire-plugin}</version>
+          <configuration>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -187,10 +251,9 @@
           <version>${plugin.version.maven-enforcer-plugin}</version>
           <configuration>
             <rules>
-              <requireReleaseDeps>
-                <onlyWhenRelease>true</onlyWhenRelease>
-              </requireReleaseDeps>
-              <requirePluginVersion />
+              <reactorModuleConvergence />
+              <dependencyConvergence />
+              <requirePluginVersions />
             </rules>
           </configuration>
           <executions>
@@ -201,87 +264,103 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>${plugin.version.spotless-maven-plugin}</version>
+          <configuration>
+            <formats>
+              <format>
+                <includes>
+                  <include>*.md</include>
+                  <include>.gitignore</include>
+                </includes>
+                <trimTrailingWhitespace />
+                <endWithNewline />
+                <indent>
+                  <spaces>true</spaces>
+                  <spacesPerTab>2</spacesPerTab>
+                </indent>
+              </format>
+            </formats>
+            <java>
+              <googleJavaFormat />
+            </java>
+            <pom />
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>com.google.cloud.functions</groupId>
+          <artifactId>function-maven-plugin</artifactId>
+          <version>${plugin.version.function-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${plugin.version.maven-release-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>${plugin.version.frontend-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <versionRange>[1.0.0,)</versionRange>
+                    <goals>
+                      <goal>enforce</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-        </configuration>
+        <artifactId>maven-dependency-plugin</artifactId>
         <executions>
-          <!-- Replacing default-compile as it is treated specially by maven -->
           <execution>
-            <id>default-compile</id>
-            <phase>none</phase>
-          </execution>
-          <!-- Replacing default-testCompile as it is treated specially by maven -->
-          <execution>
-            <id>default-testCompile</id>
-            <phase>none</phase>
-          </execution>
-          <execution>
-            <id>java-compile</id>
-            <phase>compile</phase>
+            <id>analyze</id>
             <goals>
-              <goal>compile</goal>
+              <goal>analyze-only</goal>
             </goals>
-          </execution>
-          <execution>
-            <id>java-test-compile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
+            <configuration>
+              <failOnWarning>true</failOnWarning>
+            </configuration>
           </execution>
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.12</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
         <executions>
           <execution>
+            <id>attach-sources</id>
             <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report</goal>
+              <goal>jar</goal>
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
-        <version>2.43.0</version>
-        <configuration>
-          <formats>
-            <format>
-              <includes>
-                <include>*.md</include>
-                <include>.gitignore</include>
-              </includes>
-              <trimTrailingWhitespace />
-              <endWithNewline />
-              <indent>
-                <spaces>true</spaces>
-                <spacesPerTab>2</spacesPerTab>
-              </indent>
-            </format>
-          </formats>
-          <java>
-            <googleJavaFormat />
-          </java>
-          <pom />
-        </configuration>
       </plugin>
     </plugins>
   </build>
