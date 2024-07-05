@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import io.camunda.operate.auth.Authentication;
 import io.camunda.operate.exception.SdkException;
 import java.lang.invoke.MethodHandles;
-import java.util.HashMap;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -17,7 +17,6 @@ import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
@@ -34,14 +33,10 @@ public class DefaultHttpClient implements HttpClient {
   private final CloseableHttpClient httpClient;
   private final Authentication authentication;
   private final ObjectMapper objectMapper;
-  private String host = "";
-  private String basePath = "";
-
-  public DefaultHttpClient(Authentication authentication) {
-    this(authentication, HttpClients.createDefault(), new ObjectMapper(), new HashMap<>());
-  }
+  private final String baseUrl;
 
   public DefaultHttpClient(
+      URL baseUrl,
       Authentication authentication,
       CloseableHttpClient httpClient,
       ObjectMapper objectMapper,
@@ -54,22 +49,12 @@ public class DefaultHttpClient implements HttpClient {
         .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-  }
-
-  @Override
-  public void init(String host, String basePath) {
-    this.host = host;
-    this.basePath = basePath;
-  }
-
-  @Override
-  public void loadMap(Map<TypeReference<?>, String> map) {
-    this.endpointMap.putAll(map);
+    this.baseUrl = baseUrl.toString();
   }
 
   @Override
   public <T> T get(TypeReference<T> responseType, Map<String, String> pathParams) {
-    String url = host + basePath + retrievePath(responseType, pathParams);
+    String url = baseUrl + retrievePath(responseType, pathParams);
     HttpGet httpGet = new HttpGet(url);
     retrieveToken().forEach(httpGet::addHeader);
     try {
@@ -82,7 +67,7 @@ public class DefaultHttpClient implements HttpClient {
   @Override
   public <T, U> T post(TypeReference<T> responseType, U body) {
 
-    String url = host + basePath + retrievePath(responseType, Map.of());
+    String url = baseUrl + retrievePath(responseType, Map.of());
     HttpPost httpPost = new HttpPost(url);
     httpPost.addHeader("Content-Type", "application/json");
     retrieveToken().forEach(httpPost::addHeader);
@@ -104,7 +89,7 @@ public class DefaultHttpClient implements HttpClient {
   @Override
   public <T> T delete(TypeReference<T> responseType, Map<String, String> pathParams) {
     String resourcePath = retrievePath(responseType, pathParams);
-    String url = host + basePath + resourcePath;
+    String url = baseUrl + resourcePath;
     HttpDelete httpDelete = new HttpDelete(url);
     retrieveToken().forEach(httpDelete::addHeader);
     try {

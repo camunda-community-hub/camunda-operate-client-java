@@ -1,5 +1,7 @@
 package io.camunda.operate.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +16,13 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 public class JwtAuthentication implements Authentication {
   private final JwtCredential jwtCredential;
-  private final TokenResponseParser tokenResponseParser;
+  private final ObjectMapper objectMapper;
   private String token;
   private LocalDateTime timeout;
 
-  public JwtAuthentication(JwtCredential jwtCredential, TokenResponseParser tokenResponseParser) {
+  public JwtAuthentication(JwtCredential jwtCredential, ObjectMapper objectMapper) {
     this.jwtCredential = jwtCredential;
-    this.tokenResponseParser = tokenResponseParser;
+    this.objectMapper = objectMapper;
   }
 
   @Override
@@ -46,7 +48,8 @@ public class JwtAuthentication implements Authentication {
           request,
           response -> {
             try {
-              return tokenResponseParser.parse(EntityUtils.toString(response.getEntity()));
+              return objectMapper.readValue(
+                  EntityUtils.toString(response.getEntity()), TokenResponse.class);
             } catch (Exception e) {
               var errorMessage =
                   String.format(
@@ -64,8 +67,8 @@ public class JwtAuthentication implements Authentication {
     }
   }
 
-  private HttpPost buildRequest() {
-    HttpPost httpPost = new HttpPost(jwtCredential.authUrl());
+  private HttpPost buildRequest() throws URISyntaxException {
+    HttpPost httpPost = new HttpPost(jwtCredential.authUrl().toURI());
     httpPost.addHeader("Content-Type", "application/json");
     List<NameValuePair> formParams = new ArrayList<>();
     formParams.add(new BasicNameValuePair("grant_type", "client_credentials"));

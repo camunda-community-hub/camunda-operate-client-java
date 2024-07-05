@@ -12,6 +12,8 @@ import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,7 @@ public class CamundaOperateClient {
 
   private final HttpClient httpClient;
 
-  public CamundaOperateClient(HttpClient httpClient) {
+  private CamundaOperateClient(HttpClient httpClient) {
     this.httpClient = httpClient;
   }
 
@@ -30,8 +32,6 @@ public class CamundaOperateClient {
 
   private static HttpClient buildOperateHttpClient(
       CamundaOperateClientConfiguration configuration) {
-    HttpClient httpClient = new DefaultHttpClient(configuration.authentication());
-    httpClient.init(formatUrl(configuration.baseUrl().toString()), "/v1");
     // load the config map
     Map<TypeReference<?>, String> map = new HashMap<>();
     // process definitions
@@ -64,8 +64,16 @@ public class CamundaOperateClient {
     map.put(searchIncident, "/incidents/search");
     map.put(incident, "/incidents/{key}");
 
-    httpClient.loadMap(map);
-    return httpClient;
+    try {
+      return new DefaultHttpClient(
+          URI.create(formatUrl(configuration.baseUrl().toString() + "/v1")).toURL(),
+          configuration.authentication(),
+          configuration.httpClient(),
+          configuration.objectMapper(),
+          map);
+    } catch (MalformedURLException e) {
+      throw new RuntimeException("Error while initializing operate http client", e);
+    }
   }
 
   private static String formatUrl(String url) {

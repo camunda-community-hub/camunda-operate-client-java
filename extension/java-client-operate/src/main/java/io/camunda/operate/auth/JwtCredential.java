@@ -1,4 +1,5 @@
 package io.camunda.operate.auth;
 
-public record JwtCredential(
-    String clientId, String clientSecret, String audience, String authUrl) {}
+import java.net.URL;
+
+public record JwtCredential(String clientId, String clientSecret, String audience, URL authUrl) {}

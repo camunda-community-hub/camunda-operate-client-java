@@ -8,9 +8,10 @@ import io.camunda.operate.auth.JwtAuthentication;
 import io.camunda.operate.auth.JwtCredential;
 import io.camunda.operate.auth.SimpleAuthentication;
 import io.camunda.operate.auth.SimpleCredential;
-import io.camunda.operate.auth.TokenResponseParser;
-import io.camunda.operate.auth.TokenResponseParser.JacksonTokenResponseParser;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -43,13 +44,21 @@ public class OperateClientConfiguration {
   @Bean
   @ConditionalOnMissingBean
   public CamundaOperateClientConfiguration operateClientConfiguration(
-      Authentication authentication) {
-    return new CamundaOperateClientConfiguration(authentication, properties.baseUrl());
+      Authentication authentication,
+      @Qualifier("operateHttpClient") CloseableHttpClient operateHttpClient) {
+    return new CamundaOperateClientConfiguration(
+        authentication, properties.baseUrl(), objectMapper, operateHttpClient);
+  }
+
+  @Bean("operateHttpClient")
+  @ConditionalOnMissingBean(name = "operateHttpClient")
+  public CloseableHttpClient operateHttpClient() {
+    return HttpClients.createDefault();
   }
 
   @Bean
   @ConditionalOnMissingBean
-  public Authentication authentication(TokenResponseParser tokenResponseParser) {
+  public Authentication authentication() {
     if (properties.profile() == null) {
       throw new IllegalStateException("'operate.client.profile' is required");
     }
@@ -68,16 +77,10 @@ public class OperateClientConfiguration {
                 properties.clientId(),
                 properties.clientSecret(),
                 properties.audience(),
-                properties.authUrl().toString()),
-            tokenResponseParser);
+                properties.authUrl()),
+            objectMapper);
       }
       default -> throw new IllegalStateException("Unsupported profile: " + properties.profile());
     }
-  }
-
-  @Bean
-  @ConditionalOnMissingBean
-  public TokenResponseParser tokenResponseParser() {
-    return new JacksonTokenResponseParser(objectMapper);
   }
 }

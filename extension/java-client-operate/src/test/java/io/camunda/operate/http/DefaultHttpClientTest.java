@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.operate.auth.Authentication;
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
@@ -39,7 +40,12 @@ public class DefaultHttpClientTest {
     productMap.put(typeReference, "/request/{some}");
     productMap.put(typeReferenceWithSameType, "/no");
     DefaultHttpClient defaultHttpClient =
-        new DefaultHttpClient(authentication, chClient, jsonMapper, productMap);
+        new DefaultHttpClient(
+            URI.create("http://localhost:8081").toURL(),
+            authentication,
+            chClient,
+            jsonMapper,
+            productMap);
     MyResponseClass expectedOutput = new MyResponseClass();
     expectedOutput.setName("test-name");
     ArgumentCaptor<HttpGet> captor = ArgumentCaptor.forClass(HttpGet.class);
@@ -61,7 +67,12 @@ public class DefaultHttpClientTest {
     // given
     Map<TypeReference<?>, String> productMap = new HashMap<>();
     DefaultHttpClient defaultHttpClient =
-        new DefaultHttpClient(authentication, chClient, jsonMapper, productMap);
+        new DefaultHttpClient(
+            URI.create("http://localhost:8081").toURL(),
+            authentication,
+            chClient,
+            jsonMapper,
+            productMap);
     MyResponseClass insideClass = new MyResponseClass();
     insideClass.setName("test-name");
     List<MyResponseClass> expectedOutput = new ArrayList<>();
@@ -84,7 +95,12 @@ public class DefaultHttpClientTest {
     // given
     Map<TypeReference<?>, String> productMap = new HashMap<>();
     DefaultHttpClient defaultHttpClient =
-        new DefaultHttpClient(authentication, chClient, jsonMapper, productMap);
+        new DefaultHttpClient(
+            URI.create("http://localhost:8081").toURL(),
+            authentication,
+            chClient,
+            jsonMapper,
+            productMap);
     MyResponseClass expectedOutput = new MyResponseClass();
     expectedOutput.setName("test-name");
 
