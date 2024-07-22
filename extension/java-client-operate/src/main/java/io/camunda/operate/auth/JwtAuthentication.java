@@ -1,6 +1,5 @@
 package io.camunda.operate.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,13 +15,18 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 public class JwtAuthentication implements Authentication {
   private final JwtCredential jwtCredential;
-  private final ObjectMapper objectMapper;
+  private final TokenResponseMapper tokenResponseMapper;
   private String token;
   private LocalDateTime timeout;
 
-  public JwtAuthentication(JwtCredential jwtCredential, ObjectMapper objectMapper) {
+  public JwtAuthentication(JwtCredential jwtCredential, TokenResponseMapper tokenResponseMapper) {
     this.jwtCredential = jwtCredential;
-    this.objectMapper = objectMapper;
+    this.tokenResponseMapper = tokenResponseMapper;
+  }
+
+  @Deprecated
+  public JwtCredential getJwtCredential() {
+    return jwtCredential;
   }
 
   @Override
@@ -48,8 +52,7 @@ public class JwtAuthentication implements Authentication {
           request,
           response -> {
             try {
-              return objectMapper.readValue(
-                  EntityUtils.toString(response.getEntity()), TokenResponse.class);
+              return tokenResponseMapper.readToken(EntityUtils.toString(response.getEntity()));
             } catch (Exception e) {
               var errorMessage =
                   String.format(

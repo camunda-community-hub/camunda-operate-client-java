@@ -8,6 +8,7 @@ import io.camunda.operate.auth.JwtAuthentication;
 import io.camunda.operate.auth.JwtCredential;
 import io.camunda.operate.auth.SimpleAuthentication;
 import io.camunda.operate.auth.SimpleCredential;
+import io.camunda.operate.auth.TokenResponseMapper.JacksonTokenResponseMapper;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Import;
 
 @EnableConfigurationProperties({
   OperateClientConfigurationProperties.class,
+  io.camunda.zeebe.spring.client.properties.OperateClientConfigurationProperties.class
 })
 @ConditionalOnProperty(value = "operate.client.enabled", matchIfMissing = true)
 @Import(ObjectMapperConfiguration.class)
@@ -78,7 +80,7 @@ public class OperateClientConfiguration {
                 properties.clientSecret(),
                 properties.audience(),
                 properties.authUrl()),
-            objectMapper);
+            new JacksonTokenResponseMapper(objectMapper));
       }
       default -> throw new IllegalStateException("Unsupported profile: " + properties.profile());
     }
