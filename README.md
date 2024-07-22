@@ -2,49 +2,158 @@
 ![Compatible with: Camunda Platform 8](https://img.shields.io/badge/Compatible%20with-Camunda%20Platform%208-0072Ce)
 [![](https://img.shields.io/badge/Lifecycle-Incubating-blue)](https://github.com/Camunda-Community-Hub/community/blob/main/extension-lifecycle.md#incubating-)
 
-# DEPRECATED
-
-:information_source: **This project is no more maintained** and you should start using the project provided as part of the [Spring Zeebe project](https://github.com/camunda-community-hub/spring-zeebe). If you want to use it outside of the Spring Zeebe client, you can directly use the [java-operate-client](https://github.com/camunda-community-hub/spring-zeebe/tree/main/camunda-sdk-java/java-client-operate).
+# Camunda Operate Client
 
 This project is designed to simplify communication between a Java backend and the [Operate API of Camunda Platform 8](https://docs.camunda.io/docs/apis-clients/operate-api/).
 
-## How to use the client
+## How to build the client
 
-Simply build a CamundaOperateClient that takes an authentication and the Operate URL as parameters.
+### Spring Boot
+
+Add the dependency to your project:
+
+```xml
+<dependency>
+  <groupId>io.camunda.spring</groupId>
+  <artifactId>spring-boot-starter-camunda-operate</artifactId>
+  <version>${version.operate-client}</version>
+</dependency>
+```
+
+Configure a Camunda Operate client with simple authentication:
+
+```yaml
+operate:
+  client:
+    profile: simple
+```
+
+To adjust the (meaningful) default properties, you can also override them:
+
+```yaml
+operate:
+  client:
+    profile: simple
+    enabled: true
+    base-url: http://localhost:8081
+    session-timeout: PT10M
+    username: demo
+    password: demo
+```
+
+
+Configure a Camunda Operate client with identity authentication:
+
+```yaml
+operate:
+  client:
+    profile: oidc
+    client-id:
+    client-secret:
+```
+
+To adjust the (meaningful) default properties, you can also override them:
+
+```yaml
+operate:
+  client:
+    profile: oidc
+    enabled: true
+    base-url: http://localhost:8081
+    auth-url: http://localhost:18080/auth/realms/camunda-platform/openid-connect/token
+    audience: operate-api
+    client-id:
+    client-secret:
+```
+
+Configure a Camunda Operate client for Saas:
+
+```yaml
+operate:
+  client:
+    profile: saas
+    region:
+    cluster-id:
+    client-id:
+    client-secret:
+```
+
+```yaml
+operate:
+  client:
+    profile: saas
+    enabled: true
+    base-url: https://${operate.client.region}.operate.camunda.io/${operate.client.cluster-id}
+    auth-url: https://login.cloud.camunda.io/oauth/token
+    audience: operate.camunda.io
+    region:
+    cluster-id:
+    client-id:
+    client-secret:
+```
+
+### Plain Java
+
+Add the dependency to your project:
+
+```xml
+<dependency>
+  <groupId>io.camunda.spring</groupId>
+  <artifactId>java-client-operate</artifactId>
+  <version>${version.operate-client}</version>
+</dependency>
+```
+
+Build a Camunda Operate client with simple authentication:
 
 ```java
-SimpleAuthentication sa = new SimpleAuthentication("demo", "demo", "http://localhost:8081");
-CamundaOperateClient client = new CamundaOperateClient.Builder().operateUrl("http://localhost:8081").authentication(sa).build();
-````
-
-## Authentication
-You can use the ***SimpleAuthentication*** to connect to a local Camunda Operate if your setup is "simple": ***without identity and keycloak***.
-
-To connect to the **SaaS** Operate, you need to use the **SaasAuthentication** rather than the SimpleAuthentication. The SaaSAuthentication requires the ClientId and SecretId
-
-```
-SaasAuthentication sa = new SaasAuthentication("2~nB1MwkUU45FuXXX", "aBRKtreXQF3uD2MYYY");
-CamundaOperateClient client = new CamundaOperateClient.Builder().authentication(sa)
-    .operateUrl("https://bru-2.operate.camunda.io/757dbc30-5127-4bed-XXXX-XXXXXXXXXXXX").build();
+// properties you need to provide
+URL operateUrl = URI.create("http://localhost:8081").toURL();
+SimpleCredential credentials = new SimpleCredential("demo", "demo", operateUrl, Duration.ofMinutes(10));
+// bootstrapping
+SimpleAuthentication authentication = new SimpleAuthentication(credentials);
+ObjectMapper objectMapper = new ObjectMapper();
+CamundaOperateClientConfiguration configuration = new CamundaOperateClientConfiguration(authentication, operateUrl, objectMapper, HttpClients.createDefault());
+CamundaOperateClient client = new CamundaOperateClient(configuration);
 ```
 
-You can also specify the OAuth-URL and audience, for example if you connect to a Camunda TEST system:
-
-```
-SaasAuthentication sa = new SaasAuthentication("https://login.cloud.camunda.io/oauth/token", "operate.camunda.io", 2~nB1MwkUU45FuXXX", "aBRKtreXQF3uD2MYYY");
-```
-
-To connect to the **Local** Operate with **Identity & Keycloak**, you need to use the **SelfManagedAuthentication**. The SelfManagedAuthentication requires the clientId and clientSecret. You can also change the Keycloak realm and the keycloakUrl depending on your installation.
+Build a Camunda Operate client with identity authentication:
 
 ```java
-SelfManagedAuthentication sma = new SelfManagedAuthentication().clientId("java").clientSecret("foTPogjlI0hidwbDZcYFWzmU8FOQwLx0").baseUrl("http://localhost:18080").keycloakRealm("camunda-platform");
-CamundaOperateClient client = new CamundaOperateClient.Builder().authentication(sma)
-    .operateUrl("http://localhost:8081/").build();
+// properties you need to provide
+String clientId = "";
+String clientSecret = "";
+String audience = "operate-api";
+URL operateUrl = URI.create("http://localhost:8081").toURL();
+URL authUrl = URI.create("http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token");
+// bootstrapping
+JwtCredential credentials = new JwtCredential(clientId, clientSecret, audience, authUrl);
+ObjectMapper objectMapper = new ObjectMapper();
+JwtAuthentication authentication = new JwtAuthentication(credentials, objectMapper);
+CamundaOperateClientConfiguration configuration = new CamundaOperateClientConfiguration(authentication, operateUrl, objectMapper, HttpClients.createDefault());
+CamundaOperateClient client = new CamundaOperateClient(configuration);
+```
+
+Build a Camunda Operate client for Saas:
+
+```java
+String region = "";
+String clusterId = "";
+String clientId = "";
+String clientSecret = "";
+// bootstrapping
+URL operateUrl = URI.create("https://"+ region +".operate.camunda.io/" + clusterId).toURL();
+URL authUrl = URI.create("https://login.cloud.camunda.io/oauth/token");
+JwtCredential credentials = new JwtCredential(clientId, clientSecret, "operate.camunda.io", authUrl);
+ObjectMapper objectMapper = new ObjectMapper();
+JwtAuthentication authentication = new JwtAuthentication(credentials, objectMapper);
+CamundaOperateClientConfiguration configuration = new CamundaOperateClientConfiguration(authentication, operateUrl, objectMapper, HttpClients.createDefault());
+CamundaOperateClient client = new CamundaOperateClient(configuration);
 ```
 
 ## Getting and Searching
 
-When you search objects, you can get results as List or as SearchResult. The SearchResult gives you a sortValues that you can use to paginate your results : 
+When you search objects, you can get results as List or as SearchResult. The SearchResult gives you a sortValues that you can use to paginate your results :
 
 ```java
 SearchQuery query = new SearchQuery.Builder().filter(someFilter).sort(new Sort("name", SortOrder.ASC)).size(20).searchAfter(previousResult.getSortValues()).build();
@@ -75,7 +184,7 @@ SearchQuery instanceQuery = new SearchQuery.Builder().filter(instanceFilter).siz
 List<ProcessInstance> list = client.searchProcessInstances(instanceQuery);
 
 SearchResult<ProcessInstance> result = client.searchProcessInstanceResults(instanceQuery);
-       
+
 //get a process instance by its key
 ProcessInstance instance = client.getProcessInstance(instances.get(0).getKey());
 ```
@@ -89,7 +198,7 @@ FlownodeInstanceFilter flownodeFilter = new FlownodeInstanceFilter.Builder()
 SearchQuery flownodeQuery = new SearchQuery.Builder().filter(flownodeFilter).size(20).sort(new Sort("state", SortOrder.ASC)).build();
 
 List<FlownodeInstance> flownodes = client.searchFlownodeInstances(flownodeQuery);
-        
+
 //get a flownode instance by its key
 FlownodeInstance flownodes = client.getFlownodeInstance(flownodes.get(0).getKey());
 ```
@@ -102,50 +211,23 @@ VariableFilter variableFilter = new VariableFilter.Builder().processInstanceKey(
  SearchQuery varQuery = new SearchQuery.Builder().filter(variableFilter).size(5).sort(new Sort("name", SortOrder.ASC)).build();
 
 List<Variable> variables = client.searchVariables(varQuery);
-        
+
 //get a variable by its key
 Variable var = client.getVariable(variables.get(0).getKey());
 ```
 
 ### Incidents
 
-```java            
+```java
 //search incidents based on filters
 IncidentFilter incidentFilter = new IncidentFilter.Builder().creationTime(new DateFilter(new Date(), DateFilterRange.YEAR)).build();
 SearchQuery incidentQuery = new SearchQuery.Builder().filter(incidentFilter).size(20).sort(new Sort("state", SortOrder.ASC)).build();
 List<Incident> incidents = client.searchIncidents(incidentQuery);
-        
+
 //get a incident by its key
 Incident incident = client.getIncident(incidents.get(0).getKey());
 ```
 
-
-
-## Use the Beta client
-If you're using an older version of Camunda SaaS or you're having a local setup without Keycloak, you could also query the same APIs as Operate UI. In such a case, you might want to use the Beta client :
-
-```java
-SimpleAuthentication sa = new SimpleAuthentication("demo", "demo", "http://localhost:8081");
-CamundaOperateClient client = new CamundaOperateClient.Builder().beta().operateUrl("http://localhost:8081").authentication(sa).build();
-
-JsonNode json = ((CamundaOperateBetaClient) client).getFlowNodeStates(2L);
-        
-AuditTrail auditTrail = ((CamundaOperateBetaClient) client).getAuditTrail(2L);
-```
-
-Obviously, as soon as the exposed APIs will be sufficient, we should get rid of this Beta client.
-
-# use it in your project
-You can import it to your maven or gradle project as a dependency
-
-```xml
-<dependency>
-	<groupId>io.camunda</groupId>
-	<artifactId>camunda-operate-client-java</artifactId>
-	<version>8.3.0.1</version>
-</dependency>
-```
-
-# Note
+## Note
 A similar library is available for the Tasklist API of Camunda Platform 8 here:
 [camunda-tasklist-client-java](https://github.com/camunda-community-hub/camunda-tasklist-client-java)
