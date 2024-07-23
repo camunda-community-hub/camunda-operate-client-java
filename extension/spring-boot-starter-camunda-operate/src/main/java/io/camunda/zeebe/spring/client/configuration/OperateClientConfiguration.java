@@ -45,6 +45,11 @@ public class OperateClientConfiguration {
 
   private String operateUrl() {
     // TODO actually return something
-    return "";
+    if (properties != null
+        && properties.operate() != null
+        && properties.operate().baseUrl() != null) {
+      return properties.operate().baseUrl();
+    }
+    return legacyProperties.baseUrl();
   }
 }
