@@ -46,6 +46,7 @@
   <modules>
     <module>extension</module>
     <module>examples</module>
+    <module>extension/java-client-operate-compat</module>
   </modules>
 
   <dependencyManagement>
@@ -87,6 +88,11 @@
       <dependency>
         <groupId>io.camunda.spring</groupId>
         <artifactId>java-client-operate</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.camunda.spring</groupId>
+        <artifactId>java-client-operate-compat</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
