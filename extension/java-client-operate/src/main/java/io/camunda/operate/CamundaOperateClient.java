@@ -30,11 +30,6 @@ public class CamundaOperateClient {
     this(buildOperateHttpClient(configuration));
   }
 
-  @Deprecated
-  public static CamundaOperateClientBuilder builder() {
-    return new CamundaOperateClientBuilder();
-  }
-
   private static HttpClient buildOperateHttpClient(
       CamundaOperateClientConfiguration configuration) {
     // load the config map
