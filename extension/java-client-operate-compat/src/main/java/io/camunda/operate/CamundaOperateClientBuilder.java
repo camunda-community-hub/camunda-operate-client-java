@@ -8,7 +8,8 @@ import java.net.URI;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 
 @Deprecated
-public class CamundaOperateClientBuilder {
+public class CamundaOperateClientBuilder
+    implements io.camunda.operate.spi.CamundaOperateClientBuilder {
   private String operateUrl;
   private io.camunda.common.auth.Authentication authentication;
 

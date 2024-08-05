@@ -8,6 +8,7 @@ import io.camunda.operate.http.DefaultHttpClient;
 import io.camunda.operate.http.HttpClient;
 import io.camunda.operate.model.*;
 import io.camunda.operate.search.SearchQuery;
+import io.camunda.operate.spi.CamundaOperateClientBuilder;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import java.io.ByteArrayInputStream;
@@ -17,6 +18,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 public class CamundaOperateClient {
 
@@ -32,7 +34,12 @@ public class CamundaOperateClient {
 
   @Deprecated
   public static CamundaOperateClientBuilder builder() {
-    return new CamundaOperateClientBuilder();
+    return ServiceLoader.load(CamundaOperateClientBuilder.class)
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "To use the legacy builder, please include java-client-operate-compat"));
   }
 
   private static HttpClient buildOperateHttpClient(
