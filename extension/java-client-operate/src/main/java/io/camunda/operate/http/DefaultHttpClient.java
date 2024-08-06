@@ -22,13 +22,9 @@ import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicHeader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Default Http Client powered by Apache HttpClient */
 public class DefaultHttpClient implements HttpClient {
-
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final Map<TypeReference<?>, String> endpointMap;
   private final CloseableHttpClient httpClient;
   private final Authentication authentication;
