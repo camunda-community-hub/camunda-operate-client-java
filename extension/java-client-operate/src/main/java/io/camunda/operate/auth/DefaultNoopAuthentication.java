@@ -1,6 +1,5 @@
 package io.camunda.operate.auth;
 
-import io.camunda.operate.exception.SdkException;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ public class DefaultNoopAuthentication implements Authentication {
 
   @Override
   public void resetToken() {
-    throw new SdkException(errorMessage);
+    throw new UnsupportedOperationException(errorMessage);
   }
 
   @Override
