@@ -56,11 +56,6 @@
       <artifactId>java-client-operate</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>spring-boot-starter-camunda-sdk</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
@@ -93,8 +88,6 @@
               </ignoredUnusedDeclaredDependency>
               <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-test
               </ignoredUnusedDeclaredDependency>
-              <ignoredUnusedDeclaredDependency>io.camunda:spring-boot-starter-camunda-sdk</ignoredUnusedDeclaredDependency>
-
             </ignoredUnusedDeclaredDependencies>
           </configuration>
         </plugin>

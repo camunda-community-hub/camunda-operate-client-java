@@ -43,13 +43,13 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>spring-boot-starter-camunda-sdk</artifactId>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -63,21 +63,4 @@
         <scope>test</scope>
       </dependency>
     </dependencies>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <configuration>
-            <ignoredUnusedDeclaredDependencies>
-              <ignoredUnusedDeclaredDependency>io.camunda:spring-boot-starter-camunda-sdk</ignoredUnusedDeclaredDependency>
-            </ignoredUnusedDeclaredDependencies>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-
 </project>
