@@ -7,7 +7,7 @@ public class DecisionInstance {
   private String id;
   private Long key;
   private DecisionState state;
-  private String evaluationDate;
+  private OperateDate evaluationDate;
   private String evaluationFailure;
   private Long processDefinitionKey;
   private Long processInstanceKey;
@@ -45,11 +45,11 @@ public class DecisionInstance {
     this.state = state;
   }
 
-  public String getEvaluationDate() {
+  public OperateDate getEvaluationDate() {
     return evaluationDate;
   }
 
-  public void setEvaluationDate(String evaluationDate) {
+  public void setEvaluationDate(OperateDate evaluationDate) {
     this.evaluationDate = evaluationDate;
   }
 

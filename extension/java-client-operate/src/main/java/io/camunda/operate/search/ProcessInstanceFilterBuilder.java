@@ -1,7 +1,7 @@
 package io.camunda.operate.search;
 
+import io.camunda.operate.model.OperateDate;
 import io.camunda.operate.model.ProcessInstanceState;
-import java.util.Date;
 
 public class ProcessInstanceFilterBuilder {
 
@@ -31,12 +31,12 @@ public class ProcessInstanceFilterBuilder {
     return this;
   }
 
-  public ProcessInstanceFilterBuilder startDate(Date startDate) {
+  public ProcessInstanceFilterBuilder startDate(OperateDate startDate) {
     filter.setStartDate(startDate);
     return this;
   }
 
-  public ProcessInstanceFilterBuilder endDate(Date endDate) {
+  public ProcessInstanceFilterBuilder endDate(OperateDate endDate) {
     filter.setEndDate(endDate);
     return this;
   }

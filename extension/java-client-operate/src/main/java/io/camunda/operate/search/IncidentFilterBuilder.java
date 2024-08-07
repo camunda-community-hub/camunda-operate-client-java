@@ -1,6 +1,6 @@
 package io.camunda.operate.search;
 
-import java.util.Date;
+import io.camunda.operate.model.OperateDate;
 
 public class IncidentFilterBuilder {
 
@@ -35,7 +35,7 @@ public class IncidentFilterBuilder {
     return this;
   }
 
-  public IncidentFilterBuilder creationTime(Date creationTime) {
+  public IncidentFilterBuilder creationTime(OperateDate creationTime) {
     filter.setCreationTime(creationTime);
     return this;
   }
