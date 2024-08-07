@@ -29,9 +29,7 @@ public class ProcessInstanceController {
 
   @GetMapping
   public List<ProcessInstanceWrapper> getProcessInstances() throws OperateException {
-    return camundaOperateClient
-        .searchProcessInstances(SearchQuery.<ProcessInstance>builder().build())
-        .stream()
+    return camundaOperateClient.searchProcessInstances(SearchQuery.builder().build()).stream()
         .map(
             pi -> {
               try {
