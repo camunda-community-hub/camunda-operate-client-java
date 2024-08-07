@@ -240,7 +240,7 @@ public class CamundaOperateClient {
   }
 
   private void assertSearchQueryType(Class<? extends Filter> type, SearchQuery query) {
-    if (!query.getFilter().getClass().isAssignableFrom(type)) {
+    if (query.getFilter() != null && !query.getFilter().getClass().isAssignableFrom(type)) {
       throw new IllegalStateException(
           "Expected filter of type " + type + " but got " + query.getFilter().getClass());
     }
