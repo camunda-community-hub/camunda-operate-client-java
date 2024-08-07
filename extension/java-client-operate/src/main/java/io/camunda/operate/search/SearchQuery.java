@@ -42,11 +42,14 @@ public class SearchQuery {
     this.searchAfter = searchAfter;
   }
 
-  public static class Builder {
+  public static Builder builder() {
+    return new Builder();
+  }
 
+  public static class Builder {
     private Filter filter;
     private Integer size;
-    private List<Sort> sorts = new ArrayList<>();
+    private final List<Sort> sorts = new ArrayList<>();
     private List<Object> searchAfter = null;
 
     public Builder() {}
