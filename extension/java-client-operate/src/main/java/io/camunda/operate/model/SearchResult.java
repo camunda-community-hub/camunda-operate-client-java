@@ -5,9 +5,7 @@ import java.util.List;
 
 public class SearchResult<T> implements Iterable<T> {
   private List<T> items;
-
   private Integer total;
-
   private List<Object> sortValues;
 
   public List<T> getItems() {
