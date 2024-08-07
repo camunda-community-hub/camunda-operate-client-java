@@ -115,9 +115,9 @@ public class CamundaOperateClient {
     return searchProcessDefinitionResults(query).getItems();
   }
 
-  public SearchResult<ProcessDefinition> searchProcessDefinitionResults(
-      SearchQuery query) throws OperateException {
-    assertSearchQueryType(ProcessDefinitionFilter.class,query);
+  public SearchResult<ProcessDefinition> searchProcessDefinitionResults(SearchQuery query)
+      throws OperateException {
+    assertSearchQueryType(ProcessDefinitionFilter.class, query);
     return httpClient.post(searchProcessDefinition, query);
   }
 
@@ -126,31 +126,29 @@ public class CamundaOperateClient {
     return searchDecisionDefinitionResults(query).getItems();
   }
 
-  public SearchResult<DecisionDefinition> searchDecisionDefinitionResults(
-      SearchQuery query) throws OperateException {
-    assertSearchQueryType(DecisionDefinitionFilter.class,query);
+  public SearchResult<DecisionDefinition> searchDecisionDefinitionResults(SearchQuery query)
+      throws OperateException {
+    assertSearchQueryType(DecisionDefinitionFilter.class, query);
     return httpClient.post(searchDecisionDefinition, query);
   }
 
-  public List<DecisionInstance> searchDecisionInstances(SearchQuery query)
-      throws OperateException {
+  public List<DecisionInstance> searchDecisionInstances(SearchQuery query) throws OperateException {
     return searchDecisionInstanceResults(query).getItems();
   }
 
-  public SearchResult<DecisionInstance> searchDecisionInstanceResults(
-      SearchQuery query) throws OperateException {
-    assertSearchQueryType(DecisionInstanceFilter.class,query);
+  public SearchResult<DecisionInstance> searchDecisionInstanceResults(SearchQuery query)
+      throws OperateException {
+    assertSearchQueryType(DecisionInstanceFilter.class, query);
     return httpClient.post(searchDecisionInstance, query);
   }
 
-  public List<FlowNodeInstance> searchFlowNodeInstances(SearchQuery query)
-      throws OperateException {
+  public List<FlowNodeInstance> searchFlowNodeInstances(SearchQuery query) throws OperateException {
     return searchFlowNodeInstanceResults(query).getItems();
   }
 
-  public SearchResult<FlowNodeInstance> searchFlowNodeInstanceResults(
-      SearchQuery query) throws OperateException {
-    assertSearchQueryType(FlowNodeInstanceFilter.class,query);
+  public SearchResult<FlowNodeInstance> searchFlowNodeInstanceResults(SearchQuery query)
+      throws OperateException {
+    assertSearchQueryType(FlowNodeInstanceFilter.class, query);
     return httpClient.post(searchFlowNodeInstance, query);
   }
 
@@ -158,31 +156,29 @@ public class CamundaOperateClient {
     return searchVariableResults(query).getItems();
   }
 
-  public SearchResult<Variable> searchVariableResults(SearchQuery query)
-      throws OperateException {
-    assertSearchQueryType(VariableFilter.class,query);
+  public SearchResult<Variable> searchVariableResults(SearchQuery query) throws OperateException {
+    assertSearchQueryType(VariableFilter.class, query);
     return httpClient.post(searchVariable, query);
   }
 
-  public List<ProcessInstance> searchProcessInstances(SearchQuery query)
-      throws OperateException {
+  public List<ProcessInstance> searchProcessInstances(SearchQuery query) throws OperateException {
     return searchProcessInstanceResults(query).getItems();
   }
 
-  public SearchResult<ProcessInstance> searchProcessInstanceResults(
-      SearchQuery query) throws OperateException {
-    assertSearchQueryType(ProcessInstanceFilter.class,query);
+  public SearchResult<ProcessInstance> searchProcessInstanceResults(SearchQuery query)
+      throws OperateException {
+    assertSearchQueryType(ProcessInstanceFilter.class, query);
     return httpClient.post(searchProcessInstance, query);
   }
 
-  public List<DecisionRequirements> searchDecisionRequirements(
-      SearchQuery query) throws OperateException {
+  public List<DecisionRequirements> searchDecisionRequirements(SearchQuery query)
+      throws OperateException {
     return searchDecisionRequirementsResults(query).getItems();
   }
 
-  public SearchResult<DecisionRequirements> searchDecisionRequirementsResults(
-      SearchQuery query) throws OperateException {
-    assertSearchQueryType(DecisionRequirementsFilter.class,query);
+  public SearchResult<DecisionRequirements> searchDecisionRequirementsResults(SearchQuery query)
+      throws OperateException {
+    assertSearchQueryType(DecisionRequirementsFilter.class, query);
     return httpClient.post(searchDecisionRequirements, query);
   }
 
@@ -190,9 +186,8 @@ public class CamundaOperateClient {
     return searchIncidentResults(query).getItems();
   }
 
-  public SearchResult<Incident> searchIncidentResults(SearchQuery query)
-      throws OperateException {
-    assertSearchQueryType(IncidentFilter.class,query);
+  public SearchResult<Incident> searchIncidentResults(SearchQuery query) throws OperateException {
+    assertSearchQueryType(IncidentFilter.class, query);
     return httpClient.post(searchIncident, query);
   }
 
@@ -244,9 +239,10 @@ public class CamundaOperateClient {
     return Map.of("key", String.valueOf(key));
   }
 
-  private void assertSearchQueryType(Class<? extends Filter> type,SearchQuery query) {
-    if(!query.getFilter().getClass().isAssignableFrom(type)) {
-      throw new IllegalStateException("Expected filter of type " + type + " but got " + query.getFilter().getClass());
+  private void assertSearchQueryType(Class<? extends Filter> type, SearchQuery query) {
+    if (!query.getFilter().getClass().isAssignableFrom(type)) {
+      throw new IllegalStateException(
+          "Expected filter of type " + type + " but got " + query.getFilter().getClass());
     }
   }
 }
