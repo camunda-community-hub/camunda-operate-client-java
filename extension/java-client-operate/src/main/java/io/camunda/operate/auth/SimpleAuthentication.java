@@ -3,6 +3,8 @@ package io.camunda.operate.auth;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -82,11 +84,16 @@ public class SimpleAuthentication implements Authentication {
     if (token == null || sessionTimeout.isBefore(LocalDateTime.now())) {
       token = retrieveToken();
     }
-    return Map.of(
+    Map<String, String> headers = new HashMap<>();
+    if (token.csrfToken() != null) {
+      headers.put(CSRF_HEADER, token.csrfToken());
+    }
+    headers.put(
         "Cookie",
-        token.sessionCookie() + "; " + token.csrfCookie(),
-        CSRF_HEADER,
-        token.csrfToken());
+        Stream.of(token.sessionCookie(), token.csrfCookie())
+            .filter(Objects::nonNull)
+            .collect(Collectors.joining(";")));
+    return headers;
   }
 
   @Override
