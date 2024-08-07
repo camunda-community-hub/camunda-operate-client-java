@@ -156,7 +156,7 @@ CamundaOperateClient client = new CamundaOperateClient(configuration);
 When you search objects, you can get results as List or as SearchResult. The SearchResult gives you a sortValues that you can use to paginate your results :
 
 ```java
-SearchQuery query = new SearchQuery.Builder().filter(someFilter).sort(new Sort("name", SortOrder.ASC)).size(20).searchAfter(previousResult.getSortValues()).build();
+SearchQuery query = SearchQuery.builder().filter(someFilter).sort(new Sort("name", SortOrder.ASC)).size(20).searchAfter(previousResult.getSortValues()).build();
 ```
 
 ### Process definitions
@@ -166,8 +166,8 @@ SearchQuery query = new SearchQuery.Builder().filter(someFilter).sort(new Sort("
 ProcessDefinition def = client.getProcessDefinition(1L);
 
 //Search process definitions
-ProcessDefinitionFilter processDefinitionFilter = new ProcessDefinitionFilter.Builder().name("Customer Onboarding").build();
-SearchQuery procDefQuery = new SearchQuery.Builder().filter(processDefinitionFilter).size(20).sort(new Sort("version", SortOrder.ASC)).build();
+ProcessDefinitionFilter processDefinitionFilter = ProcessDefinitionFilter.builder().name("Customer Onboarding").build();
+SearchQuery<ProcessDefinition> procDefQuery = SearchQuery.<ProcessDefinition>builder().filter(processDefinitionFilter).size(20).sort(new Sort("version", SortOrder.ASC)).build();
 
 List<ProcessDefinition> list = client.searchProcessDefinitions(procDefQuery);
 
@@ -178,8 +178,8 @@ SearchResult<ProcessDefinition> result = client.searchProcessDefinitionResults(p
 
 ```java
 //search process instances based on filters
-ProcessInstanceFilter instanceFilter = new ProcessInstanceFilter.Builder().bpmnProcessId("customer_onboarding_en").startDate(new DateFilter(new Date(), DateFilterRange.MONTH)).build();
-SearchQuery instanceQuery = new SearchQuery.Builder().filter(instanceFilter).size(20).sort(new Sort("state", SortOrder.ASC)).build();
+ProcessInstanceFilter instanceFilter = ProcessInstanceFilter.builder().bpmnProcessId("customer_onboarding_en").startDate(OperateDate.filter(new Date(), DateFilterRange.MONTH)).build();
+SearchQuery<ProcessInstance> instanceQuery = SearchQuery.<ProcessInstance>builder().filter(instanceFilter).size(20).sort(new Sort("state", SortOrder.ASC)).build();
 
 List<ProcessInstance> list = client.searchProcessInstances(instanceQuery);
 
@@ -187,45 +187,6 @@ SearchResult<ProcessInstance> result = client.searchProcessInstanceResults(insta
 
 //get a process instance by its key
 ProcessInstance instance = client.getProcessInstance(instances.get(0).getKey());
-```
-
-### Flow Node Instances
-
-```java
-//search flow node instances based on filters
-FlownodeInstanceFilter flownodeFilter = new FlownodeInstanceFilter.Builder()
-.processInstanceKey(4L).startDate(new DateFilter(new Date(), DateFilterRange.YEAR)).build();
-SearchQuery flownodeQuery = new SearchQuery.Builder().filter(flownodeFilter).size(20).sort(new Sort("state", SortOrder.ASC)).build();
-
-List<FlownodeInstance> flownodes = client.searchFlownodeInstances(flownodeQuery);
-
-//get a flownode instance by its key
-FlownodeInstance flownodes = client.getFlownodeInstance(flownodes.get(0).getKey());
-```
-
-### Variables
-
-```java
-//search variables based on filters
-VariableFilter variableFilter = new VariableFilter.Builder().processInstanceKey(4L).build();
- SearchQuery varQuery = new SearchQuery.Builder().filter(variableFilter).size(5).sort(new Sort("name", SortOrder.ASC)).build();
-
-List<Variable> variables = client.searchVariables(varQuery);
-
-//get a variable by its key
-Variable var = client.getVariable(variables.get(0).getKey());
-```
-
-### Incidents
-
-```java
-//search incidents based on filters
-IncidentFilter incidentFilter = new IncidentFilter.Builder().creationTime(new DateFilter(new Date(), DateFilterRange.YEAR)).build();
-SearchQuery incidentQuery = new SearchQuery.Builder().filter(incidentFilter).size(20).sort(new Sort("state", SortOrder.ASC)).build();
-List<Incident> incidents = client.searchIncidents(incidentQuery);
-
-//get a incident by its key
-Incident incident = client.getIncident(incidents.get(0).getKey());
 ```
 
 ## Note
