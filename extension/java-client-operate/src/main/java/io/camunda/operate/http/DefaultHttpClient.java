@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import io.camunda.operate.auth.Authentication;
-import io.camunda.operate.exception.SdkException;
-import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -22,13 +20,9 @@ import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicHeader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Default Http Client powered by Apache HttpClient */
 public class DefaultHttpClient implements HttpClient {
-
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final Map<TypeReference<?>, String> endpointMap;
   private final CloseableHttpClient httpClient;
   private final Authentication authentication;
@@ -60,7 +54,8 @@ public class DefaultHttpClient implements HttpClient {
     try {
       return httpClient.execute(httpGet, handleResponse(responseType));
     } catch (Exception e) {
-      throw new SdkException(String.format("Failed GET to %s, due to %s", url, e.getMessage()), e);
+      throw new RuntimeException(
+          String.format("Failed GET to %s, due to %s", url, e.getMessage()), e);
     }
   }
 
@@ -81,7 +76,7 @@ public class DefaultHttpClient implements HttpClient {
     try {
       return httpClient.execute(httpPost, handleResponse(responseType));
     } catch (Exception e) {
-      throw new SdkException(
+      throw new RuntimeException(
           String.format("Failed POST to %s with body %s, due to %s", url, data, e.getMessage()), e);
     }
   }
@@ -95,7 +90,7 @@ public class DefaultHttpClient implements HttpClient {
     try {
       return httpClient.execute(httpDelete, handleResponse(responseType));
     } catch (Exception e) {
-      throw new SdkException(
+      throw new RuntimeException(
           String.format("Failed DELETE to %s, due to %s", url, e.getMessage()), e);
     }
   }
@@ -124,10 +119,10 @@ public class DefaultHttpClient implements HttpClient {
         responseType, objectMapper, this::handleErrorResponse);
   }
 
-  private SdkException handleErrorResponse(Integer code) {
+  private RuntimeException handleErrorResponse(Integer code) {
     if (code == HttpStatus.SC_UNAUTHORIZED || code == HttpStatus.SC_FORBIDDEN) {
       authentication.resetToken();
     }
-    return new SdkException("Response not successful: " + code);
+    return new RuntimeException("Response not successful: " + code);
   }
 }

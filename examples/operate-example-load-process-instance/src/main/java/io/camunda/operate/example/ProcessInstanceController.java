@@ -29,21 +29,21 @@ public class ProcessInstanceController {
 
   @GetMapping
   public List<ProcessInstanceWrapper> getProcessInstances() throws OperateException {
-    return camundaOperateClient.searchProcessInstances(new SearchQuery.Builder().build()).stream()
+    return camundaOperateClient.searchProcessInstances(SearchQuery.builder().build()).stream()
         .map(
             pi -> {
               try {
                 return new ProcessInstanceWrapper(
                     pi,
                     camundaOperateClient.searchFlowNodeInstances(
-                        new SearchQuery.Builder()
+                        SearchQuery.builder()
                             .filter(
                                 FlowNodeInstanceFilter.builder()
                                     .processInstanceKey(pi.getKey())
                                     .build())
                             .build()),
                     camundaOperateClient.searchVariables(
-                        new SearchQuery.Builder()
+                        SearchQuery.builder()
                             .filter(
                                 VariableFilter.builder().processInstanceKey(pi.getKey()).build())
                             .build()));

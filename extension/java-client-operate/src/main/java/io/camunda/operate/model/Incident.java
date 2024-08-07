@@ -1,14 +1,12 @@
 package io.camunda.operate.model;
 
-import java.util.Date;
-
 public class Incident {
   private Long key;
   private Long processDefinitionKey;
   private Long processInstanceKey;
   private String type;
   private String message;
-  private Date creationTime;
+  private OperateDate creationTime;
   private String state;
   private String tenantId;
 
@@ -52,11 +50,11 @@ public class Incident {
     this.message = message;
   }
 
-  public Date getCreationTime() {
+  public OperateDate getCreationTime() {
     return creationTime;
   }
 
-  public void setCreationTime(Date creationTime) {
+  public void setCreationTime(OperateDate creationTime) {
     this.creationTime = creationTime;
   }
 

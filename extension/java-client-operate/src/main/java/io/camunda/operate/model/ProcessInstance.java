@@ -1,15 +1,13 @@
 package io.camunda.operate.model;
 
-import java.util.Date;
-
 public class ProcessInstance {
   private Long key;
   private Long processVersion;
   private String bpmnProcessId;
   private Long parentKey;
   private Long parentFlowNodeInstanceKey;
-  private Date startDate;
-  private Date endDate;
+  private OperateDate startDate;
+  private OperateDate endDate;
   private ProcessInstanceState state;
   private Long processDefinitionKey;
   private String tenantId;
@@ -54,19 +52,19 @@ public class ProcessInstance {
     this.parentFlowNodeInstanceKey = parentFlowNodeInstanceKey;
   }
 
-  public Date getStartDate() {
+  public OperateDate getStartDate() {
     return startDate;
   }
 
-  public void setStartDate(Date startDate) {
+  public void setStartDate(OperateDate startDate) {
     this.startDate = startDate;
   }
 
-  public Date getEndDate() {
+  public OperateDate getEndDate() {
     return endDate;
   }
 
-  public void setEndDate(Date endDate) {
+  public void setEndDate(OperateDate endDate) {
     this.endDate = endDate;
   }
 

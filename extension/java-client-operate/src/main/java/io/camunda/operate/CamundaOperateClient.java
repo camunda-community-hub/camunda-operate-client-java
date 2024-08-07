@@ -7,7 +7,16 @@ import io.camunda.operate.exception.OperateException;
 import io.camunda.operate.http.DefaultHttpClient;
 import io.camunda.operate.http.HttpClient;
 import io.camunda.operate.model.*;
+import io.camunda.operate.search.DecisionDefinitionFilter;
+import io.camunda.operate.search.DecisionInstanceFilter;
+import io.camunda.operate.search.DecisionRequirementsFilter;
+import io.camunda.operate.search.Filter;
+import io.camunda.operate.search.FlowNodeInstanceFilter;
+import io.camunda.operate.search.IncidentFilter;
+import io.camunda.operate.search.ProcessDefinitionFilter;
+import io.camunda.operate.search.ProcessInstanceFilter;
 import io.camunda.operate.search.SearchQuery;
+import io.camunda.operate.search.VariableFilter;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import java.io.ByteArrayInputStream;
@@ -108,6 +117,7 @@ public class CamundaOperateClient {
 
   public SearchResult<ProcessDefinition> searchProcessDefinitionResults(SearchQuery query)
       throws OperateException {
+    assertSearchQueryType(ProcessDefinitionFilter.class, query);
     return httpClient.post(searchProcessDefinition, query);
   }
 
@@ -118,6 +128,7 @@ public class CamundaOperateClient {
 
   public SearchResult<DecisionDefinition> searchDecisionDefinitionResults(SearchQuery query)
       throws OperateException {
+    assertSearchQueryType(DecisionDefinitionFilter.class, query);
     return httpClient.post(searchDecisionDefinition, query);
   }
 
@@ -127,6 +138,7 @@ public class CamundaOperateClient {
 
   public SearchResult<DecisionInstance> searchDecisionInstanceResults(SearchQuery query)
       throws OperateException {
+    assertSearchQueryType(DecisionInstanceFilter.class, query);
     return httpClient.post(searchDecisionInstance, query);
   }
 
@@ -136,6 +148,7 @@ public class CamundaOperateClient {
 
   public SearchResult<FlowNodeInstance> searchFlowNodeInstanceResults(SearchQuery query)
       throws OperateException {
+    assertSearchQueryType(FlowNodeInstanceFilter.class, query);
     return httpClient.post(searchFlowNodeInstance, query);
   }
 
@@ -144,6 +157,7 @@ public class CamundaOperateClient {
   }
 
   public SearchResult<Variable> searchVariableResults(SearchQuery query) throws OperateException {
+    assertSearchQueryType(VariableFilter.class, query);
     return httpClient.post(searchVariable, query);
   }
 
@@ -153,6 +167,7 @@ public class CamundaOperateClient {
 
   public SearchResult<ProcessInstance> searchProcessInstanceResults(SearchQuery query)
       throws OperateException {
+    assertSearchQueryType(ProcessInstanceFilter.class, query);
     return httpClient.post(searchProcessInstance, query);
   }
 
@@ -163,6 +178,7 @@ public class CamundaOperateClient {
 
   public SearchResult<DecisionRequirements> searchDecisionRequirementsResults(SearchQuery query)
       throws OperateException {
+    assertSearchQueryType(DecisionRequirementsFilter.class, query);
     return httpClient.post(searchDecisionRequirements, query);
   }
 
@@ -171,6 +187,7 @@ public class CamundaOperateClient {
   }
 
   public SearchResult<Incident> searchIncidentResults(SearchQuery query) throws OperateException {
+    assertSearchQueryType(IncidentFilter.class, query);
     return httpClient.post(searchIncident, query);
   }
 
@@ -220,5 +237,12 @@ public class CamundaOperateClient {
 
   private Map<String, String> key(Long key) {
     return Map.of("key", String.valueOf(key));
+  }
+
+  private void assertSearchQueryType(Class<? extends Filter> type, SearchQuery query) {
+    if (query.getFilter() != null && !query.getFilter().getClass().isAssignableFrom(type)) {
+      throw new IllegalStateException(
+          "Expected filter of type " + type + " but got " + query.getFilter().getClass());
+    }
   }
 }

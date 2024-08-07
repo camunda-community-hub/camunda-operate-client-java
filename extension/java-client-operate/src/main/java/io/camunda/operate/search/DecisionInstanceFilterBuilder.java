@@ -4,6 +4,7 @@ import io.camunda.operate.model.DecisionInstanceInput;
 import io.camunda.operate.model.DecisionInstanceOutput;
 import io.camunda.operate.model.DecisionState;
 import io.camunda.operate.model.DecisionType;
+import io.camunda.operate.model.OperateDate;
 import java.util.List;
 
 public class DecisionInstanceFilterBuilder {
@@ -29,7 +30,7 @@ public class DecisionInstanceFilterBuilder {
     return this;
   }
 
-  public DecisionInstanceFilterBuilder evaluationDate(String evaluationDate) {
+  public DecisionInstanceFilterBuilder evaluationDate(OperateDate evaluationDate) {
     filter.setEvaluationDate(evaluationDate);
     return this;
   }

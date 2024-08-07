@@ -30,7 +30,7 @@ public class TypeReferenceHttpClientResponseHandler<T> implements HttpClientResp
     T resp;
     if (200 <= response.getCode() && response.getCode() <= 299) {
       HttpEntity entity = response.getEntity();
-      String tmp = new String(Java8Utils.readAllBytes(entity.getContent()), StandardCharsets.UTF_8);
+      String tmp = new String(entity.getContent().readAllBytes(), StandardCharsets.UTF_8);
       resp = objectMapper.readValue(tmp, typeReference);
       EntityUtils.consume(entity);
       return resp;

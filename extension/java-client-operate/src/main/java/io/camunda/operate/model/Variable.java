@@ -2,17 +2,11 @@ package io.camunda.operate.model;
 
 public class Variable {
   private Long key;
-
   private Long processInstanceKey;
-
   private Long scopeKey;
-
   private String name;
-
   private String value;
-
   private Boolean truncated;
-
   private String tenantId;
 
   public Long getKey() {

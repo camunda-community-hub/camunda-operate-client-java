@@ -1,7 +1,7 @@
 package io.camunda.operate.search;
 
 import io.camunda.operate.model.FlowNodeInstanceState;
-import java.util.Date;
+import io.camunda.operate.model.OperateDate;
 
 public class FlowNodeInstanceFilterBuilder {
 
@@ -26,12 +26,12 @@ public class FlowNodeInstanceFilterBuilder {
     return this;
   }
 
-  public FlowNodeInstanceFilterBuilder startDate(Date startDate) {
+  public FlowNodeInstanceFilterBuilder startDate(OperateDate startDate) {
     filter.setStartDate(startDate);
     return this;
   }
 
-  public FlowNodeInstanceFilterBuilder endDate(Date endDate) {
+  public FlowNodeInstanceFilterBuilder endDate(OperateDate endDate) {
     filter.setEndDate(endDate);
     return this;
   }
