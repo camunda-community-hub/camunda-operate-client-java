@@ -24,11 +24,6 @@ public class JwtAuthentication implements Authentication {
     this.tokenResponseMapper = tokenResponseMapper;
   }
 
-  @Deprecated
-  public JwtCredential getJwtCredential() {
-    return jwtCredential;
-  }
-
   @Override
   public Map<String, String> getTokenHeader() {
     if (token == null || timeout == null || timeout.isBefore(LocalDateTime.now())) {
