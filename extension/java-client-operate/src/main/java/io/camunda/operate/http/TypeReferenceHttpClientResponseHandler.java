@@ -26,12 +26,16 @@ public class TypeReferenceHttpClientResponseHandler<T> implements HttpClientResp
   }
 
   @Override
-  public T handleResponse(ClassicHttpResponse response) throws HttpException, IOException {
+  public T handleResponse(ClassicHttpResponse response) throws IOException {
     T resp;
     if (200 <= response.getCode() && response.getCode() <= 299) {
       HttpEntity entity = response.getEntity();
-      String tmp = new String(Java8Utils.readAllBytes(entity.getContent()), StandardCharsets.UTF_8);
-      resp = objectMapper.readValue(tmp, typeReference);
+      String tmp = new String(entity.getContent().readAllBytes(), StandardCharsets.UTF_8);
+      if (typeReference.getType().equals(String.class)) {
+        resp = (T) tmp;
+      } else {
+        resp = objectMapper.readValue(tmp, typeReference);
+      }
       EntityUtils.consume(entity);
       return resp;
     } else {
