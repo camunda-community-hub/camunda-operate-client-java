@@ -72,7 +72,7 @@ public class JwtAuthentication implements Authentication {
 
   private HttpPost buildRequest() throws URISyntaxException {
     HttpPost httpPost = new HttpPost(jwtCredential.authUrl().toURI());
-    httpPost.addHeader("Content-Type", "application/json");
+    httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
     List<NameValuePair> formParams = new ArrayList<>();
     formParams.add(new BasicNameValuePair("grant_type", "client_credentials"));
     formParams.add(new BasicNameValuePair("client_id", jwtCredential.clientId()));
