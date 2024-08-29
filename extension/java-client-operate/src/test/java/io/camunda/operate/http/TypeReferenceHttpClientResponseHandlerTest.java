@@ -1,6 +1,5 @@
 package io.camunda.operate.http;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -103,7 +102,7 @@ public class TypeReferenceHttpClientResponseHandlerTest {
     when(httpResponse.getCode()).thenReturn(200);
     when(httpResponse.getEntity()).thenReturn(new StringEntity(expectedXml));
     String r = handler.handleResponse(httpResponse);
-    assertThat(r).isEqualTo(expectedXml);
+    assertEquals(expectedXml, r);
   }
 
   record Response(String id, String name) {}
