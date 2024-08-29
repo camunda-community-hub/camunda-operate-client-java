@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 
@@ -26,12 +25,16 @@ public class TypeReferenceHttpClientResponseHandler<T> implements HttpClientResp
   }
 
   @Override
-  public T handleResponse(ClassicHttpResponse response) throws HttpException, IOException {
+  public T handleResponse(ClassicHttpResponse response) throws IOException {
     T resp;
     if (200 <= response.getCode() && response.getCode() <= 299) {
       HttpEntity entity = response.getEntity();
       String tmp = new String(entity.getContent().readAllBytes(), StandardCharsets.UTF_8);
-      resp = objectMapper.readValue(tmp, typeReference);
+      if (typeReference.getType().equals(String.class)) {
+        resp = (T) tmp;
+      } else {
+        resp = objectMapper.readValue(tmp, typeReference);
+      }
       EntityUtils.consume(entity);
       return resp;
     } else {
