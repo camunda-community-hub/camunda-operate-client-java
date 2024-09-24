@@ -60,7 +60,7 @@ operate:
     profile: oidc
     enabled: true
     base-url: http://localhost:8081
-    auth-url: http://localhost:18080/auth/realms/camunda-platform/openid-connect/token
+    auth-url: http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token
     audience: operate-api
     client-id:
     client-secret:
