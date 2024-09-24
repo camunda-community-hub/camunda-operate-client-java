@@ -46,7 +46,7 @@ public class JwtAuthentication implements Authentication {
   }
 
   private TokenResponse retrieveToken() {
-    try (CloseableHttpClient client = HttpClients.createDefault()) {
+    try (CloseableHttpClient client = HttpClients.createSystem()) {
       HttpPost request = buildRequest();
       return client.execute(
           request,

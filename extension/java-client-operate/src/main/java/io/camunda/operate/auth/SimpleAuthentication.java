@@ -28,7 +28,7 @@ public class SimpleAuthentication implements Authentication {
   }
 
   private SimpleAuthToken retrieveToken() {
-    try (CloseableHttpClient client = HttpClients.createDefault()) {
+    try (CloseableHttpClient client = HttpClients.createSystem()) {
       HttpPost request = buildRequest(simpleCredential);
       SimpleAuthToken simpleAuthToken =
           client.execute(
