@@ -52,7 +52,7 @@ public class OperateClientConfiguration {
   @Bean("operateHttpClient")
   @ConditionalOnMissingBean(name = "operateHttpClient")
   public CloseableHttpClient operateHttpClient() {
-    return HttpClients.createDefault();
+    return HttpClients.createSystem();
   }
 
   @Bean
