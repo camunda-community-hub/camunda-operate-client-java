@@ -27,7 +27,8 @@ public class OperateClientConfigurationPropertiesProfileOidcTest {
     assertThat(properties.enabled()).isEqualTo(true);
     assertThat(properties.authUrl())
         .isEqualTo(
-            URI.create("http://localhost:18080/auth/realms/camunda-platform/openid-connect/token")
+            URI.create(
+                    "http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token")
                 .toURL());
   }
 }
