@@ -50,6 +50,11 @@ public class IncidentFilterBuilder {
     return this;
   }
 
+  public IncidentFilterBuilder jobKey(Long jobKey) {
+    filter.setJobKey(jobKey);
+    return this;
+  }
+
   public IncidentFilter build() {
     return filter;
   }
