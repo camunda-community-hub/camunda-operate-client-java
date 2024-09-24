@@ -9,6 +9,7 @@ public class Incident {
   private OperateDate creationTime;
   private String state;
   private String tenantId;
+  private Long jobKey;
 
   public Long getKey() {
     return key;
@@ -72,5 +73,13 @@ public class Incident {
 
   public void setTenantId(String tenantId) {
     this.tenantId = tenantId;
+  }
+
+  public Long getJobKey() {
+    return jobKey;
+  }
+
+  public void setJobKey(Long jobKey) {
+    this.jobKey = jobKey;
   }
 }
