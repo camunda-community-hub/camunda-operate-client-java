@@ -18,7 +18,7 @@
     <java.version>${version.java}</java.version>
     <maven.compiler.release>${java.version}</maven.compiler.release>
 
-    <zeebe.version>8.5.7</zeebe.version>
+    <zeebe.version>8.6.0</zeebe.version>
 
     <spring-boot.version>3.3.4</spring-boot.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
