@@ -34,6 +34,10 @@ public class SimpleAuthentication implements Authentication {
           client.execute(
               request,
               response -> {
+                if (response.getCode() > 299) {
+                  throw new RuntimeException(
+                      "Unable to login, response code " + response.getCode());
+                }
                 String csrfTokenCandidate = null;
                 Header csrfTokenHeader = response.getHeader(CSRF_HEADER);
                 if (csrfTokenHeader != null) {
