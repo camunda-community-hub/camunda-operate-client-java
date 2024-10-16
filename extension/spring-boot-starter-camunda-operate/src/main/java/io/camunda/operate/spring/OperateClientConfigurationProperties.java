@@ -19,6 +19,7 @@ public record OperateClientConfigurationProperties(
     String clientSecret,
     URL authUrl,
     String audience,
+    String scope,
     // saas auth properies
     String region,
     String clusterId) {
