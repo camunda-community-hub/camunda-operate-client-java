@@ -50,6 +50,7 @@ operate:
     profile: oidc
     client-id:
     client-secret:
+    scope: # optional
 ```
 
 To adjust the (meaningful) default properties, you can also override them:
@@ -64,6 +65,7 @@ operate:
     audience: operate-api
     client-id:
     client-secret:
+    scope: # optional
 ```
 
 Configure a Camunda Operate client for Saas:
@@ -124,10 +126,11 @@ Build a Camunda Operate client with identity authentication:
 String clientId = "";
 String clientSecret = "";
 String audience = "operate-api";
+String scope = ""; // can be omitted if not required
 URL operateUrl = URI.create("http://localhost:8081").toURL();
 URL authUrl = URI.create("http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token");
 // bootstrapping
-JwtCredential credentials = new JwtCredential(clientId, clientSecret, audience, authUrl);
+JwtCredential credentials = new JwtCredential(clientId, clientSecret, audience, authUrl, scope);
 ObjectMapper objectMapper = new ObjectMapper();
 JwtAuthentication authentication = new JwtAuthentication(credentials, objectMapper);
 CamundaOperateClientConfiguration configuration = new CamundaOperateClientConfiguration(authentication, operateUrl, objectMapper, HttpClients.createDefault());
@@ -144,7 +147,7 @@ String clientSecret = "";
 // bootstrapping
 URL operateUrl = URI.create("https://"+ region +".operate.camunda.io/" + clusterId).toURL();
 URL authUrl = URI.create("https://login.cloud.camunda.io/oauth/token");
-JwtCredential credentials = new JwtCredential(clientId, clientSecret, "operate.camunda.io", authUrl);
+JwtCredential credentials = new JwtCredential(clientId, clientSecret, "operate.camunda.io", authUrl, null);
 ObjectMapper objectMapper = new ObjectMapper();
 JwtAuthentication authentication = new JwtAuthentication(credentials, objectMapper);
 CamundaOperateClientConfiguration configuration = new CamundaOperateClientConfiguration(authentication, operateUrl, objectMapper, HttpClients.createDefault());
