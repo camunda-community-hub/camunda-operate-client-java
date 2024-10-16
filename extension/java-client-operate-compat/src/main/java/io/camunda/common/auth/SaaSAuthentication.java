@@ -31,7 +31,8 @@ public class SaaSAuthentication implements Authentication {
               jwtCredential.getClientId(),
               jwtCredential.getClientSecret(),
               jwtCredential.getAudience(),
-              URI.create(jwtCredential.getAuthUrl()).toURL());
+              URI.create(jwtCredential.getAuthUrl()).toURL(),
+              null);
     } catch (MalformedURLException e) {
       throw new RuntimeException("Error while mapping jwt credential", e);
     }
