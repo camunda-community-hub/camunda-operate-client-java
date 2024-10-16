@@ -76,7 +76,8 @@ public class OperateClientConfiguration {
                 properties.clientId(),
                 properties.clientSecret(),
                 properties.audience(),
-                properties.authUrl()),
+                properties.authUrl(),
+                properties.scope()),
             new JacksonTokenResponseMapper(objectMapper));
       }
       default -> throw new IllegalStateException("Unsupported profile: " + properties.profile());
