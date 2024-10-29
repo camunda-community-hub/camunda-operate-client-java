@@ -102,7 +102,6 @@
               <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-test
               </ignoredUnusedDeclaredDependency>
               <ignoredUnusedDeclaredDependency>io.camunda:spring-boot-starter-camunda-sdk</ignoredUnusedDeclaredDependency>
-
               <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-configuration-processor</ignoredUnusedDeclaredDependency>
             </ignoredUnusedDeclaredDependencies>
           </configuration>
