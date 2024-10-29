@@ -16,6 +16,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -98,6 +103,7 @@
               </ignoredUnusedDeclaredDependency>
               <ignoredUnusedDeclaredDependency>io.camunda:spring-boot-starter-camunda-sdk</ignoredUnusedDeclaredDependency>
 
+              <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-configuration-processor</ignoredUnusedDeclaredDependency>
             </ignoredUnusedDeclaredDependencies>
           </configuration>
         </plugin>
