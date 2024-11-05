@@ -17,10 +17,6 @@ import io.camunda.operate.search.ProcessDefinitionFilter;
 import io.camunda.operate.search.ProcessInstanceFilter;
 import io.camunda.operate.search.SearchQuery;
 import io.camunda.operate.search.VariableFilter;
-import io.camunda.zeebe.model.bpmn.Bpmn;
-import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.HashMap;
@@ -98,25 +94,8 @@ public class CamundaOperateClientV1 implements CamundaOperateClient {
   }
 
   @Override
-  public BpmnModelInstance getProcessDefinitionModel(Long key) throws OperateException {
-    String xml = getProcessDefinitionXml(key);
-    try {
-      InputStream processInputStream = new ByteArrayInputStream(xml.getBytes());
-      return Bpmn.readModelFromStream(processInputStream);
-    } catch (Exception e) {
-      throw new OperateException(e);
-    }
-  }
-
-  @Override
   public String getProcessDefinitionXml(Long key) throws OperateException {
     return httpClient.get(processDefinitionXml, key(key));
-  }
-
-  @Override
-  public List<ProcessDefinition> searchProcessDefinitions(SearchQuery query)
-      throws OperateException {
-    return searchProcessDefinitionResults(query).getItems();
   }
 
   @Override
@@ -127,21 +106,10 @@ public class CamundaOperateClientV1 implements CamundaOperateClient {
   }
 
   @Override
-  public List<DecisionDefinition> searchDecisionDefinitions(SearchQuery query)
-      throws OperateException {
-    return searchDecisionDefinitionResults(query).getItems();
-  }
-
-  @Override
   public SearchResult<DecisionDefinition> searchDecisionDefinitionResults(SearchQuery query)
       throws OperateException {
     assertSearchQueryType(DecisionDefinitionFilter.class, query);
     return httpClient.post(searchDecisionDefinition, query);
-  }
-
-  @Override
-  public List<DecisionInstance> searchDecisionInstances(SearchQuery query) throws OperateException {
-    return searchDecisionInstanceResults(query).getItems();
   }
 
   @Override
@@ -152,11 +120,6 @@ public class CamundaOperateClientV1 implements CamundaOperateClient {
   }
 
   @Override
-  public List<FlowNodeInstance> searchFlowNodeInstances(SearchQuery query) throws OperateException {
-    return searchFlowNodeInstanceResults(query).getItems();
-  }
-
-  @Override
   public SearchResult<FlowNodeInstance> searchFlowNodeInstanceResults(SearchQuery query)
       throws OperateException {
     assertSearchQueryType(FlowNodeInstanceFilter.class, query);
@@ -164,19 +127,9 @@ public class CamundaOperateClientV1 implements CamundaOperateClient {
   }
 
   @Override
-  public List<Variable> searchVariables(SearchQuery query) throws OperateException {
-    return searchVariableResults(query).getItems();
-  }
-
-  @Override
   public SearchResult<Variable> searchVariableResults(SearchQuery query) throws OperateException {
     assertSearchQueryType(VariableFilter.class, query);
     return httpClient.post(searchVariable, query);
-  }
-
-  @Override
-  public List<ProcessInstance> searchProcessInstances(SearchQuery query) throws OperateException {
-    return searchProcessInstanceResults(query).getItems();
   }
 
   @Override
@@ -187,21 +140,10 @@ public class CamundaOperateClientV1 implements CamundaOperateClient {
   }
 
   @Override
-  public List<DecisionRequirements> searchDecisionRequirements(SearchQuery query)
-      throws OperateException {
-    return searchDecisionRequirementsResults(query).getItems();
-  }
-
-  @Override
   public SearchResult<DecisionRequirements> searchDecisionRequirementsResults(SearchQuery query)
       throws OperateException {
     assertSearchQueryType(DecisionRequirementsFilter.class, query);
     return httpClient.post(searchDecisionRequirements, query);
-  }
-
-  @Override
-  public List<Incident> searchIncidents(SearchQuery query) throws OperateException {
-    return searchIncidentResults(query).getItems();
   }
 
   @Override
