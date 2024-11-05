@@ -10,25 +10,27 @@ import io.camunda.operate.auth.JwtCredential;
 import io.camunda.operate.auth.SimpleAuthentication;
 import io.camunda.operate.auth.SimpleCredential;
 import io.camunda.operate.auth.TokenResponseMapper.JacksonTokenResponseMapper;
+import io.camunda.operate.spring.OperateClientConditions.OperateClientEnabledCondition;
+import io.camunda.operate.spring.OperateClientConditions.OperateClientV1Condition;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Import;
 
 @EnableConfigurationProperties({OperateClientConfigurationProperties.class})
-@ConditionalOnProperty(value = "operate.client.enabled", matchIfMissing = true)
+@Conditional({OperateClientV1Condition.class, OperateClientEnabledCondition.class})
 @Import(ObjectMapperConfiguration.class)
-public class OperateClientConfiguration {
+public class OperateClientV1Configuration {
   private final OperateClientConfigurationProperties properties;
   private final ObjectMapper objectMapper;
 
   @Autowired
-  public OperateClientConfiguration(
+  public OperateClientV1Configuration(
       OperateClientConfigurationProperties properties, ObjectMapper objectMapper) {
     this.properties = properties;
     this.objectMapper = objectMapper;
