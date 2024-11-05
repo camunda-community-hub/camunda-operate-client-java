@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
       "operate.client.client-id=def",
       "operate.client.client-secret=ghi"
     })
-public class OperateClientConfigurationPropertiesProfileSaasTest {
+public class OperateClientV1ConfigurationPropertiesProfileSaasTest {
   @Autowired OperateClientConfigurationProperties properties;
 
   @Test
