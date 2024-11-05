@@ -14,7 +14,6 @@ import io.camunda.operate.model.ProcessInstance;
 import io.camunda.operate.model.SearchResult;
 import io.camunda.operate.model.Variable;
 import io.camunda.operate.search.SearchQuery;
-import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
 import java.util.List;
 
 public class CamundaOperateClientV2 implements CamundaOperateClient {
@@ -30,29 +29,12 @@ public class CamundaOperateClientV2 implements CamundaOperateClient {
   }
 
   @Override
-  public BpmnModelInstance getProcessDefinitionModel(Long key) throws OperateException {
-    throw new OperateException("Not implemented");
-  }
-
-  @Override
   public String getProcessDefinitionXml(Long key) throws OperateException {
     throw new OperateException("Not implemented");
   }
 
   @Override
-  public List<ProcessDefinition> searchProcessDefinitions(SearchQuery query)
-      throws OperateException {
-    throw new OperateException("Not implemented");
-  }
-
-  @Override
   public SearchResult<ProcessDefinition> searchProcessDefinitionResults(SearchQuery query)
-      throws OperateException {
-    throw new OperateException("Not implemented");
-  }
-
-  @Override
-  public List<DecisionDefinition> searchDecisionDefinitions(SearchQuery query)
       throws OperateException {
     throw new OperateException("Not implemented");
   }
@@ -64,18 +46,8 @@ public class CamundaOperateClientV2 implements CamundaOperateClient {
   }
 
   @Override
-  public List<DecisionInstance> searchDecisionInstances(SearchQuery query) throws OperateException {
-    throw new OperateException("Not implemented");
-  }
-
-  @Override
   public SearchResult<DecisionInstance> searchDecisionInstanceResults(SearchQuery query)
       throws OperateException {
-    throw new OperateException("Not implemented");
-  }
-
-  @Override
-  public List<FlowNodeInstance> searchFlowNodeInstances(SearchQuery query) throws OperateException {
     throw new OperateException("Not implemented");
   }
 
@@ -86,17 +58,7 @@ public class CamundaOperateClientV2 implements CamundaOperateClient {
   }
 
   @Override
-  public List<Variable> searchVariables(SearchQuery query) throws OperateException {
-    throw new OperateException("Not implemented");
-  }
-
-  @Override
   public SearchResult<Variable> searchVariableResults(SearchQuery query) throws OperateException {
-    throw new OperateException("Not implemented");
-  }
-
-  @Override
-  public List<ProcessInstance> searchProcessInstances(SearchQuery query) throws OperateException {
     throw new OperateException("Not implemented");
   }
 
@@ -107,19 +69,8 @@ public class CamundaOperateClientV2 implements CamundaOperateClient {
   }
 
   @Override
-  public List<DecisionRequirements> searchDecisionRequirements(SearchQuery query)
-      throws OperateException {
-    throw new OperateException("Not implemented");
-  }
-
-  @Override
   public SearchResult<DecisionRequirements> searchDecisionRequirementsResults(SearchQuery query)
       throws OperateException {
-    throw new OperateException("Not implemented");
-  }
-
-  @Override
-  public List<Incident> searchIncidents(SearchQuery query) throws OperateException {
     throw new OperateException("Not implemented");
   }
 
