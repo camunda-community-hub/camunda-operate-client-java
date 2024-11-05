@@ -3,6 +3,7 @@ package io.camunda.operate.spring;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.operate.CamundaOperateClient;
 import io.camunda.operate.CamundaOperateClientConfiguration;
+import io.camunda.operate.CamundaOperateClientV1;
 import io.camunda.operate.auth.Authentication;
 import io.camunda.operate.auth.JwtAuthentication;
 import io.camunda.operate.auth.JwtCredential;
@@ -37,7 +38,7 @@ public class OperateClientConfiguration {
   @ConditionalOnMissingBean
   public CamundaOperateClient camundaOperateClient(
       CamundaOperateClientConfiguration configuration) {
-    return new CamundaOperateClient(configuration);
+    return new CamundaOperateClientV1(configuration);
   }
 
   @Bean
