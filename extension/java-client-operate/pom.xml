@@ -41,7 +41,6 @@
       <dependency>
         <groupId>io.camunda</groupId>
         <artifactId>spring-boot-starter-camunda-sdk</artifactId>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>

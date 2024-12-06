@@ -66,6 +66,18 @@
         <type>pom</type>
       </dependency>
       <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-bom</artifactId>
+        <version>3.25.5</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>com.google.errorprone</groupId>
+        <artifactId>error_prone_annotations</artifactId>
+        <version>2.36.0</version>
+      </dependency>
+      <dependency>
         <groupId>io.camunda</groupId>
         <artifactId>spring-boot-starter-camunda-sdk</artifactId>
         <version>${zeebe.version}</version>
