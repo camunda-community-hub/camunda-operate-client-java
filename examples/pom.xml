@@ -11,6 +11,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>operate-example-load-process-instance</module>
+    <module>readme-snippets</module>
   </modules>
 
 </project>
