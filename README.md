@@ -153,7 +153,7 @@ CamundaOperateClient client = new CamundaOperateClient(configuration);
 Build a Camunda Operate client for Saas:
 
 ```java
-    // properties you need to provide
+// properties you need to provide
 String region = "";
 String clusterId = "";
 String clientId = "";
