@@ -139,7 +139,7 @@ ObjectMapper objectMapper = new ObjectMapper();
 CamundaOperateClientConfiguration configuration =
     new CamundaOperateClientConfiguration(
         authentication, operateUrl, objectMapper, HttpClients.createDefault());
-CamundaOperateClient client = new CamundaOperateClient(configuration);
+CamundaOperateClient client = new CamundaOperateClientV1(configuration);
 ```
 
 Build a Camunda Operate client with identity authentication:
@@ -163,7 +163,7 @@ JwtAuthentication authentication = new JwtAuthentication(credentials);
 CamundaOperateClientConfiguration configuration =
     new CamundaOperateClientConfiguration(
         authentication, operateUrl, objectMapper, HttpClients.createDefault());
-CamundaOperateClient client = new CamundaOperateClient(configuration);
+CamundaOperateClient client = new CamundaOperateClientV1(configuration);
 ```
 
 > **Note**: The `JwtCredential` constructor also supports an optional `resource` parameter. If you need to specify a resource in your OAuth2 token requests, you can use the extended constructor that includes the resource parameter.
@@ -186,7 +186,7 @@ JwtAuthentication authentication = new JwtAuthentication(credentials);
 CamundaOperateClientConfiguration configuration =
     new CamundaOperateClientConfiguration(
         authentication, operateUrl, objectMapper, HttpClients.createDefault());
-CamundaOperateClient client = new CamundaOperateClient(configuration);
+CamundaOperateClient client = new CamundaOperateClientV1(configuration);
 ```
 
 ## Getting and Searching
