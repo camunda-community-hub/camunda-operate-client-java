@@ -80,6 +80,8 @@ operate:
     client-secret:
 ```
 
+To adjust the (meaningful) default properties, you can also override them:
+
 ```yaml
 operate:
   client:
@@ -110,12 +112,17 @@ Build a Camunda Operate client with simple authentication:
 
 ```java
 // properties you need to provide
+String username = "demo";
+String password = "demo";
 URL operateUrl = URI.create("http://localhost:8081").toURL();
-SimpleCredential credentials = new SimpleCredential("demo", "demo", operateUrl, Duration.ofMinutes(10));
 // bootstrapping
+SimpleCredential credentials =
+    new SimpleCredential(username, password, operateUrl, Duration.ofMinutes(10));
 SimpleAuthentication authentication = new SimpleAuthentication(credentials);
 ObjectMapper objectMapper = new ObjectMapper();
-CamundaOperateClientConfiguration configuration = new CamundaOperateClientConfiguration(authentication, operateUrl, objectMapper, HttpClients.createDefault());
+CamundaOperateClientConfiguration configuration =
+    new CamundaOperateClientConfiguration(
+        authentication, operateUrl, objectMapper, HttpClients.createDefault());
 CamundaOperateClient client = new CamundaOperateClient(configuration);
 ```
 
@@ -128,29 +135,40 @@ String clientSecret = "";
 String audience = "operate-api";
 String scope = ""; // can be omitted if not required
 URL operateUrl = URI.create("http://localhost:8081").toURL();
-URL authUrl = URI.create("http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token");
+URL authUrl =
+    URI.create(
+           "http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token")
+       .toURL();
 // bootstrapping
 JwtCredential credentials = new JwtCredential(clientId, clientSecret, audience, authUrl, scope);
 ObjectMapper objectMapper = new ObjectMapper();
-JwtAuthentication authentication = new JwtAuthentication(credentials, objectMapper);
-CamundaOperateClientConfiguration configuration = new CamundaOperateClientConfiguration(authentication, operateUrl, objectMapper, HttpClients.createDefault());
+TokenResponseMapper tokenResponseMapper = new JacksonTokenResponseMapper(objectMapper);
+JwtAuthentication authentication = new JwtAuthentication(credentials, tokenResponseMapper);
+CamundaOperateClientConfiguration configuration =
+    new CamundaOperateClientConfiguration(
+        authentication, operateUrl, objectMapper, HttpClients.createDefault());
 CamundaOperateClient client = new CamundaOperateClient(configuration);
 ```
 
 Build a Camunda Operate client for Saas:
 
 ```java
+    // properties you need to provide
 String region = "";
 String clusterId = "";
 String clientId = "";
 String clientSecret = "";
 // bootstrapping
-URL operateUrl = URI.create("https://"+ region +".operate.camunda.io/" + clusterId).toURL();
-URL authUrl = URI.create("https://login.cloud.camunda.io/oauth/token");
-JwtCredential credentials = new JwtCredential(clientId, clientSecret, "operate.camunda.io", authUrl, null);
+URL operateUrl = URI.create("https://" + region + ".operate.camunda.io/" + clusterId).toURL();
+URL authUrl = URI.create("https://login.cloud.camunda.io/oauth/token").toURL();
+JwtCredential credentials =
+    new JwtCredential(clientId, clientSecret, "operate.camunda.io", authUrl, null);
 ObjectMapper objectMapper = new ObjectMapper();
-JwtAuthentication authentication = new JwtAuthentication(credentials, objectMapper);
-CamundaOperateClientConfiguration configuration = new CamundaOperateClientConfiguration(authentication, operateUrl, objectMapper, HttpClients.createDefault());
+TokenResponseMapper tokenResponseMapper = new JacksonTokenResponseMapper(objectMapper);
+JwtAuthentication authentication = new JwtAuthentication(credentials, tokenResponseMapper);
+CamundaOperateClientConfiguration configuration =
+    new CamundaOperateClientConfiguration(
+        authentication, operateUrl, objectMapper, HttpClients.createDefault());
 CamundaOperateClient client = new CamundaOperateClient(configuration);
 ```
 
