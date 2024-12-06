@@ -33,6 +33,11 @@ public class ProcessDefinitionFilterBuilder {
     return this;
   }
 
+  public ProcessDefinitionFilterBuilder versionTag(String versionTag) {
+    filter.setVersionTag(versionTag);
+    return this;
+  }
+
   public ProcessDefinitionFilter build() {
     return filter;
   }

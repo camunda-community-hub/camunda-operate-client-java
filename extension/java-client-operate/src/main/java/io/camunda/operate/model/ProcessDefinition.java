@@ -6,6 +6,7 @@ public class ProcessDefinition {
   private Long version;
   private String bpmnProcessId;
   private String tenantId;
+  private String versionTag;
 
   public Long getKey() {
     return key;
@@ -45,5 +46,13 @@ public class ProcessDefinition {
 
   public void setTenantId(String tenantId) {
     this.tenantId = tenantId;
+  }
+
+  public String getVersionTag() {
+    return versionTag;
+  }
+
+  public void setVersionTag(String versionTag) {
+    this.versionTag = versionTag;
   }
 }
