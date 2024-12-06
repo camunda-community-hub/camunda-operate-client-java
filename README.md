@@ -131,13 +131,15 @@ Build a Camunda Operate client with identity authentication:
 String clientId = "";
 String clientSecret = "";
 String audience = "operate-api";
+String scope = ""; // can be omitted if not required
 URL operateUrl = URI.create("http://localhost:8081").toURL();
 URL authUrl =
     URI.create(
            "http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token")
        .toURL();
 // bootstrapping
-JwtCredential credentials = new JwtCredential(clientId, clientSecret, audience, authUrl);
+JwtCredential credentials =
+    new JwtCredential(clientId, clientSecret, audience, authUrl, scope);
 ObjectMapper objectMapper = new ObjectMapper();
 TokenResponseMapper tokenResponseMapper = new JacksonTokenResponseMapper(objectMapper);
 JwtAuthentication authentication = new JwtAuthentication(credentials, tokenResponseMapper);
@@ -150,7 +152,7 @@ CamundaOperateClient client = new CamundaOperateClient(configuration);
 Build a Camunda Operate client for Saas:
 
 ```java
-    // properties you need to provide
+// properties you need to provide
 String region = "";
 String clusterId = "";
 String clientId = "";
@@ -159,7 +161,7 @@ String clientSecret = "";
 URL operateUrl = URI.create("https://" + region + ".operate.camunda.io/" + clusterId).toURL();
 URL authUrl = URI.create("https://login.cloud.camunda.io/oauth/token").toURL();
 JwtCredential credentials =
-    new JwtCredential(clientId, clientSecret, "operate.camunda.io", authUrl);
+    new JwtCredential(clientId, clientSecret, "operate.camunda.io", authUrl, null);
 ObjectMapper objectMapper = new ObjectMapper();
 TokenResponseMapper tokenResponseMapper = new JacksonTokenResponseMapper(objectMapper);
 JwtAuthentication authentication = new JwtAuthentication(credentials, tokenResponseMapper);
