@@ -1,1 +1,2 @@
-io.camunda.operate.spring.OperateClientConfiguration
+io.camunda.operate.spring.OperateClientV1Configuration
+io.camunda.operate.spring.OperateClientV2Configuration
