@@ -123,7 +123,7 @@ ObjectMapper objectMapper = new ObjectMapper();
 CamundaOperateClientConfiguration configuration =
     new CamundaOperateClientConfiguration(
         authentication, operateUrl, objectMapper, HttpClients.createDefault());
-CamundaOperateClient client = new CamundaOperateClient(configuration);
+CamundaOperateClient client = new CamundaOperateClientV1(configuration);
 ```
 
 Build a Camunda Operate client with identity authentication:
@@ -140,14 +140,15 @@ URL authUrl =
            "http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token")
        .toURL();
 // bootstrapping
-JwtCredential credentials = new JwtCredential(clientId, clientSecret, audience, authUrl, scope);
+JwtCredential credentials =
+    new JwtCredential(clientId, clientSecret, audience, authUrl, scope);
 ObjectMapper objectMapper = new ObjectMapper();
 TokenResponseMapper tokenResponseMapper = new JacksonTokenResponseMapper(objectMapper);
 JwtAuthentication authentication = new JwtAuthentication(credentials, tokenResponseMapper);
 CamundaOperateClientConfiguration configuration =
     new CamundaOperateClientConfiguration(
         authentication, operateUrl, objectMapper, HttpClients.createDefault());
-CamundaOperateClient client = new CamundaOperateClient(configuration);
+CamundaOperateClient client = new CamundaOperateClientV1(configuration);
 ```
 
 Build a Camunda Operate client for Saas:
@@ -169,7 +170,7 @@ JwtAuthentication authentication = new JwtAuthentication(credentials, tokenRespo
 CamundaOperateClientConfiguration configuration =
     new CamundaOperateClientConfiguration(
         authentication, operateUrl, objectMapper, HttpClients.createDefault());
-CamundaOperateClient client = new CamundaOperateClient(configuration);
+CamundaOperateClient client = new CamundaOperateClientV1(configuration);
 ```
 
 ## Getting and Searching
