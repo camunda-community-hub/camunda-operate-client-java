@@ -26,6 +26,7 @@ public record OperateClientConfigurationProperties(
   public enum Profile {
     simple,
     oidc,
-    saas
+    saas,
+    v2
   }
 }
