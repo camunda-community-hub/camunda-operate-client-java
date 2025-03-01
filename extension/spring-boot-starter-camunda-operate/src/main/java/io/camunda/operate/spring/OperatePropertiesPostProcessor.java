@@ -42,6 +42,9 @@ public class OperatePropertiesPostProcessor implements EnvironmentPostProcessor 
       case simple -> {
         return "simple.yaml";
       }
+      case v2 -> {
+        return "v2.yaml";
+      }
     }
     throw new IllegalStateException("Unknown client mode " + clientMode);
   }
