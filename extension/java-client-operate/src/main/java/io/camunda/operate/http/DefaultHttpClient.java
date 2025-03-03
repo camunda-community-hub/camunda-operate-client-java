@@ -17,6 +17,7 @@ import org.apache.hc.client5.http.classic.methods.HttpDelete;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
@@ -34,6 +35,7 @@ public class DefaultHttpClient implements HttpClient {
   private final Authentication authentication;
   private final ObjectMapper objectMapper;
   private final String baseUrl;
+  private final ErrorCodeHandler errorCodeHandler;
 
   public DefaultHttpClient(
       URL baseUrl,
@@ -50,6 +52,17 @@ public class DefaultHttpClient implements HttpClient {
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .setSerializationInclusion(JsonInclude.Include.NON_NULL);
     this.baseUrl = baseUrl.toString();
+    this.errorCodeHandler =
+        new DefaultErrorCodeHandler() {
+          @Override
+          public RuntimeException handleError(ClassicHttpResponse response) {
+            int code = response.getCode();
+            if (code == HttpStatus.SC_UNAUTHORIZED || code == HttpStatus.SC_FORBIDDEN) {
+              authentication.resetToken();
+            }
+            return super.handleError(response);
+          }
+        };
   }
 
   @Override
@@ -121,13 +134,6 @@ public class DefaultHttpClient implements HttpClient {
 
   private <T> HttpClientResponseHandler<T> handleResponse(TypeReference<T> responseType) {
     return new TypeReferenceHttpClientResponseHandler<>(
-        responseType, objectMapper, this::handleErrorResponse);
-  }
-
-  private SdkException handleErrorResponse(Integer code) {
-    if (code == HttpStatus.SC_UNAUTHORIZED || code == HttpStatus.SC_FORBIDDEN) {
-      authentication.resetToken();
-    }
-    return new SdkException("Response not successful: " + code);
+        responseType, objectMapper, errorCodeHandler);
   }
 }
