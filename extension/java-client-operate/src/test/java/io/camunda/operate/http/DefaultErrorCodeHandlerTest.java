@@ -14,8 +14,7 @@ public class DefaultErrorCodeHandlerTest {
 
   @Test
   void shouldReadError() throws IOException {
-    String body =
-        """
+    String body = """
 { "message": "This is an error!"}
 """;
     InputStream in = new ByteArrayInputStream(body.getBytes());
@@ -33,8 +32,7 @@ public class DefaultErrorCodeHandlerTest {
 
   @Test
   void shouldAppendReasonPhrase() throws IOException {
-    String body =
-        """
+    String body = """
 { "message": "This is an error!"}
 """;
     InputStream in = new ByteArrayInputStream(body.getBytes());
