@@ -1,5 +1,6 @@
 package io.camunda.operate.spring;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.operate.CamundaOperateClient;
 import io.camunda.operate.CamundaOperateClientConfiguration;
@@ -8,7 +9,7 @@ import io.camunda.operate.auth.JwtAuthentication;
 import io.camunda.operate.auth.JwtCredential;
 import io.camunda.operate.auth.SimpleAuthentication;
 import io.camunda.operate.auth.SimpleCredential;
-import io.camunda.operate.auth.TokenResponseMapper.JacksonTokenResponseMapper;
+import io.camunda.operate.http.TypeReferenceHttpClientResponseHandler;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +79,7 @@ public class OperateClientConfiguration {
                 properties.audience(),
                 properties.authUrl(),
                 properties.scope()),
-            new JacksonTokenResponseMapper(objectMapper));
+            new TypeReferenceHttpClientResponseHandler<>(new TypeReference<>() {}, objectMapper));
       }
       default -> throw new IllegalStateException("Unsupported profile: " + properties.profile());
     }
