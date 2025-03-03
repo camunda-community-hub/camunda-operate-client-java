@@ -7,8 +7,6 @@ import io.camunda.operate.auth.JwtAuthentication;
 import io.camunda.operate.auth.JwtCredential;
 import io.camunda.operate.auth.SimpleAuthentication;
 import io.camunda.operate.auth.SimpleCredential;
-import io.camunda.operate.auth.TokenResponseMapper;
-import io.camunda.operate.auth.TokenResponseMapper.JacksonTokenResponseMapper;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -53,8 +51,7 @@ public interface OperateClientBootstrapper {
       JwtCredential credentials =
           new JwtCredential(clientId, clientSecret, audience, authUrl, scope);
       ObjectMapper objectMapper = new ObjectMapper();
-      TokenResponseMapper tokenResponseMapper = new JacksonTokenResponseMapper(objectMapper);
-      JwtAuthentication authentication = new JwtAuthentication(credentials, tokenResponseMapper);
+      JwtAuthentication authentication = new JwtAuthentication(credentials);
       CamundaOperateClientConfiguration configuration =
           new CamundaOperateClientConfiguration(
               authentication, operateUrl, objectMapper, HttpClients.createDefault());
@@ -76,8 +73,7 @@ public interface OperateClientBootstrapper {
       JwtCredential credentials =
           new JwtCredential(clientId, clientSecret, "operate.camunda.io", authUrl, null);
       ObjectMapper objectMapper = new ObjectMapper();
-      TokenResponseMapper tokenResponseMapper = new JacksonTokenResponseMapper(objectMapper);
-      JwtAuthentication authentication = new JwtAuthentication(credentials, tokenResponseMapper);
+      JwtAuthentication authentication = new JwtAuthentication(credentials);
       CamundaOperateClientConfiguration configuration =
           new CamundaOperateClientConfiguration(
               authentication, operateUrl, objectMapper, HttpClients.createDefault());
