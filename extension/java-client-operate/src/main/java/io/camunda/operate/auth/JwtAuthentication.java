@@ -1,5 +1,8 @@
 package io.camunda.operate.auth;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.camunda.operate.http.TypeReferenceHttpClientResponseHandler;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,18 +13,25 @@ import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 
 public class JwtAuthentication implements Authentication {
   private final JwtCredential jwtCredential;
-  private final TokenResponseMapper tokenResponseMapper;
+  private final TypeReferenceHttpClientResponseHandler<TokenResponse> responseHandler;
   private String token;
   private LocalDateTime timeout;
 
-  public JwtAuthentication(JwtCredential jwtCredential, TokenResponseMapper tokenResponseMapper) {
+  public JwtAuthentication(
+      JwtCredential jwtCredential,
+      TypeReferenceHttpClientResponseHandler<TokenResponse> responseHandler) {
     this.jwtCredential = jwtCredential;
-    this.tokenResponseMapper = tokenResponseMapper;
+    this.responseHandler = responseHandler;
+  }
+
+  public JwtAuthentication(JwtCredential jwtCredential) {
+    this(
+        jwtCredential,
+        new TypeReferenceHttpClientResponseHandler<>(new TypeReference<>() {}, new ObjectMapper()));
   }
 
   @Override
@@ -43,23 +53,7 @@ public class JwtAuthentication implements Authentication {
   private TokenResponse retrieveToken() {
     try (CloseableHttpClient client = HttpClients.createSystem()) {
       HttpPost request = buildRequest();
-      return client.execute(
-          request,
-          response -> {
-            try {
-              return tokenResponseMapper.readToken(EntityUtils.toString(response.getEntity()));
-            } catch (Exception e) {
-              var errorMessage =
-                  String.format(
-                      """
-              Token retrieval failed from: %s
-              Response code: %s
-              Audience: %s
-              """,
-                      jwtCredential.authUrl(), response.getCode(), jwtCredential.audience());
-              throw new RuntimeException(errorMessage, e);
-            }
-          });
+      return client.execute(request, responseHandler);
     } catch (Exception e) {
       throw new RuntimeException("Authenticating for Operate failed due to " + e.getMessage(), e);
     }

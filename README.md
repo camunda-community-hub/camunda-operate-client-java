@@ -140,10 +140,10 @@ URL authUrl =
            "http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token")
        .toURL();
 // bootstrapping
-JwtCredential credentials = new JwtCredential(clientId, clientSecret, audience, authUrl, scope);
+JwtCredential credentials =
+    new JwtCredential(clientId, clientSecret, audience, authUrl, scope);
 ObjectMapper objectMapper = new ObjectMapper();
-TokenResponseMapper tokenResponseMapper = new JacksonTokenResponseMapper(objectMapper);
-JwtAuthentication authentication = new JwtAuthentication(credentials, tokenResponseMapper);
+JwtAuthentication authentication = new JwtAuthentication(credentials);
 CamundaOperateClientConfiguration configuration =
     new CamundaOperateClientConfiguration(
         authentication, operateUrl, objectMapper, HttpClients.createDefault());
@@ -164,8 +164,7 @@ URL authUrl = URI.create("https://login.cloud.camunda.io/oauth/token").toURL();
 JwtCredential credentials =
     new JwtCredential(clientId, clientSecret, "operate.camunda.io", authUrl, null);
 ObjectMapper objectMapper = new ObjectMapper();
-TokenResponseMapper tokenResponseMapper = new JacksonTokenResponseMapper(objectMapper);
-JwtAuthentication authentication = new JwtAuthentication(credentials, tokenResponseMapper);
+JwtAuthentication authentication = new JwtAuthentication(credentials);
 CamundaOperateClientConfiguration configuration =
     new CamundaOperateClientConfiguration(
         authentication, operateUrl, objectMapper, HttpClients.createDefault());
