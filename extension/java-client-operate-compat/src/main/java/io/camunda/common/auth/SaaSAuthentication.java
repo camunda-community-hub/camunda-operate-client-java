@@ -3,7 +3,6 @@ package io.camunda.common.auth;
 import io.camunda.common.json.JsonMapper;
 import io.camunda.operate.auth.JwtAuthentication;
 import io.camunda.operate.auth.JwtCredential;
-import io.camunda.operate.auth.TokenResponse;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -36,8 +35,7 @@ public class SaaSAuthentication implements Authentication {
     } catch (MalformedURLException e) {
       throw new RuntimeException("Error while mapping jwt credential", e);
     }
-    return new JwtAuthentication(
-        credential, (token) -> jsonMapper.fromJson(token, TokenResponse.class));
+    return new JwtAuthentication(credential);
   }
 
   private JwtConfig jwtConfig() {
