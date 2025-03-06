@@ -60,7 +60,7 @@ public class OperateClientConfiguration {
   @ConditionalOnMissingBean
   public Authentication operateAuthentication() {
     if (properties.profile() == null) {
-      throw new IllegalStateException("'operate.client.profile' is required");
+      throw new IllegalStateException("Property 'operate.client.profile' is required");
     }
     switch (properties.profile()) {
       case simple -> {
