@@ -10,6 +10,7 @@
   </parent>
 
   <artifactId>spring-boot-starter-camunda-operate</artifactId>
+  <name>Spring Boot Starter Camunda Operate Client</name>
 
   <dependencies>
     <dependency>

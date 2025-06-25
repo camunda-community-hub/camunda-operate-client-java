@@ -9,7 +9,8 @@
     <version>8.8.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>readme-snippets</artifactId>
+  <artifactId>operate-client-readme-snippets</artifactId>
+  <name>Camunda Operate Client Readme Snippets</name>
 
   <dependencies>
     <dependency>

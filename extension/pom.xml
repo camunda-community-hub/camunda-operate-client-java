@@ -8,6 +8,7 @@
   </parent>
 
   <artifactId>operate-client-parent</artifactId>
+  <name>Camunda Operate Client Parent</name>
   <packaging>pom</packaging>
 
   <modules>

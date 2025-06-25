@@ -8,6 +8,7 @@
   </parent>
   <groupId>io.camunda.spring</groupId>
   <artifactId>operate-client-root</artifactId>
+  <name>Camunda Operate Client Root</name>
   <version>8.8.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
