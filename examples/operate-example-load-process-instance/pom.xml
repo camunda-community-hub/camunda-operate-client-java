@@ -7,7 +7,8 @@
     <version>8.6.6-SNAPSHOT</version>
   </parent>
 
-  <artifactId>operate-example-load-process-instance</artifactId>
+  <artifactId>operate-client-example-load-process-instance</artifactId>
+  <name>Camunda Operate Client Example: Load process instance</name>
 
   <dependencies>
     <dependency>
