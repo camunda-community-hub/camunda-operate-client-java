@@ -20,6 +20,8 @@ public record OperateClientConfigurationProperties(
     URL authUrl,
     String audience,
     String scope,
+    String clientAssertionCertPath,
+    String clientAssertionCertStorePassword,
     // saas auth properies
     String region,
     String clusterId) {
