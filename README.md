@@ -66,7 +66,13 @@ operate:
     client-id:
     client-secret:
     scope: # optional
+    client-assertion-keystore-path: # optional
+    client-assertion-keystore-password: # optional
+    client-assertion-keystore-key-alias: # optional
+    client-assertion-keystore-key-password: # optional
 ```
+
+>The `operate.client.client-assertion-keystore-*` properties are intended to be used for `client_assertion` authentication via oidc. If this is used, no `operate.client.client-secret` needs to be provided.
 
 Configure a Camunda Operate client for Saas:
 
