@@ -12,6 +12,8 @@ import io.camunda.operate.auth.SimpleCredential;
 import io.camunda.operate.http.TypeReferenceHttpClientResponseHandler;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -24,6 +26,7 @@ import org.springframework.context.annotation.Import;
 @ConditionalOnProperty(value = "operate.client.enabled", matchIfMissing = true)
 @Import(ObjectMapperConfiguration.class)
 public class OperateClientConfiguration {
+  private static final Logger LOG = LoggerFactory.getLogger(OperateClientConfiguration.class);
   private final OperateClientConfigurationProperties properties;
   private final ObjectMapper objectMapper;
 
@@ -78,7 +81,11 @@ public class OperateClientConfiguration {
                 properties.clientSecret(),
                 properties.audience(),
                 properties.authUrl(),
-                properties.scope()),
+                properties.scope(),
+                properties.clientAssertionKeystorePath(),
+                properties.clientAssertionKeystorePassword(),
+                properties.clientAssertionKeystoreKeyAlias(),
+                properties.clientAssertionKeystoreKeyPassword()),
             new TypeReferenceHttpClientResponseHandler<>(new TypeReference<>() {}, objectMapper));
       }
       default -> throw new IllegalStateException("Unsupported profile: " + properties.profile());

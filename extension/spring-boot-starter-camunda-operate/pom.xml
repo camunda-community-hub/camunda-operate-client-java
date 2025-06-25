@@ -11,6 +11,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>
     </dependency>
@@ -90,6 +95,9 @@
               </ignoredUnusedDeclaredDependency>
               <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-configuration-processor</ignoredUnusedDeclaredDependency>
             </ignoredUnusedDeclaredDependencies>
+            <ignoredUsedUndeclaredDependencies>
+              <ignoredUsedUndeclaredDependency>org.springframework:spring-jcl</ignoredUsedUndeclaredDependency>
+            </ignoredUsedUndeclaredDependencies>
           </configuration>
         </plugin>
       </plugins>
