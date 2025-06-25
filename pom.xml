@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -8,9 +9,27 @@
   </parent>
   <groupId>io.camunda.spring</groupId>
   <artifactId>operate-client-root</artifactId>
-  <name>Camunda Operate Client Root</name>
   <version>8.8.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <name>Camunda Operate Client Root</name>
+
+  <licenses>
+    <license>
+      <name>Apache License</name>
+    </license>
+  </licenses>
+
+  <modules>
+    <module>extension</module>
+    <module>examples</module>
+  </modules>
+
+  <scm>
+    <connection>scm:git:git@github.com:camunda-community-hub/camunda-operate-client-java.git</connection>
+    <developerConnection>scm:git:git@github.com:camunda-community-hub/camunda-operate-client-java.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/camunda-community-hub/camunda-operate-client-java</url>
+  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,19 +65,14 @@
     <plugin.version.maven-source-plugin>3.3.1</plugin.version.maven-source-plugin>
   </properties>
 
-  <modules>
-    <module>extension</module>
-    <module>examples</module>
-  </modules>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
         <version>${spring-boot.version}</version>
-        <scope>import</scope>
         <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
@@ -207,24 +221,21 @@
           <artifactId>spotless-maven-plugin</artifactId>
           <version>${plugin.version.spotless-maven-plugin}</version>
           <configuration>
-            <formats>
-              <format>
-                <includes>
-                  <include>*.md</include>
-                  <include>.gitignore</include>
-                </includes>
-                <trimTrailingWhitespace />
-                <endWithNewline />
-                <indent>
-                  <spaces>true</spaces>
-                  <spacesPerTab>2</spacesPerTab>
-                </indent>
-              </format>
-            </formats>
             <java>
               <googleJavaFormat />
             </java>
-            <pom />
+            <pom>
+              <sortPom>
+                <nrOfIndentSpace>2</nrOfIndentSpace>
+                <expandEmptyElements>false</expandEmptyElements>
+                <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
+              </sortPom>
+            </pom>
+            <markdown>
+              <includes>
+                <include>**/*.md</include>
+              </includes>
+            </markdown>
           </configuration>
         </plugin>
         <plugin>
@@ -336,17 +347,4 @@
       </build>
     </profile>
   </profiles>
-
-  <licenses>
-    <license>
-      <name>Apache License</name>
-    </license>
-  </licenses>
-
-  <scm>
-    <url>https://github.com/camunda-community-hub/camunda-operate-client-java</url>
-    <connection>scm:git:git@github.com:camunda-community-hub/camunda-operate-client-java.git</connection>
-    <developerConnection>scm:git:git@github.com:camunda-community-hub/camunda-operate-client-java.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
 </project>
