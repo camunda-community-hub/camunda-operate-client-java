@@ -63,15 +63,6 @@
     <plugin.version.maven-source-plugin>3.3.1</plugin.version.maven-source-plugin>
   </properties>
 
-<<<<<<< HEAD
-  <modules>
-    <module>extension</module>
-    <module>examples</module>
-    <module>extension/java-client-operate-compat</module>
-  </modules>
-
-=======
->>>>>>> 04ed4f0 (named all modules (#260))
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -85,15 +76,15 @@
         <groupId>io.camunda</groupId>
         <artifactId>zeebe-bom</artifactId>
         <version>${zeebe.version}</version>
-        <scope>import</scope>
         <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-bom</artifactId>
         <version>3.25.8</version>
-        <scope>import</scope>
         <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>com.google.errorprone</groupId>
