@@ -8,7 +8,7 @@
   </parent>
 
   <artifactId>java-client-operate-compat</artifactId>
-
+  <name>Camunda Operate Client Compat</name>
   <dependencies>
     <dependency>
       <groupId>io.camunda.spring</groupId>
@@ -27,6 +27,5 @@
       <artifactId>jackson-databind</artifactId>
     </dependency>
   </dependencies>
-
 
 </project>

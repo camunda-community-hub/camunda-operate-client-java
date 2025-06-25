@@ -14,5 +14,6 @@
   <modules>
     <module>java-client-operate</module>
     <module>spring-boot-starter-camunda-operate</module>
+    <module>java-client-operate-compat</module>
   </modules>
 </project>
