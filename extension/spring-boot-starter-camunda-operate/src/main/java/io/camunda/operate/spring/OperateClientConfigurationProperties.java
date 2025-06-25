@@ -1,6 +1,7 @@
 package io.camunda.operate.spring;
 
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.Duration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -20,8 +21,10 @@ public record OperateClientConfigurationProperties(
     URL authUrl,
     String audience,
     String scope,
-    String clientAssertionCertPath,
-    String clientAssertionCertStorePassword,
+    Path clientAssertionKeystorePath,
+    String clientAssertionKeystorePassword,
+    String clientAssertionKeystoreKeyAlias,
+    String clientAssertionKeystoreKeyPassword,
     // saas auth properies
     String region,
     String clusterId) {

@@ -27,6 +27,8 @@ import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.hc.core5.util.Asserts;
 
 public class JwtAuthentication implements Authentication {
+  private static final String JWT_ASSERTION_TYPE =
+      "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
   private final JwtCredential jwtCredential;
   private final TypeReferenceHttpClientResponseHandler<TokenResponse> responseHandler;
   private String token;
@@ -80,21 +82,11 @@ public class JwtAuthentication implements Authentication {
     formParams.add(new BasicNameValuePair("grant_type", "client_credentials"));
     formParams.add(new BasicNameValuePair("client_id", jwtCredential.clientId()));
 
-    boolean isClientAssertionCertPathProvided =
-        jwtCredential.clientAssertionCertPath() != null
-            && !jwtCredential.clientAssertionCertPath().isEmpty();
-
-    if (!isClientAssertionCertPathProvided) {
+    if (!clientAssertionEnabled()) {
       formParams.add(new BasicNameValuePair("client_secret", jwtCredential.clientSecret()));
     } else {
-      formParams.add(
-          new BasicNameValuePair(
-              "client_assertion",
-              createClientAssertion(
-                  jwtCredential.clientId(),
-                  jwtCredential.authUrl().toString(),
-                  jwtCredential.clientAssertionCertPath(),
-                  jwtCredential.clientAssertionCertStorePassword())));
+      formParams.add(new BasicNameValuePair("client_assertion", createClientAssertion()));
+      formParams.add(new BasicNameValuePair("client_assertion_type", JWT_ASSERTION_TYPE));
     }
 
     formParams.add(new BasicNameValuePair("audience", jwtCredential.audience()));
@@ -105,20 +97,26 @@ public class JwtAuthentication implements Authentication {
     return httpPost;
   }
 
+  public boolean clientAssertionEnabled() {
+    return jwtCredential.clientAssertionKeystorePassword() != null
+        && !jwtCredential.clientAssertionKeystorePassword().isEmpty()
+        && jwtCredential.clientAssertionKeystorePath() != null
+        && jwtCredential.clientAssertionKeystorePath().toFile().exists();
+  }
+
   /** Create JWT client assertion for OAuth2 authentication */
-  private String createClientAssertion(
-      String clientId, String issuer, String certPath, String password) throws Exception {
+  private String createClientAssertion() throws Exception {
     Instant now = Instant.now();
 
-    var privateKeyData = loadP12Certificate(certPath, password);
+    var privateKeyData = loadP12Certificate();
     PrivateKey privateKey = privateKeyData.getKey();
     String keyId = privateKeyData.getValue();
 
     return Jwts.builder()
-        .issuer(clientId)
-        .subject(clientId)
+        .issuer(jwtCredential.clientId())
+        .subject(jwtCredential.clientId())
         .audience()
-        .add(issuer)
+        .add(jwtCredential.authUrl().toString())
         .and()
         .issuedAt(Date.from(now))
         .notBefore(Date.from(now))
@@ -133,17 +131,28 @@ public class JwtAuthentication implements Authentication {
         .compact();
   }
 
-  private Map.Entry<PrivateKey, String> loadP12Certificate(String certPath, String password)
-      throws Exception {
+  private Map.Entry<PrivateKey, String> loadP12Certificate() throws Exception {
     KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
-    try (FileInputStream fis = new FileInputStream(certPath)) {
-      keyStore.load(fis, password != null ? password.toCharArray() : null);
+    char[] keystorePassword =
+        jwtCredential.clientAssertionKeystorePassword() != null
+            ? jwtCredential.clientAssertionKeystorePassword().toCharArray()
+            : null;
+    char[] keystoreKeyPassword =
+        jwtCredential.clientAssertionKeystoreKeyPassword() != null
+            ? jwtCredential.clientAssertionKeystoreKeyPassword().toCharArray()
+            : keystorePassword;
+
+    try (FileInputStream fis =
+        new FileInputStream(jwtCredential.clientAssertionKeystorePath().toFile())) {
+      keyStore.load(fis, keystorePassword);
     }
 
-    String alias = keyStore.aliases().nextElement();
-    PrivateKey privateKey =
-        (PrivateKey) keyStore.getKey(alias, password != null ? password.toCharArray() : null);
+    String alias =
+        jwtCredential.clientAssertionKeystoreKeyAlias() != null
+            ? jwtCredential.clientAssertionKeystoreKeyAlias()
+            : keyStore.aliases().nextElement();
+    PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, keystoreKeyPassword);
     X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
 
     String x5tThumbprint = generateX5tThumbprint(cert);
