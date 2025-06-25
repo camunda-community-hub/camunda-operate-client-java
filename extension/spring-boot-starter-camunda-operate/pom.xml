@@ -8,6 +8,7 @@
   </parent>
 
   <artifactId>spring-boot-starter-camunda-operate</artifactId>
+  <name>Spring Boot Starter Camunda Operate Client</name>
 
   <dependencies>
     <dependency>
@@ -92,11 +93,16 @@
           <artifactId>maven-dependency-plugin</artifactId>
           <configuration>
             <ignoredUnusedDeclaredDependencies>
+<<<<<<< HEAD
               <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter
               </ignoredUnusedDeclaredDependency>
               <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-test
               </ignoredUnusedDeclaredDependency>
               <ignoredUnusedDeclaredDependency>io.camunda:spring-boot-starter-camunda-sdk</ignoredUnusedDeclaredDependency>
+=======
+              <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter</ignoredUnusedDeclaredDependency>
+              <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-starter-test</ignoredUnusedDeclaredDependency>
+>>>>>>> 04ed4f0 (named all modules (#260))
               <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot-configuration-processor</ignoredUnusedDeclaredDependency>
             </ignoredUnusedDeclaredDependencies>
           </configuration>

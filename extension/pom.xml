@@ -9,6 +9,7 @@
 
   <artifactId>operate-client-parent</artifactId>
   <packaging>pom</packaging>
+  <name>Camunda Operate Client Parent</name>
 
   <modules>
     <module>java-client-operate</module>
