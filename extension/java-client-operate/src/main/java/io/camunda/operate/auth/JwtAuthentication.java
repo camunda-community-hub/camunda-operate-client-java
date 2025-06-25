@@ -3,11 +3,21 @@ package io.camunda.operate.auth;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.operate.http.TypeReferenceHttpClientResponseHandler;
-import java.net.URISyntaxException;
+import io.jsonwebtoken.Jwts;
+import java.io.FileInputStream;
+import java.security.KeyStore;
+import java.security.MessageDigest;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -63,18 +73,91 @@ public class JwtAuthentication implements Authentication {
     }
   }
 
-  private HttpPost buildRequest() throws URISyntaxException {
+  private HttpPost buildRequest() throws Exception {
     HttpPost httpPost = new HttpPost(jwtCredential.authUrl().toURI());
     httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
     List<NameValuePair> formParams = new ArrayList<>();
     formParams.add(new BasicNameValuePair("grant_type", "client_credentials"));
     formParams.add(new BasicNameValuePair("client_id", jwtCredential.clientId()));
-    formParams.add(new BasicNameValuePair("client_secret", jwtCredential.clientSecret()));
+
+    boolean isClientAssertionCertPathProvided =
+        jwtCredential.clientAssertionCertPath() != null
+            && !jwtCredential.clientAssertionCertPath().isEmpty();
+
+    if (!isClientAssertionCertPathProvided) {
+      formParams.add(new BasicNameValuePair("client_secret", jwtCredential.clientSecret()));
+    } else {
+      formParams.add(
+          new BasicNameValuePair(
+              "client_assertion",
+              createClientAssertion(
+                  jwtCredential.clientId(),
+                  jwtCredential.authUrl().toString(),
+                  jwtCredential.clientAssertionCertPath(),
+                  jwtCredential.clientAssertionCertStorePassword())));
+    }
+
     formParams.add(new BasicNameValuePair("audience", jwtCredential.audience()));
     if (jwtCredential.scope() != null && !jwtCredential.scope().isEmpty()) {
       formParams.add(new BasicNameValuePair("scope", jwtCredential.scope()));
     }
     httpPost.setEntity(new UrlEncodedFormEntity(formParams));
     return httpPost;
+  }
+
+  /** Create JWT client assertion for OAuth2 authentication */
+  private String createClientAssertion(
+      String clientId, String issuer, String certPath, String password) throws Exception {
+    Instant now = Instant.now();
+
+    var privateKeyData = loadP12Certificate(certPath, password);
+    PrivateKey privateKey = privateKeyData.getKey();
+    String keyId = privateKeyData.getValue();
+
+    return Jwts.builder()
+        .issuer(clientId)
+        .subject(clientId)
+        .audience()
+        .add(issuer)
+        .and()
+        .issuedAt(Date.from(now))
+        .notBefore(Date.from(now))
+        .expiration(Date.from(now.plus(5, ChronoUnit.MINUTES)))
+        .id(UUID.randomUUID().toString())
+        .header()
+        .add("alg", "RS256")
+        .add("typ", "JWT")
+        .add("x5t", keyId)
+        .and()
+        .signWith(privateKey, Jwts.SIG.RS256)
+        .compact();
+  }
+
+  private Map.Entry<PrivateKey, String> loadP12Certificate(String certPath, String password)
+      throws Exception {
+    KeyStore keyStore = KeyStore.getInstance("PKCS12");
+
+    try (FileInputStream fis = new FileInputStream(certPath)) {
+      keyStore.load(fis, password != null ? password.toCharArray() : null);
+    }
+
+    String alias = keyStore.aliases().nextElement();
+    PrivateKey privateKey =
+        (PrivateKey) keyStore.getKey(alias, password != null ? password.toCharArray() : null);
+    X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
+
+    String x5tThumbprint = generateX5tThumbprint(cert);
+
+    return Map.entry(privateKey, x5tThumbprint);
+  }
+
+  private String generateX5tThumbprint(X509Certificate certificate) {
+    try {
+      MessageDigest digest = MessageDigest.getInstance("SHA-1");
+      byte[] encoded = digest.digest(certificate.getEncoded());
+      return Base64.getUrlEncoder().withoutPadding().encodeToString(encoded);
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to generate x5t thumbprint", e);
+    }
   }
 }

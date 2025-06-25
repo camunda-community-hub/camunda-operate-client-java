@@ -78,7 +78,9 @@ public class OperateClientConfiguration {
                 properties.clientSecret(),
                 properties.audience(),
                 properties.authUrl(),
-                properties.scope()),
+                properties.scope(),
+                properties.clientAssertionCertPath(),
+                properties.clientAssertionCertStorePassword()),
             new TypeReferenceHttpClientResponseHandler<>(new TypeReference<>() {}, objectMapper));
       }
       default -> throw new IllegalStateException("Unsupported profile: " + properties.profile());
