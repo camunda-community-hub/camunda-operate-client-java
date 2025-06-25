@@ -9,6 +9,7 @@
 
   <artifactId>operate-examples-parent</artifactId>
   <packaging>pom</packaging>
+  <name>Camunda Operate Client Examples Parent</name>
   <modules>
     <module>operate-example-load-process-instance</module>
     <module>readme-snippets</module>
