@@ -21,6 +21,7 @@ public record OperateClientConfigurationProperties(
     URL authUrl,
     String audience,
     String scope,
+    String resource,
     Path clientAssertionKeystorePath,
     String clientAssertionKeystorePassword,
     String clientAssertionKeystoreKeyAlias,
