@@ -82,6 +82,7 @@ public class OperateClientConfiguration {
                 properties.audience(),
                 properties.authUrl(),
                 properties.scope(),
+                properties.resource(),
                 properties.clientAssertionKeystorePath(),
                 properties.clientAssertionKeystorePassword(),
                 properties.clientAssertionKeystoreKeyAlias(),
