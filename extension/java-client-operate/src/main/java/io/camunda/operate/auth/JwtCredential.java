@@ -9,6 +9,7 @@ public record JwtCredential(
     String audience,
     URL authUrl,
     String scope,
+    String resource,
     Path clientAssertionKeystorePath,
     String clientAssertionKeystorePassword,
     String clientAssertionKeystoreKeyAlias,
@@ -16,6 +17,6 @@ public record JwtCredential(
 
   public JwtCredential(
       String clientId, String clientSecret, String audience, URL authUrl, String scope) {
-    this(clientId, clientSecret, audience, authUrl, scope, null, null, null, null);
+    this(clientId, clientSecret, audience, authUrl, scope, null, null, null, null, null);
   }
 }
