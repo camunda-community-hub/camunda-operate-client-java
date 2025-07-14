@@ -78,7 +78,16 @@ public class OperateClientConfiguration {
                 properties.clientSecret(),
                 properties.audience(),
                 properties.authUrl(),
+<<<<<<< HEAD
                 properties.scope()),
+=======
+                properties.scope(),
+                properties.resource(),
+                properties.clientAssertionKeystorePath(),
+                properties.clientAssertionKeystorePassword(),
+                properties.clientAssertionKeystoreKeyAlias(),
+                properties.clientAssertionKeystoreKeyPassword()),
+>>>>>>> 1893165 (feat: add support for OAuth2 resource parameter in JWT authentication (#269))
             new TypeReferenceHttpClientResponseHandler<>(new TypeReference<>() {}, objectMapper));
       }
       default -> throw new IllegalStateException("Unsupported profile: " + properties.profile());

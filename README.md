@@ -50,6 +50,11 @@ operate:
     profile: oidc
     client-id:
     client-secret:
+<<<<<<< HEAD
+=======
+    scope: # optional
+    resource: # optional
+>>>>>>> 1893165 (feat: add support for OAuth2 resource parameter in JWT authentication (#269))
 ```
 
 To adjust the (meaningful) default properties, you can also override them:
@@ -64,6 +69,15 @@ operate:
     audience: operate-api
     client-id:
     client-secret:
+<<<<<<< HEAD
+=======
+    scope: # optional
+    resource: # optional
+    client-assertion-keystore-path: # optional
+    client-assertion-keystore-password: # optional
+    client-assertion-keystore-key-alias: # optional
+    client-assertion-keystore-key-password: # optional
+>>>>>>> 1893165 (feat: add support for OAuth2 resource parameter in JWT authentication (#269))
 ```
 
 Configure a Camunda Operate client for Saas:
@@ -93,6 +107,14 @@ operate:
     client-id:
     client-secret:
 ```
+
+### Environment Variables
+
+All configuration properties can also be set via environment variables using Spring Boot's standard naming convention. For example:
+
+- `operate.client.resource` → `OPERATE_CLIENT_RESOURCE`
+- `operate.client.client-id` → `OPERATE_CLIENT_CLIENT_ID`
+- `operate.client.client-secret` → `OPERATE_CLIENT_CLIENT_SECRET`
 
 ### Plain Java
 
@@ -147,6 +169,8 @@ CamundaOperateClientConfiguration configuration =
         authentication, operateUrl, objectMapper, HttpClients.createDefault());
 CamundaOperateClient client = new CamundaOperateClient(configuration);
 ```
+
+> **Note**: The `JwtCredential` constructor also supports an optional `resource` parameter. If you need to specify a resource in your OAuth2 token requests, you can use the extended constructor that includes the resource parameter.
 
 Build a Camunda Operate client for Saas:
 

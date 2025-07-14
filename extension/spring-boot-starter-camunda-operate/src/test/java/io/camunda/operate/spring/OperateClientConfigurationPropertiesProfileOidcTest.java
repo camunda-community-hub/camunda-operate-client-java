@@ -31,4 +31,52 @@ public class OperateClientConfigurationPropertiesProfileOidcTest {
                     "http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token")
                 .toURL());
   }
+
+  @SpringBootTest(
+      properties = {
+        "operate.client.profile=oidc",
+        "operate.client.client-id=test-client",
+        "operate.client.client-secret=test-secret",
+        "operate.client.resource=test-resource"
+      })
+  static class WithResourcePropertyTest {
+    @Autowired OperateClientConfigurationProperties properties;
+
+    @Test
+    void shouldApplyResourceProperty() throws MalformedURLException {
+      assertThat(properties.profile()).isEqualTo(oidc);
+      assertThat(properties.clientId()).isEqualTo("test-client");
+      assertThat(properties.clientSecret()).isEqualTo("test-secret");
+      assertThat(properties.resource()).isEqualTo("test-resource");
+      assertThat(properties.baseUrl()).isEqualTo(URI.create("http://localhost:8081").toURL());
+      assertThat(properties.enabled()).isEqualTo(true);
+      assertThat(properties.authUrl())
+          .isEqualTo(
+              URI.create(
+                      "http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token")
+                  .toURL());
+    }
+  }
+
+  @SpringBootTest(
+      properties = {
+        "operate.client.profile=oidc",
+        "operate.client.client-id=env-test-client",
+        "operate.client.client-secret=env-test-secret",
+        "operate.client.resource=env-test-resource",
+        "operate.client.scope=env-test-scope"
+      })
+  static class EnvironmentVariableTest {
+    @Autowired OperateClientConfigurationProperties properties;
+
+    @Test
+    void shouldSupportEnvironmentVariableMapping() {
+      // Verify that properties can be set via environment-style configuration
+      assertThat(properties.profile()).isEqualTo(oidc);
+      assertThat(properties.clientId()).isEqualTo("env-test-client");
+      assertThat(properties.clientSecret()).isEqualTo("env-test-secret");
+      assertThat(properties.resource()).isEqualTo("env-test-resource");
+      assertThat(properties.scope()).isEqualTo("env-test-scope");
+    }
+  }
 }

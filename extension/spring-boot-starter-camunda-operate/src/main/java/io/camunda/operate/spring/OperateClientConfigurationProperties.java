@@ -20,6 +20,14 @@ public record OperateClientConfigurationProperties(
     URL authUrl,
     String audience,
     String scope,
+<<<<<<< HEAD
+=======
+    String resource,
+    Path clientAssertionKeystorePath,
+    String clientAssertionKeystorePassword,
+    String clientAssertionKeystoreKeyAlias,
+    String clientAssertionKeystoreKeyPassword,
+>>>>>>> 1893165 (feat: add support for OAuth2 resource parameter in JWT authentication (#269))
     // saas auth properies
     String region,
     String clusterId) {
