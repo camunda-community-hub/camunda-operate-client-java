@@ -18,8 +18,8 @@ public class DecisionRequirementsFilterBuilder {
     return this;
   }
 
-  public DecisionRequirementsFilterBuilder decisionRequirements(String decisionRequirements) {
-    filter.setDecisionRequirements(decisionRequirements);
+  public DecisionRequirementsFilterBuilder decisionRequirementsId(String decisionRequirements) {
+    filter.setDecisionRequirementsId(decisionRequirements);
     return this;
   }
 
@@ -28,7 +28,7 @@ public class DecisionRequirementsFilterBuilder {
     return this;
   }
 
-  public DecisionRequirementsFilterBuilder version(Long version) {
+  public DecisionRequirementsFilterBuilder version(Integer version) {
     filter.setVersion(version);
     return this;
   }

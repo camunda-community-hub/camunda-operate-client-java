@@ -28,7 +28,7 @@ public class DecisionDefinitionFilterBuilder {
     return this;
   }
 
-  public DecisionDefinitionFilterBuilder version(Long version) {
+  public DecisionDefinitionFilterBuilder version(Integer version) {
     filter.setVersion(version);
     return this;
   }

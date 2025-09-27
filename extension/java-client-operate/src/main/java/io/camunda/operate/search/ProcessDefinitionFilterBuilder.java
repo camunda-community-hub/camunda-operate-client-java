@@ -18,7 +18,7 @@ public class ProcessDefinitionFilterBuilder {
     return this;
   }
 
-  public ProcessDefinitionFilterBuilder version(Long version) {
+  public ProcessDefinitionFilterBuilder version(Integer version) {
     filter.setVersion(version);
     return this;
   }

@@ -65,7 +65,7 @@ public class DecisionInstanceFilterBuilder {
     return this;
   }
 
-  public DecisionInstanceFilterBuilder decisionVersion(Long decisionVersion) {
+  public DecisionInstanceFilterBuilder decisionVersion(Integer decisionVersion) {
     filter.setDecisionVersion(decisionVersion);
     return this;
   }

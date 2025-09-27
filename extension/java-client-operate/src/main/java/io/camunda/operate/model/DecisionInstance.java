@@ -14,7 +14,7 @@ public class DecisionInstance {
   private String decisionId;
   private String decisionDefinitionId;
   private String decisionName;
-  private Long decisionVersion;
+  private Integer decisionVersion;
   private DecisionType decisionType;
   private String result;
   private List<DecisionInstanceInput> evaluatedInputs;
@@ -101,11 +101,11 @@ public class DecisionInstance {
     this.decisionName = decisionName;
   }
 
-  public Long getDecisionVersion() {
+  public Integer getDecisionVersion() {
     return decisionVersion;
   }
 
-  public void setDecisionVersion(Long decisionVersion) {
+  public void setDecisionVersion(Integer decisionVersion) {
     this.decisionVersion = decisionVersion;
   }
 

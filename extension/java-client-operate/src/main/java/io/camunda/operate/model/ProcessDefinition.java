@@ -3,7 +3,7 @@ package io.camunda.operate.model;
 public class ProcessDefinition {
   private Long key;
   private String name;
-  private Long version;
+  private Integer version;
   private String bpmnProcessId;
   private String tenantId;
   private String versionTag;
@@ -24,11 +24,11 @@ public class ProcessDefinition {
     this.name = name;
   }
 
-  public Long getVersion() {
+  public Integer getVersion() {
     return version;
   }
 
-  public void setVersion(Long version) {
+  public void setVersion(Integer version) {
     this.version = version;
   }
 

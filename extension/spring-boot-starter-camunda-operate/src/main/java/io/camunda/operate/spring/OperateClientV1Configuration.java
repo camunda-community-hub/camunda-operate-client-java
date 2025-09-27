@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Import;
 @Conditional({OperateClientV1Condition.class, OperateClientEnabledCondition.class})
 @Import(ObjectMapperConfiguration.class)
 public class OperateClientV1Configuration {
-  private static final Logger LOG = LoggerFactory.getLogger(OperateClientConfiguration.class);
+  private static final Logger LOG = LoggerFactory.getLogger(OperateClientV1Configuration.class);
   private final OperateClientConfigurationProperties properties;
   private final ObjectMapper objectMapper;
 

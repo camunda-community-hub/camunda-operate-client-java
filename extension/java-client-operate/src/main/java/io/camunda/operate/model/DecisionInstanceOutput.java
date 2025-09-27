@@ -6,7 +6,7 @@ public class DecisionInstanceOutput {
   private String name;
   private String value;
   private String ruleId;
-  private Long ruleIndex;
+  private Integer ruleIndex;
 
   public String getId() {
     return id;
@@ -40,11 +40,11 @@ public class DecisionInstanceOutput {
     this.ruleId = ruleId;
   }
 
-  public Long getRuleIndex() {
+  public Integer getRuleIndex() {
     return ruleIndex;
   }
 
-  public void setRuleIndex(Long ruleIndex) {
+  public void setRuleIndex(Integer ruleIndex) {
     this.ruleIndex = ruleIndex;
   }
 }

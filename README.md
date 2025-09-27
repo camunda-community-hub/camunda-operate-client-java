@@ -20,6 +20,14 @@ Add the dependency to your project:
 </dependency>
 ```
 
+This client is compatible with the Camunda v2 API. To use it, please configure:
+
+```yaml
+operate:
+  client:
+    profile: v2
+```
+
 Configure a Camunda Operate client with simple authentication:
 
 ```yaml
