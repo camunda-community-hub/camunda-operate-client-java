@@ -2,7 +2,7 @@ package io.camunda.operate.model;
 
 public class ProcessInstance {
   private Long key;
-  private Long processVersion;
+  private Integer processVersion;
   private String bpmnProcessId;
   private Long parentKey;
   private Long parentFlowNodeInstanceKey;
@@ -20,11 +20,11 @@ public class ProcessInstance {
     this.key = key;
   }
 
-  public Long getProcessVersion() {
+  public Integer getProcessVersion() {
     return processVersion;
   }
 
-  public void setProcessVersion(Long processVersion) {
+  public void setProcessVersion(Integer processVersion) {
     this.processVersion = processVersion;
   }
 

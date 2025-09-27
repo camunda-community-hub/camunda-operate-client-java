@@ -6,11 +6,11 @@ public class DecisionDefinition {
   private Long key;
   private String decisionId;
   private String name;
-  private Long version;
+  private Integer version;
   private String decisionRequirementsId;
   private Long decisionRequirementsKey;
-  private String decisionRequirementsName;
-  private Long decisionRequirementsVersion;
+  @Deprecated private String decisionRequirementsName;
+  @Deprecated private Long decisionRequirementsVersion;
   private String tenantId;
 
   public String getId() {
@@ -45,11 +45,11 @@ public class DecisionDefinition {
     this.name = name;
   }
 
-  public Long getVersion() {
+  public Integer getVersion() {
     return version;
   }
 
-  public void setVersion(Long version) {
+  public void setVersion(Integer version) {
     this.version = version;
   }
 
@@ -69,18 +69,22 @@ public class DecisionDefinition {
     this.decisionRequirementsKey = decisionRequirementsKey;
   }
 
+  @Deprecated
   public String getDecisionRequirementsName() {
     return decisionRequirementsName;
   }
 
+  @Deprecated
   public void setDecisionRequirementsName(String decisionRequirementsName) {
     this.decisionRequirementsName = decisionRequirementsName;
   }
 
+  @Deprecated
   public Long getDecisionRequirementsVersion() {
     return decisionRequirementsVersion;
   }
 
+  @Deprecated
   public void setDecisionRequirementsVersion(Long decisionRequirementsVersion) {
     this.decisionRequirementsVersion = decisionRequirementsVersion;
   }

@@ -1,6 +1,6 @@
 package io.camunda.operate.exception;
 
-public class OperateException extends Exception {
+public class OperateException extends RuntimeException {
 
   public OperateException() {
     super();

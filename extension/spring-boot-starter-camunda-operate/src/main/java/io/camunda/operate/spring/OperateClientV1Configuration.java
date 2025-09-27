@@ -4,12 +4,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.operate.CamundaOperateClient;
 import io.camunda.operate.CamundaOperateClientConfiguration;
+import io.camunda.operate.CamundaOperateClientV1;
 import io.camunda.operate.auth.Authentication;
 import io.camunda.operate.auth.JwtAuthentication;
 import io.camunda.operate.auth.JwtCredential;
 import io.camunda.operate.auth.SimpleAuthentication;
 import io.camunda.operate.auth.SimpleCredential;
 import io.camunda.operate.http.TypeReferenceHttpClientResponseHandler;
+import io.camunda.operate.spring.OperateClientConditions.OperateClientEnabledCondition;
+import io.camunda.operate.spring.OperateClientConditions.OperateClientV1Condition;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.slf4j.Logger;
@@ -17,21 +20,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Import;
 
 @EnableConfigurationProperties({OperateClientConfigurationProperties.class})
-@ConditionalOnProperty(value = "operate.client.enabled", matchIfMissing = true)
+@Conditional({OperateClientV1Condition.class, OperateClientEnabledCondition.class})
 @Import(ObjectMapperConfiguration.class)
-public class OperateClientConfiguration {
-  private static final Logger LOG = LoggerFactory.getLogger(OperateClientConfiguration.class);
+public class OperateClientV1Configuration {
+  private static final Logger LOG = LoggerFactory.getLogger(OperateClientV1Configuration.class);
   private final OperateClientConfigurationProperties properties;
   private final ObjectMapper objectMapper;
 
   @Autowired
-  public OperateClientConfiguration(
+  public OperateClientV1Configuration(
       OperateClientConfigurationProperties properties, ObjectMapper objectMapper) {
     this.properties = properties;
     this.objectMapper = objectMapper;
@@ -41,7 +44,7 @@ public class OperateClientConfiguration {
   @ConditionalOnMissingBean
   public CamundaOperateClient camundaOperateClient(
       CamundaOperateClientConfiguration configuration) {
-    return new CamundaOperateClient(configuration);
+    return new CamundaOperateClientV1(configuration);
   }
 
   @Bean

@@ -3,6 +3,7 @@ package io.camunda.operate.example;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.operate.CamundaOperateClient;
 import io.camunda.operate.CamundaOperateClientConfiguration;
+import io.camunda.operate.CamundaOperateClientV1;
 import io.camunda.operate.auth.JwtAuthentication;
 import io.camunda.operate.auth.JwtCredential;
 import io.camunda.operate.auth.SimpleAuthentication;
@@ -30,7 +31,7 @@ public interface OperateClientBootstrapper {
       CamundaOperateClientConfiguration configuration =
           new CamundaOperateClientConfiguration(
               authentication, operateUrl, objectMapper, HttpClients.createDefault());
-      CamundaOperateClient client = new CamundaOperateClient(configuration);
+      CamundaOperateClient client = new CamundaOperateClientV1(configuration);
       return client;
     }
   }
@@ -55,7 +56,7 @@ public interface OperateClientBootstrapper {
       CamundaOperateClientConfiguration configuration =
           new CamundaOperateClientConfiguration(
               authentication, operateUrl, objectMapper, HttpClients.createDefault());
-      CamundaOperateClient client = new CamundaOperateClient(configuration);
+      CamundaOperateClient client = new CamundaOperateClientV1(configuration);
       return client;
     }
   }
@@ -77,7 +78,7 @@ public interface OperateClientBootstrapper {
       CamundaOperateClientConfiguration configuration =
           new CamundaOperateClientConfiguration(
               authentication, operateUrl, objectMapper, HttpClients.createDefault());
-      CamundaOperateClient client = new CamundaOperateClient(configuration);
+      CamundaOperateClient client = new CamundaOperateClientV1(configuration);
       return client;
     }
   }

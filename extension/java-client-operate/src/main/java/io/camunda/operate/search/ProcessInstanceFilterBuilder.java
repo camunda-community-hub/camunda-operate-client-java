@@ -16,7 +16,7 @@ public class ProcessInstanceFilterBuilder {
     return this;
   }
 
-  public ProcessInstanceFilterBuilder processVersion(Long processVersion) {
+  public ProcessInstanceFilterBuilder processVersion(Integer processVersion) {
     filter.setProcessVersion(processVersion);
     return this;
   }

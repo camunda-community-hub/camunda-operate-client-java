@@ -9,6 +9,15 @@ public class SearchQuery {
   private Integer size;
   private List<Sort> sort;
   private List<Object> searchAfter;
+  private String after;
+
+  public String getAfter() {
+    return after;
+  }
+
+  public void setAfter(String after) {
+    this.after = after;
+  }
 
   public Filter getFilter() {
     return filter;
@@ -51,6 +60,7 @@ public class SearchQuery {
     private Integer size;
     private final List<Sort> sorts = new ArrayList<>();
     private List<Object> searchAfter = null;
+    private String after;
 
     public Builder() {}
 
@@ -92,6 +102,11 @@ public class SearchQuery {
       return this;
     }
 
+    public Builder after(String after) {
+      this.after = after;
+      return this;
+    }
+
     public SearchQuery build() throws OperateException {
       SearchQuery query = new SearchQuery();
       query.filter = filter;
@@ -100,6 +115,7 @@ public class SearchQuery {
       if (!sorts.isEmpty()) {
         query.setSort(sorts);
       }
+      query.after = after;
       return query;
     }
   }

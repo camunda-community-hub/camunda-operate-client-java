@@ -4,9 +4,9 @@ public class DecisionRequirements {
 
   private String id;
   private Long key;
-  private String decisionRequirements;
+  private String decisionRequirementsId;
   private String name;
-  private Long version;
+  private Integer version;
   private String resourceName;
   private String tenantId;
 
@@ -26,12 +26,12 @@ public class DecisionRequirements {
     this.key = key;
   }
 
-  public String getDecisionRequirements() {
-    return decisionRequirements;
+  public String getDecisionRequirementsId() {
+    return decisionRequirementsId;
   }
 
-  public void setDecisionRequirements(String decisionRequirements) {
-    this.decisionRequirements = decisionRequirements;
+  public void setDecisionRequirementsId(String decisionRequirementsId) {
+    this.decisionRequirementsId = decisionRequirementsId;
   }
 
   public String getName() {
@@ -42,11 +42,11 @@ public class DecisionRequirements {
     this.name = name;
   }
 
-  public Long getVersion() {
+  public Integer getVersion() {
     return version;
   }
 
-  public void setVersion(Long version) {
+  public void setVersion(Integer version) {
     this.version = version;
   }
 
