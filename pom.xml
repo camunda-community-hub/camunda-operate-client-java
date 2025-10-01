@@ -38,7 +38,7 @@
     <java.version>${version.java}</java.version>
     <maven.compiler.release>${java.version}</maven.compiler.release>
 
-    <zeebe.version>8.7.13</zeebe.version>
+    <zeebe.version>8.7.14</zeebe.version>
 
     <spring-boot.version>3.4.5</spring-boot.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
