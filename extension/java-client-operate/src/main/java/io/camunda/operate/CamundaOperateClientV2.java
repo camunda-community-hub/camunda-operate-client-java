@@ -835,10 +835,9 @@ public class CamundaOperateClientV2 implements CamundaOperateClient {
           applyIfNotNull(incidentFilter.getProcessInstanceKey(), filter::processInstanceKey);
           applyIfNotNull(incidentFilter.getType(), IncidentErrorType::valueOf, filter::errorType);
           applyIfNotNull(incidentFilter.getMessage(), filter::errorMessage);
-          // TODO fix this as soon as the API is fixed
           applyIfNotNull(
               incidentFilter.getCreationTime(),
-              operateDate -> operateDate.getOffsetDateTime().toString(),
+              OperateDate::getOffsetDateTime,
               filter::creationTime);
           applyIfNotNull(incidentFilter.getState(), IncidentState::valueOf, filter::state);
           applyIfNotNull(incidentFilter.getTenantId(), filter::tenantId);
