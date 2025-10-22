@@ -8,23 +8,16 @@
   ],
   "packageRules": [
     {
+      "description": "Never update Operate dependencies",
       "enabled": false,
       "matchPackageNames": [
         "io.camunda.spring{/,}**"
       ]
     },
     {
-      "matchBaseBranches": [
-        "main"
-      ],
-      "matchUpdateTypes": [
-        "minor"
-      ],
-      "automerge": true
-    },
-    {
-      "matchManagers": [
-        "maven"
+      "description": "Never update camunda dependencies minor and major after a release",
+      "matchPackageNames": [
+        "io.camunda:*{/,}**"
       ],
       "matchBaseBranches": [
         "/^release/.*/"
@@ -34,14 +27,6 @@
         "minor"
       ],
       "enabled": false
-    },
-    {
-      "matchUpdateTypes": [
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "automerge": true
     },
     {
       "matchManagers": [
@@ -54,7 +39,7 @@
       ]
     }
   ],
-  "baseBranches": [
+  "baseBranchPatterns": [
     "main",
     "/^release/.*/"
   ]
