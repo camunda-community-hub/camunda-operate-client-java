@@ -73,6 +73,13 @@
         <scope>import</scope>
       </dependency>
       <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>io.camunda</groupId>
         <artifactId>zeebe-bpmn-model</artifactId>
         <version>${zeebe.version}</version>
@@ -86,21 +93,6 @@
         <groupId>io.camunda.spring</groupId>
         <artifactId>spring-boot-starter-camunda-operate</artifactId>
         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-annotations</artifactId>
-        <version>${jackson.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
