@@ -23,7 +23,7 @@ public class OperateClientV1ConfigurationPropertiesProfileOidcTest {
     assertThat(properties.profile()).isEqualTo(oidc);
     assertThat(properties.clientId()).isEqualTo("def");
     assertThat(properties.clientSecret()).isEqualTo("ghi");
-    assertThat(properties.baseUrl()).isEqualTo(URI.create("http://localhost:8081").toURL());
+    assertThat(properties.baseUrl()).isEqualTo(URI.create("http://localhost:8088").toURL());
     assertThat(properties.enabled()).isEqualTo(true);
     assertThat(properties.authUrl())
         .isEqualTo(
@@ -48,7 +48,7 @@ public class OperateClientV1ConfigurationPropertiesProfileOidcTest {
       assertThat(properties.clientId()).isEqualTo("test-client");
       assertThat(properties.clientSecret()).isEqualTo("test-secret");
       assertThat(properties.resource()).isEqualTo("test-resource");
-      assertThat(properties.baseUrl()).isEqualTo(URI.create("http://localhost:8081").toURL());
+      assertThat(properties.baseUrl()).isEqualTo(URI.create("http://localhost:8088").toURL());
       assertThat(properties.enabled()).isEqualTo(true);
       assertThat(properties.authUrl())
           .isEqualTo(
