@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 public class SimpleAuthentication implements Authentication {
   private static final Set<String> CSRF_HEADER_CANDIDATES =
       Set.of("X-CSRF-TOKEN", "OPERATE-X-CSRF-TOKEN");
+  private static final Set<String> SESSION_COOKIE_NAME_CANDIDATES =
+      Set.of("OPERATE-SESSION", "camunda-session");
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final SimpleCredential simpleCredential;
@@ -50,10 +52,11 @@ public class SimpleAuthentication implements Authentication {
                 Header[] cookieHeaders = response.getHeaders("Set-Cookie");
                 String sessionCookie = null;
                 String csrfCookie = null;
-                String sessionCookieName = "OPERATE-SESSION";
                 for (Header cookieHeader : cookieHeaders) {
-                  if (cookieHeader.getValue().startsWith(sessionCookieName)) {
-                    sessionCookie = cookieHeader.getValue();
+                  for (String candidate : SESSION_COOKIE_NAME_CANDIDATES) {
+                    if (cookieHeader.getValue().startsWith(candidate)) {
+                      sessionCookie = cookieHeader.getValue();
+                    }
                   }
                   for (String candidate : CSRF_HEADER_CANDIDATES) {
                     if (cookieHeader.getValue().startsWith(candidate)) {
@@ -70,7 +73,7 @@ public class SimpleAuthentication implements Authentication {
               });
       if (simpleAuthToken.sessionCookie() == null) {
         throw new RuntimeException(
-            "Unable to authenticate due to missing Set-Cookie OPERATE-SESSION");
+            "Unable to authenticate due to missing Set-Cookie OPERATE-SESSION or camunda-session");
       }
       if (simpleAuthToken.csrfToken() == null) {
         LOG.debug("No CSRF token found");
@@ -97,7 +100,7 @@ public class SimpleAuthentication implements Authentication {
   }
 
   private HttpPost buildRequest(SimpleCredential simpleCredential) {
-    HttpPost httpPost = new HttpPost(simpleCredential.baseUrl().toString() + "/api/login");
+    HttpPost httpPost = new HttpPost(simpleCredential.baseUrl().toString() + "/login");
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("username", simpleCredential.username()));
     params.add(new BasicNameValuePair("password", simpleCredential.password()));
