@@ -19,7 +19,7 @@ import io.camunda.client.api.search.filter.IncidentFilter;
 import io.camunda.client.api.search.filter.ProcessDefinitionFilter;
 import io.camunda.client.api.search.filter.ProcessInstanceFilter;
 import io.camunda.client.api.search.filter.VariableFilter;
-import io.camunda.client.api.search.request.SearchRequestPage;
+import io.camunda.client.api.search.page.AnyPage;
 import io.camunda.client.api.search.request.TypedSortableRequest.SearchRequestSort;
 import io.camunda.client.api.search.response.DecisionDefinitionType;
 import io.camunda.client.api.search.response.DecisionInstanceState;
@@ -423,7 +423,7 @@ public class CamundaOperateClientV2 implements CamundaOperateClient {
             entry("decisionRequirementsId", DecisionDefinitionSort::decisionRequirementsId)));
   }
 
-  private static Consumer<SearchRequestPage> fromSearchQueryToPage(SearchQuery query) {
+  private static Consumer<AnyPage> fromSearchQueryToPage(SearchQuery query) {
     return page -> {
       applyIfNotNull(query.getSize(), page::limit);
       applyIfNotNull(query.getAfter(), page::after);
